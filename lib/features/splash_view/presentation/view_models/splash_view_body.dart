@@ -1,13 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-
-
 import 'package:el_karma_ph/core/utils/app_router.dart';
-import 'package:el_karma_ph/core/utils/assets.dart';
+import 'package:el_karma_ph/features/login_view/presentation/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-
 
 class SplashViewBody extends StatefulWidget {
   const SplashViewBody({super.key});
@@ -30,25 +26,33 @@ class _SplashViewBodyState extends State<SplashViewBody>
 
   void navigateToHome() {
     Future.delayed(const Duration(seconds: 1), () {
-      GoRouter.of(context).push(AppRouter.kHomeView);
+      GoRouter.of(context).pushReplacementNamed(AppRouter.kLoginView);
     });
   }
 
   @override
   void dispose() {
-    super.dispose();
     animationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Image.asset(AssetsData.logo),
-        const SizedBox(height: 4),
-      ],
+    final screenSize = MediaQuery.of(context).size;
+    const maxContentWidth = 440.0;
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: maxContentWidth),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ElKarmaLogoWidget(
+            height: screenSize.height * 0.53,
+            width: screenSize.width * 0.53,
+          ),
+          const SizedBox(height: 4),
+        ],
+      ),
     );
   }
 
