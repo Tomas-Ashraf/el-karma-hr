@@ -1,12 +1,15 @@
 // ignore_for_file: unused_field
 
 import 'package:el_karma_ph/constants.dart';
-import 'package:el_karma_ph/core/utils/styles.dart';
-import 'package:el_karma_ph/core/widgets/button_widget.dart';
+import 'package:el_karma_ph/core/utils/app_router.dart';
+import 'package:el_karma_ph/features/login_view/manager/login_cubit/cubit/login_cubit.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/input_field_widget.dart';
+import 'package:el_karma_ph/features/login_view/presentation/widgets/login_button.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/logo_widget.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/welcome_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginViewBody extends StatefulWidget {
   const LoginViewBody({super.key});
@@ -34,74 +37,81 @@ class _LoginViewState extends State<LoginViewBody> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: maxContentWidth),
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenSize.width * 0.06,
-                vertical: screenSize.height * 0.03,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: screenSize.height * 0.02),
-                  ElKarmaLogoWidget(height: 100, width: 100),
-                  SizedBox(height: screenSize.height * 0.035),
-                  WelcomeWidget(),
-                  SizedBox(height: screenSize.height * 0.03),
-                  InputFieldWidget(
-                    label: 'Email Address',
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  SizedBox(height: screenSize.height * 0.02),
-                  InputFieldWidget(
-                    label: 'Password',
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () =>
-                          setState(() => _obscurePassword = !_obscurePassword),
+      body: BlocListener<LoginCubit, LoginState>(
+        listener: (context, state) {
+          if (state is LoginSuccessState) {
+            GoRouter.of(context).pushReplacementNamed(AppRouter.kHomeView);
+          } else if (state is LoginFailureState) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.errorMessage)));
+          }
+        },
+        child: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: maxContentWidth),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenSize.width * 0.06,
+                  vertical: screenSize.height * 0.03,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: screenSize.height * 0.02),
+                    ElKarmaLogoWidget(height: 100, width: 100),
+                    SizedBox(height: screenSize.height * 0.035),
+                    WelcomeWidget(),
+                    SizedBox(height: screenSize.height * 0.03),
+                    InputFieldWidget(
+                      label: 'Email Address',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: const Text(
-                        'Forgot Password ?',
-                        style: TextStyle(
-                          color: kPrimaryBlue,
-                          fontWeight: FontWeight.w500,
+                    SizedBox(height: screenSize.height * 0.02),
+                    InputFieldWidget(
+                      label: 'Password',
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: screenSize.height * 0.025),
-                  ButtonWidget(
-                    width: double.infinity,
-                    height: 52,
-                    onPressed: () {},
-                    backgroundColor: kPrimaryBlue,
-                    foregroundColor: Colors.white,
-                    text: const Text('Login', style: Styles.textStyle16),
-                  ),
-                  SizedBox(height: screenSize.height * 0.03),
-                ],
+                    SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {},
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: const Text(
+                          'Forgot Password ?',
+                          style: TextStyle(
+                            color: kPrimaryBlue,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: screenSize.height * 0.025),
+                    LoginButton(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    ),
+                    SizedBox(height: screenSize.height * 0.03),
+                  ],
+                ),
               ),
             ),
           ),
