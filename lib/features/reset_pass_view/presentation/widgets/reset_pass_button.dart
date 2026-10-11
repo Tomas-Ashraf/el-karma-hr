@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ResetPassButton extends StatelessWidget {
-  const ResetPassButton({super.key, required this.email});
-  final String email;
+  const ResetPassButton({super.key, required this.emailController});
+  final TextEditingController emailController;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class ResetPassButton extends StatelessWidget {
           onPressed: () {
             if (isLoading) return;
             BlocProvider.of<ResetPassCubit>(context)
-                .sendPasswordResetEmail(email: email);
+                .sendPasswordResetEmail(email: emailController.text.trim());
           },
           backgroundColor: kPrimaryBlue,
           foregroundColor: Colors.white,

@@ -1,3 +1,5 @@
+import 'dart:developer' show log;
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,6 +12,7 @@ class ResetPassCubit extends Cubit<ResetPassState> {
   Future<String?> sendPasswordResetEmail({required String email}) async {
     try {
       await auth.sendPasswordResetEmail(email: email.trim());
+      log('Password reset email sent to $email');
       emit(ResetPassSuccessState());
       return null;
     } on FirebaseAuthException catch (e) {
