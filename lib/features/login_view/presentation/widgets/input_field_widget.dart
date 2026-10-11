@@ -15,6 +15,10 @@ class InputFieldWidget extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType,
     this.suffixIcon,
+    TextInputAction? textInputAction,
+    String? errorText,
+    required Function(String) onChanged,
+    required Function(String) onSubmitted,
   });
 
   @override

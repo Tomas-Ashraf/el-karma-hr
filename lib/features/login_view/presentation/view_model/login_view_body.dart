@@ -67,12 +67,16 @@ class _LoginViewState extends State<LoginViewBody> {
                       label: 'Email Address',
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
+                      onChanged: (value) {},
+                      onSubmitted: (value) {},
                     ),
                     SizedBox(height: screenSize.height * 0.02),
                     InputFieldWidget(
                       label: 'Password',
                       controller: _passwordController,
                       obscureText: _obscurePassword,
+                      onChanged: (value) {},
+                      onSubmitted: (value) {},
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword
@@ -89,7 +93,10 @@ class _LoginViewState extends State<LoginViewBody> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          GoRouter.of(context)
+                              .pushNamed(AppRouter.kResetPassView);
+                        },
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,
@@ -104,7 +111,7 @@ class _LoginViewState extends State<LoginViewBody> {
                         ),
                       ),
                     ),
-                    SizedBox(height: screenSize.height * 0.025),
+                    SizedBox(height: screenSize.height * 0.13),
                     LoginButton(
                       email: _emailController.text,
                       password: _passwordController.text,
