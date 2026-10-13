@@ -2,7 +2,7 @@
 
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
-import 'package:el_karma_ph/features/login_view/manager/login_cubit/cubit/login_cubit.dart';
+import 'package:el_karma_ph/features/login_view/manager/login_cubit/cubit/auth_cubit.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/input_field_widget.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/login_button.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/logo_widget.dart';
@@ -19,8 +19,8 @@ class LoginViewBody extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginViewBody> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  var _emailController = TextEditingController();
+  var _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
@@ -37,11 +37,11 @@ class _LoginViewState extends State<LoginViewBody> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: BlocListener<LoginCubit, LoginState>(
+      body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is LoginSuccessState) {
-            GoRouter.of(context).pushReplacementNamed(AppRouter.kHomeView);
-          } else if (state is LoginFailureState) {
+          if (state is AuthSuccessState) {
+            GoRouter.of(context).pushReplacementNamed(AppRouter.kDashboardView);
+          } else if (state is AuthFailureState) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.errorMessage)));
           }
@@ -67,7 +67,9 @@ class _LoginViewState extends State<LoginViewBody> {
                       label: 'Email Address',
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        _emailController = value as TextEditingController;
+                      },
                       onSubmitted: (value) {},
                     ),
                     SizedBox(height: screenSize.height * 0.02),
@@ -75,7 +77,9 @@ class _LoginViewState extends State<LoginViewBody> {
                       label: 'Password',
                       controller: _passwordController,
                       obscureText: _obscurePassword,
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        _passwordController = value as TextEditingController;
+                      },
                       onSubmitted: (value) {},
                       suffixIcon: IconButton(
                         icon: Icon(
