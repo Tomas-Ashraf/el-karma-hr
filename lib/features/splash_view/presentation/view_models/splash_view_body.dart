@@ -1,9 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer' show log;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashViewBody extends StatefulWidget {
   const SplashViewBody({super.key});
@@ -24,9 +29,25 @@ class _SplashViewBodyState extends State<SplashViewBody>
     navigateToHome();
   }
 
-  void navigateToHome() {
-    Future.delayed(const Duration(seconds: 1), () {
-      GoRouter.of(context).pushReplacementNamed(AppRouter.kLoginView);
+  Future<void> navigateToHome() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? isLogged = prefs.getBool('loggedIn');
+    log('isLogged: $isLogged');
+    Future.delayed(const Duration(seconds: 1), () async {
+      final db = FirebaseFirestore.instance;
+      final snapshot = await db
+          .collection(kUsersCollection)
+          .where('email', isEqualTo: prefs.getString('userEmail'))
+          .get();
+      final status = snapshot.docs[0]['status'];
+      if (isLogged == true && status == 'active') {
+        GoRouter.of(context).pushReplacementNamed(AppRouter.kDashboardView);
+      } else if (isLogged == true && status == 'inactive') {
+        GoRouter.of(context)
+            .pushReplacementNamed(AppRouter.kInactiveAccountView);
+      } else if (isLogged == false || isLogged == null) {
+        GoRouter.of(context).pushReplacementNamed(AppRouter.kLoginView);
+      }
     });
   }
 

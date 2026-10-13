@@ -1,6 +1,6 @@
 import 'package:el_karma_ph/bloc_observer.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
-import 'package:el_karma_ph/features/login_view/manager/login_cubit/cubit/login_cubit.dart';
+import 'package:el_karma_ph/features/login_view/manager/login_cubit/cubit/auth_cubit.dart';
 import 'package:el_karma_ph/features/reset_pass_view/manager/cubit/reset_pass_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<LoginCubit>(create: (context) => LoginCubit()),
+        BlocProvider<AuthCubit>(create: (context) => AuthCubit()),
         BlocProvider<ResetPassCubit>(create: (context) => ResetPassCubit()),
       ],
       child: MaterialApp.router(

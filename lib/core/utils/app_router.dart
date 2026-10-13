@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field
 
-import 'package:el_karma_ph/features/home_view/presentation/views/home_view.dart';
+import 'package:el_karma_ph/features/dashboard_view/presentation/view/dashboard_view.dart';
+import 'package:el_karma_ph/features/inactive_account_view/presentation/view/inactive_account_view.dart';
 import 'package:el_karma_ph/features/login_view/presentation/view/login_view.dart';
 import 'package:el_karma_ph/features/reset_email_sent_view/presentation/view/reset_email_sent_view.dart';
 import 'package:el_karma_ph/features/reset_pass_view/presentation/view/reset_pass_view.dart';
@@ -8,17 +9,18 @@ import 'package:el_karma_ph/features/splash_view/presentation/views/splash_view.
 import 'package:go_router/go_router.dart';
 
 abstract class AppRouter {
-  static const kHomeView = '/homeView';
+  static const kDashboardView = '/dashboardView';
   static const kLoginView = '/loginView';
   static const kResetPassView = '/resetPassView';
   static const kResetEmailSentView = '/resetEmailSentView';
+  static const kInactiveAccountView = '/inactiveAccountView';
 
   static final router = GoRouter(
     routes: <RouteBase>[
       GoRoute(path: '/', builder: (context, state) => const SplashView()),
       GoRoute(
-        path: kHomeView,
-        name: kHomeView,
+        path: kDashboardView,
+        name: kDashboardView,
         builder: (context, state) => const HomeView(),
       ),
       GoRoute(
@@ -36,6 +38,11 @@ abstract class AppRouter {
         name: kResetEmailSentView,
         builder: (context, state) =>
             ResetEmailSentView(email: state.extra as String? ?? ''),
+      ),
+      GoRoute(
+        path: kInactiveAccountView,
+        name: kInactiveAccountView,
+        builder: (context, state) => InactiveAccountView(),
       ),
     ],
   );
