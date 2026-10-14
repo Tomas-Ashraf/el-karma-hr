@@ -117,8 +117,8 @@ class _LoginViewState extends State<LoginViewBody> {
                     ),
                     SizedBox(height: screenSize.height * 0.10),
                     LoginButton(
-                      email: _emailController.text,
-                      password: _passwordController.text,
+                      emailController: _emailController,
+                      passwordController: _passwordController,
                     ),
                     SizedBox(height: screenSize.height * 0.06),
                   ],

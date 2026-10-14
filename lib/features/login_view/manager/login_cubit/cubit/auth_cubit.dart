@@ -22,7 +22,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoadingState());
     try {
       await firebaseInstance.signInWithEmailAndPassword(
-        email: trimmedEmail,
+        email: email.trim(),
         password: password,
       );
       await getUserInfo(email: trimmedEmail);
@@ -40,12 +40,12 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<bool> checkAccountStatus() async {
+  Future<bool> checkAccountStatus({required String? email}) async {
     emit(AuthLoadingState());
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final email = prefs.getString('userEmail');
+      // final prefs = await SharedPreferences.getInstance();
+      // final email = prefs.getString('userEmail');
 
       if (email == null || email.isEmpty) {
         emit(AuthFailureState(errorMessage: 'User email was not found.'));
@@ -113,22 +113,32 @@ class AuthCubit extends Cubit<AuthState> {
         .where('email', isEqualTo: email)
         .get();
     userModel = UserModel.fromDocument(snapshot.docs.first.data());
-    log('UserName:${userModel.name}');
-    log('UserEmail:${userModel.email}');
-    log('UserJob:${userModel.job}');
-    log('UserStatus:${userModel.status}');
-    log('UserType:${userModel.userType}');
+    // log('UserName:${userModel.name}');
+    // log('UserEmail:${userModel.email}');
+    // log('UserJob:${userModel.job}');
+    // log('UserStatus:${userModel.status}');
+    // log('UserType:${userModel.userType}');
     await prefs.setString('userName', userModel.name);
     await prefs.setString('userEmail', userModel.email);
     await prefs.setString('userJob', userModel.job);
     await prefs.setString('userStatus', userModel.status);
     await prefs.setString('userType', userModel.userType);
     await prefs.setBool('loggedIn', true);
+    log('UserName:${prefs.getString('userName')}');
+    log('UserEmail:${prefs.getString('userEmail')}');
+    log('UserJob:${prefs.getString('userJob')}');
+    log('UserStatus:${prefs.getString('userStatus')}');
+    log('UserType:${prefs.getString('userType')}');
   }
 
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('loggedIn', false);
+    await prefs.setString('userName', '');
+    await prefs.setString('userEmail', '');
+    await prefs.setString('userJob', '');
+    await prefs.setString('userStatus', '');
+    await prefs.setString('userType', '');
     bool? isLogged = prefs.getBool('loggedIn');
     log('IsLogged: $isLogged');
     await FirebaseAuth.instance.signOut();

@@ -8,9 +8,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginButton extends StatelessWidget {
-  const LoginButton({super.key, required this.email, required this.password});
-  final String email;
-  final String password;
+  const LoginButton({
+    super.key,
+    required this.emailController,
+    required this.passwordController,
+  });
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,9 @@ class LoginButton extends StatelessWidget {
             final authCubit = context.read<AuthCubit>();
             final router = GoRouter.of(context);
 
-            final isActive = await authCubit.checkAccountStatus();
+            final isActive = await authCubit.checkAccountStatus(
+              email: emailController.text.trim(),
+            );
 
             if (!context.mounted) return;
 
@@ -37,22 +43,10 @@ class LoginButton extends StatelessWidget {
               return;
             }
 
-            await authCubit.loginUser(email: email, password: password);
-            // if (isLoading) return;
-            // final router = GoRouter.of(context);
-            // final authCubit = BlocProvider.of<AuthCubit>(context);
-            // final prefs = await SharedPreferences.getInstance();
-            // final db = FirebaseFirestore.instance;
-            // final snapshot = await db
-            //     .collection(kUsersCollection)
-            //     .where('email', isEqualTo: prefs.getString('userEmail'))
-            //     .get();
-            // final status = snapshot.docs[0]['status'];
-            // if (status == 'inactive') {
-            //   router.push(AppRouter.kInactiveAccountView);
-            // } else {
-            //   authCubit.loginUser(email: email, password: password);
-            // }
+            await authCubit.loginUser(
+              email: emailController.text.trim(),
+              password: passwordController.text.trim(),
+            );
           },
           backgroundColor: kPrimaryBlue,
           foregroundColor: Colors.white,
