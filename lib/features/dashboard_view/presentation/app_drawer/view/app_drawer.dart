@@ -55,7 +55,7 @@ class _AppDrawerState extends State<AppDrawer> {
       DrawerEntry(
         icon: Icons.settings_outlined,
         label: 'Settings',
-        onTap: () async {},
+        onTap: () => GoRouter.of(context).pushNamed(AppRouter.kSettingsView),
       ),
       DrawerEntry(
         icon: Icons.logout_rounded,
