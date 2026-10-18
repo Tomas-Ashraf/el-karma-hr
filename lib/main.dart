@@ -8,7 +8,6 @@ import 'package:el_karma_ph/features/no_internet_view/presentation/view_model/co
 import 'package:el_karma_ph/features/reset_pass_view/manager/cubit/reset_pass_cubit.dart';
 import 'package:el_karma_ph/features/settings_view/manager/cubit/app_settings_cubit.dart';
 import 'package:el_karma_ph/features/settings_view/manager/cubit/app_settings_state.dart';
-import 'package:el_karma_ph/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +17,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
   final appSettingsCubit = await AppSettingsCubit.load();
   runApp(MyApp(appSettingsCubit: appSettingsCubit));
 }
@@ -65,7 +64,8 @@ class MyApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             builder: (context, child) => ConnectionWrapper(child: child),
-            routerConfig: AppRouter.router, // اللي كان ناقص
+            routerConfig: AppRouter.router,
+            // اللي كان ناقص
           );
         },
       ),
