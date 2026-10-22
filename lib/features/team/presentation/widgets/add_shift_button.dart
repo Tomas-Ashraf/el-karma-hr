@@ -2,7 +2,7 @@ import 'package:el_karma_ph/core/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AddShiftButton extends StatelessWidget {
-  const AddShiftButton({required this.onTap});
+  const AddShiftButton({super.key, required this.onTap});
   final VoidCallback onTap;
 
   @override

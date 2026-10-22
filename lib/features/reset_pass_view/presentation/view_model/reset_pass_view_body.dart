@@ -1,3 +1,4 @@
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/input_field_widget.dart';
@@ -38,15 +39,15 @@ class _ForgotPasswordViewBodyState extends State<ForgotPasswordViewBody> {
             extra: _emailController.text.trim(),
           );
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Password reset email sent successfully.'),
+            SnackBar(
+              content: Text(context.tr('forgot.success')),
               backgroundColor: Colors.green,
             ),
           );
         } else if (state is ResetPassFailureState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.errorMessage),
+              content: Text(context.tr(state.errorMessage)),
               backgroundColor: Colors.red,
             ),
           );
@@ -64,19 +65,23 @@ class _ForgotPasswordViewBodyState extends State<ForgotPasswordViewBody> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text.rich(
+                  Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(text: 'Forgot password '),
+                        TextSpan(
+                          text: context.tr('forgot.title'),
+                          style: Styles.textStyle26B.copyWith(
+                            color: Colors.black,
+                          ),
+                        ),
                         TextSpan(text: '🤔', style: TextStyle(fontSize: 24)),
                       ],
                     ),
                     style: Styles.textStyle26B,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Enter the email address linked to your account and we'll "
-                    'send you a link to reset your password.',
+                  Text(
+                    context.tr('forgot.subtitle'),
                     style: Styles.textStyle14,
                   ),
                   SizedBox(height: screenSize.height * 0.03),
@@ -85,7 +90,7 @@ class _ForgotPasswordViewBodyState extends State<ForgotPasswordViewBody> {
                   ),
                   SizedBox(height: screenSize.height * 0.04),
                   InputFieldWidget(
-                    label: 'Email Address',
+                    label: context.tr('login.email_label'),
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.done,
@@ -93,6 +98,7 @@ class _ForgotPasswordViewBodyState extends State<ForgotPasswordViewBody> {
                         .read<ResetPassCubit>()
                         .sendPasswordResetEmail(email: _emailController.text),
                     onChanged: (String p1) {},
+                    textStyle: TextStyle(color: Colors.black),
                   ),
                   SizedBox(height: screenSize.height * 0.10),
                   ResetPassButton(emailController: _emailController),

@@ -10,10 +10,7 @@ class SectionTitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: Styles.textStyle16.copyWith(
-        fontWeight: FontWeight.bold,
-        color: Color(0xFF1A1A1A),
-      ),
+      style: Styles.textStyle16.copyWith(fontWeight: FontWeight.bold),
     );
   }
 }

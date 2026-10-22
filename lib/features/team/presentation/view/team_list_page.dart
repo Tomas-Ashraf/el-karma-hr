@@ -103,7 +103,7 @@ class _TeamListPageState extends State<TeamListPage> {
                       )
                     : ListView.separated(
                         itemCount: employees.length,
-                        separatorBuilder: (_, __) =>
+                        separatorBuilder: (_, _) =>
                             const Divider(height: 1, color: AppColors.line),
                         itemBuilder: (_, i) => EmployeeTile(
                           employee: employees[i],

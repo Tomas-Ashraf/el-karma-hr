@@ -22,11 +22,9 @@ abstract class Styles {
   static const textStyle22B = TextStyle(
     fontSize: 22,
     fontWeight: FontWeight.bold,
-    color: Color(0xFF1A1A1A),
   );
   static const textStyle26B = TextStyle(
     fontSize: 26,
     fontWeight: FontWeight.bold,
-    color: Color(0xFF1A1A1A),
   );
 }

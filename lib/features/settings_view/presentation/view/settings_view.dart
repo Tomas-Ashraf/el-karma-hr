@@ -1,3 +1,4 @@
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/settings_view/manager/cubit/attendance_settings_cubit.dart';
@@ -22,7 +23,7 @@ class SettingsView extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
           elevation: 0,
           centerTitle: false,
-          title: const Text('Settings', style: Styles.textStyle20),
+          title: Text(context.tr('settings.title'), style: Styles.textStyle20),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
             onPressed: () {

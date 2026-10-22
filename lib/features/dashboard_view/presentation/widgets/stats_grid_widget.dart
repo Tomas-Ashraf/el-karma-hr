@@ -1,3 +1,4 @@
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/models/dashboard_models.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/widgets/stat_card_widget.dart';
 import 'package:flutter/material.dart';
@@ -20,28 +21,28 @@ class StatsGrid extends StatelessWidget {
         final cards = <Widget>[
           StatCardWidget(
             icon: Icons.login_rounded,
-            label: 'Check In',
+            label: context.tr('dashboard.check_in'),
             value: '${stats.checkedIn}',
-            subtitle: 'Employees',
+            subtitle: context.tr('dashboard.employees_unit'),
           ),
           StatCardWidget(
             icon: Icons.logout_rounded,
-            label: 'Check Out',
+            label: context.tr('dashboard.check_out'),
             value: '${stats.checkedOut}',
-            subtitle: 'Employees',
+            subtitle: context.tr('dashboard.employees_unit'),
           ),
           StatCardWidget(
             icon: Icons.schedule_rounded,
-            label: 'Late',
+            label: context.tr('dashboard.late'),
             value: '${stats.late}',
-            subtitle: 'Employees',
+            subtitle: context.tr('dashboard.employees_unit'),
             accentColor: const Color(0xFFEF4444),
           ),
           StatCardWidget(
             icon: Icons.task_alt_rounded,
-            label: 'On Time',
+            label: context.tr('dashboard.on_time'),
             value: '${stats.onTime}',
-            subtitle: 'Employees',
+            subtitle: context.tr('dashboard.employees_unit'),
           ),
         ];
 

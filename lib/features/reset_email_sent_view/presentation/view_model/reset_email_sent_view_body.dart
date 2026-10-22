@@ -1,4 +1,7 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:el_karma_ph/constants.dart';
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
@@ -18,7 +21,9 @@ class ResetEmailSentViewBody extends StatelessWidget {
     final illustrationSize = (screenSize.height * 0.28)
         .clamp(140.0, 260.0)
         .toDouble();
-    final emailText = email.isEmpty ? 'your email' : email;
+    final emailText = email.isEmpty
+        ? context.tr('reset_sent.your_email')
+        : email;
 
     return SafeArea(
       child: LayoutBuilder(
@@ -39,10 +44,15 @@ class ResetEmailSentViewBody extends StatelessWidget {
                       children: [
                         EmailSentIllustration(size: illustrationSize),
                         SizedBox(height: screenSize.height * 0.04),
-                        const Text.rich(
+                        Text.rich(
                           TextSpan(
                             children: [
-                              TextSpan(text: 'Check your email '),
+                              TextSpan(
+                                text: context.tr('reset_sent.title'),
+                                style: Styles.textStyle26B.copyWith(
+                                  color: Colors.black,
+                                ),
+                              ),
                               TextSpan(
                                 text: '📬',
                                 style: TextStyle(fontSize: 24),
@@ -57,7 +67,7 @@ class ResetEmailSentViewBody extends StatelessWidget {
                           TextSpan(
                             style: Styles.textStyle14,
                             children: [
-                              const TextSpan(text: 'If '),
+                              TextSpan(text: context.tr('reset_sent.if')),
                               TextSpan(
                                 text: emailText,
                                 style: const TextStyle(
@@ -65,19 +75,14 @@ class ResetEmailSentViewBody extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const TextSpan(
-                                text:
-                                    ' is registered, we sent a password '
-                                    'reset link to it. Open the link, set a '
-                                    'new password, then come back and log in.',
-                              ),
+                              TextSpan(text: context.tr('reset_sent.message')),
                             ],
                           ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          "Didn't get it? Check your spam folder.",
+                        Text(
+                          context.tr('reset_sent.spam_hint'),
                           style: Styles.textStyle14,
                           textAlign: TextAlign.center,
                         ),
@@ -90,8 +95,8 @@ class ResetEmailSentViewBody extends StatelessWidget {
                                   .goNamed(AppRouter.kLoginView),
                           backgroundColor: kPrimaryBlue,
                           foregroundColor: Colors.white,
-                          text: const Text(
-                            'Back to Login',
+                          text: Text(
+                            context.tr('common.back_to_login'),
                             style: Styles.textStyle16,
                           ),
                         ),
