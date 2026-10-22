@@ -14,13 +14,10 @@ class AttendanceSettingsState {
 
   final AttendanceSettingsStatus status;
 
-  /// آخر إعدادات اتحمّلت أو اتحفظت. null لو التحميل الأول لسه/فشل.
   final AttendanceSettings? settings;
 
-  /// رسالة الخطأ (مع failure بس).
   final String? message;
 
-  /// ملحوظة: message بتتمسح لو ما اتبعتتش.
   AttendanceSettingsState copyWith({
     AttendanceSettingsStatus? status,
     AttendanceSettings? settings,

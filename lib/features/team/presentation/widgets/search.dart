@@ -3,7 +3,7 @@ import 'package:el_karma_ph/core/widgets/New%20folder/app_decorations.dart';
 import 'package:flutter/material.dart';
 
 class SearchField extends StatelessWidget {
-  const SearchField({required this.onChanged});
+  const SearchField({super.key, required this.onChanged});
 
   final ValueChanged<String> onChanged;
 

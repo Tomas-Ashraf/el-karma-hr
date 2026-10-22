@@ -32,11 +32,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthFailureState(errorMessage: _mapError(e.code)));
     } catch (e) {
       log('Unexpected login error: $e');
-      emit(
-        AuthFailureState(
-          errorMessage: 'Something went wrong. Please try again.',
-        ),
-      );
+      emit(AuthFailureState(errorMessage: 'error.generic'));
     }
   }
 
@@ -44,11 +40,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoadingState());
 
     try {
-      // final prefs = await SharedPreferences.getInstance();
-      // final email = prefs.getString('userEmail');
-
       if (email == null || email.isEmpty) {
-        emit(AuthFailureState(errorMessage: 'User email was not found.'));
+        emit(AuthFailureState(errorMessage: 'error.user_not_found'));
         return false;
       }
 
@@ -59,7 +52,7 @@ class AuthCubit extends Cubit<AuthState> {
           .get();
 
       if (snapshot.docs.isEmpty) {
-        emit(AuthFailureState(errorMessage: 'User data was not found.'));
+        emit(AuthFailureState(errorMessage: 'error.user_not_found'));
         return false;
       }
 
@@ -74,11 +67,7 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       log('Error checking account status: $e');
 
-      emit(
-        AuthFailureState(
-          errorMessage: 'Something went wrong. Please try again.',
-        ),
-      );
+      emit(AuthFailureState(errorMessage: 'error.generic'));
 
       return false;
     }
@@ -89,17 +78,17 @@ class AuthCubit extends Cubit<AuthState> {
       case 'invalid-credential':
       case 'user-not-found':
       case 'wrong-password':
-        return 'Incorrect email or password.';
+        return 'error.invalid_credentials';
       case 'invalid-email':
-        return 'The email address is not valid.';
+        return 'error.invalid_email';
       case 'user-disabled':
-        return 'This account has been disabled.';
+        return 'error.user_disabled';
       case 'too-many-requests':
-        return 'Too many attempts. Please try again later.';
+        return 'error.too_many_requests';
       case 'network-request-failed':
-        return 'No internet connection. Please check your network.';
+        return 'error.no_internet';
       default:
-        return 'Login failed. Please try again.';
+        return 'error.login_failed';
     }
   }
 
@@ -113,11 +102,6 @@ class AuthCubit extends Cubit<AuthState> {
         .where('email', isEqualTo: email)
         .get();
     userModel = UserModel.fromDocument(snapshot.docs.first.data());
-    // log('UserName:${userModel.name}');
-    // log('UserEmail:${userModel.email}');
-    // log('UserJob:${userModel.job}');
-    // log('UserStatus:${userModel.status}');
-    // log('UserType:${userModel.userType}');
     await prefs.setString('userName', userModel.name);
     await prefs.setString('userEmail', userModel.email);
     await prefs.setString('userJob', userModel.job);

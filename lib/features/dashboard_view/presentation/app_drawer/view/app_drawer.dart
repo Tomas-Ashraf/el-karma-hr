@@ -1,6 +1,6 @@
-// ignore_for_file: unused_element
-
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
+import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/dashboard_view/manager/cubit/dashboard_cubit.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/app_drawer/models/drawer_entry_model.dart';
@@ -19,63 +19,63 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
+  late final Future<UserModel> _userFuture = context
+      .read<DashboardCubit>()
+      .getUserData();
+
   @override
   Widget build(BuildContext context) {
-    late final Future<UserModel> userFuture = context
-        .read<DashboardCubit>()
-        .getUserData();
-
     final entries = <DrawerEntry>[
       DrawerEntry(
         icon: Icons.people_alt_outlined,
-        label: 'Employees',
-        onTap: () {},
+        label: context.tr('drawer.employees'),
+        onTap: () => GoRouter.of(context).pushNamed(AppRouter.kAddTeam),
       ),
       DrawerEntry(
         icon: Icons.fingerprint_rounded,
-        label: 'Attendance',
+        label: context.tr('drawer.attendance'),
         onTap: () {},
       ),
       DrawerEntry(
         icon: Icons.edit_calendar_outlined,
-        label: 'Attendance Records',
+        label: context.tr('drawer.attendance_records'),
         onTap: () {},
       ),
       DrawerEntry(
         icon: Icons.edit_calendar_outlined,
-        label: 'Notes Records',
+        label: context.tr('drawer.notes_records'),
         onTap: () {},
       ),
       DrawerEntry(
         icon: Icons.payments_outlined,
-        label: 'Count Salary',
+        label: context.tr('drawer.count_salary'),
         onTap: () {},
       ),
-
       DrawerEntry(
         icon: Icons.settings_outlined,
-        label: 'Settings',
+        label: context.tr('drawer.settings'),
         onTap: () => GoRouter.of(context).pushNamed(AppRouter.kSettingsView),
       ),
       DrawerEntry(
         icon: Icons.logout_rounded,
-        label: 'Logout',
+        label: context.tr('drawer.logout'),
         onTap: () async {
           final router = GoRouter.of(context);
           final authCubit = context.read<AuthCubit>();
 
           await authCubit.logout();
-          router.goNamed(AppRouter.kLoginView); // بيمسح الـ stack كله
+          router.goNamed(AppRouter.kLoginView);
         },
       ),
     ];
 
-    return FutureBuilder(
-      future: userFuture,
-      builder: (context, asyncSnapshot) {
-        UserModel? userModel = asyncSnapshot.data;
+    return FutureBuilder<UserModel>(
+      future: _userFuture,
+      builder: (context, snapshot) {
+        final user = snapshot.data;
+
         return Drawer(
-          backgroundColor: Colors.white,
+          backgroundColor: context.colors.surface,
           child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,21 +86,20 @@ class _AppDrawerState extends State<AppDrawer> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userModel!.name,
+                        user?.name ?? '',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A1A1A),
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(userModel.job, style: Styles.textStyle14),
+                      Text(user?.job ?? '', style: Styles.textStyle14),
                     ],
                   ),
                 ),
-                const Divider(height: 1, color: Color(0xFFE5E7EB)),
+                Divider(height: 1, color: context.colors.outlineVariant),
                 const SizedBox(height: 8),
                 for (final entry in entries) DrawerTile(entry: entry),
               ],

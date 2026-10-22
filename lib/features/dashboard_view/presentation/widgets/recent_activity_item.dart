@@ -11,19 +11,23 @@ class RecentActivityItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final isCheckIn = activity.type == ActivityType.checkIn;
     final status = activity.statusLabel;
-
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0D000000),
-            blurRadius: 12,
-            offset: Offset(0, 4),
-          ),
-        ],
+        border: isDark ? Border.all(color: Colors.transparent) : null,
+        boxShadow: isDark
+            ? null
+            : const [
+                BoxShadow(
+                  color: Color(0x0D000000),
+                  blurRadius: 12,
+                  offset: Offset(0, 4),
+                ),
+              ],
       ),
       child: Row(
         children: [
@@ -31,7 +35,7 @@ class RecentActivityItem extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+              color: kPrimaryBlue.withAlpha(31),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
@@ -52,7 +56,6 @@ class RecentActivityItem extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1A1A),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -72,7 +75,6 @@ class RecentActivityItem extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF1A1A1A),
                 ),
               ),
               if (status != null) ...[

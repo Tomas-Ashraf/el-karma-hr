@@ -17,7 +17,7 @@ abstract class AppRouter {
   static const kResetEmailSentView = '/resetEmailSentView';
   static const kInactiveAccountView = '/inactiveAccountView';
   static const kSettingsView = '/settingsView';
-  static const addTeam = '/addTeam';
+  static const kAddTeam = '/addTeam';
 
   static final router = GoRouter(
     routes: <RouteBase>[
@@ -54,8 +54,8 @@ abstract class AppRouter {
         builder: (context, state) => const SettingsView(),
       ),
       GoRoute(
-        path: addTeam,
-        name: addTeam,
+        path: kAddTeam,
+        name: kAddTeam,
         builder: (context, state) => const TeamMembers(),
       ),
     ],

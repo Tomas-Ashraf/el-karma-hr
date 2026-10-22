@@ -18,44 +18,23 @@ class ResetPassCubit extends Cubit<ResetPassState> {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found':
-          emit(ResetPassFailureState(errorMessage: 'User not found.'));
+          emit(ResetPassFailureState(errorMessage: 'error.user_not_found'));
           return null;
         case 'invalid-email':
-          emit(
-            ResetPassFailureState(
-              errorMessage: 'The email address is not valid.',
-            ),
-          );
+          emit(ResetPassFailureState(errorMessage: 'error.invalid_email'));
           return null;
         case 'too-many-requests':
-          emit(
-            ResetPassFailureState(
-              errorMessage: 'Too many attempts. Please try again later.',
-            ),
-          );
+          emit(ResetPassFailureState(errorMessage: 'error.too_many_requests'));
           return null;
         case 'network-request-failed':
-          emit(
-            ResetPassFailureState(
-              errorMessage:
-                  'No internet connection. Please check your network.',
-            ),
-          );
+          emit(ResetPassFailureState(errorMessage: 'error.no_internet'));
           return null;
         default:
-          emit(
-            ResetPassFailureState(
-              errorMessage: 'Something went wrong. Please try again.',
-            ),
-          );
+          emit(ResetPassFailureState(errorMessage: 'error.generic'));
           return null;
       }
     } catch (_) {
-      emit(
-        ResetPassFailureState(
-          errorMessage: 'Something went wrong. Please try again.',
-        ),
-      );
+      emit(ResetPassFailureState(errorMessage: 'error.generic'));
       return null;
     }
   }

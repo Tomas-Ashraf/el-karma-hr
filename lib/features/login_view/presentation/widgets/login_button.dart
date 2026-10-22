@@ -1,6 +1,5 @@
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
-import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
 import 'package:el_karma_ph/features/login_view/manager/login_cubit/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +11,11 @@ class LoginButton extends StatelessWidget {
     super.key,
     required this.emailController,
     required this.passwordController,
+    required this.lable,
   });
   final TextEditingController emailController;
   final TextEditingController passwordController;
+  final Text lable;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +60,7 @@ class LoginButton extends StatelessWidget {
                     color: Colors.white,
                   ),
                 )
-              : const Text('Login', style: Styles.textStyle16),
+              : lable,
         );
       },
     );

@@ -17,18 +17,14 @@ class DrawerTile extends StatelessWidget {
           width: 38,
           height: 38,
           decoration: BoxDecoration(
-            color: const Color(0xFFEFF6FF),
+            color: kPrimaryBlue.withAlpha(31),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(entry.icon, size: 20, color: kPrimaryBlue),
         ),
         title: Text(
           entry.label,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF1A1A1A),
-          ),
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
         ),
         onTap: () {
           Navigator.of(context).pop();

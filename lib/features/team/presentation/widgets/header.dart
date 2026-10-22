@@ -4,7 +4,7 @@ import 'package:el_karma_ph/core/widgets/New%20folder/user_avatar.dart';
 import 'package:flutter/material.dart';
 
 class Header extends StatelessWidget {
-  const Header({required this.employee});
+  const Header({super.key, required this.employee});
   final Employee employee;
 
   @override
