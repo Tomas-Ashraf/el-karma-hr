@@ -2,9 +2,9 @@ import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
-import 'package:el_karma_ph/features/team_members_view/presentation/widgets/employee_item_widget.dart';
-import 'package:el_karma_ph/features/team_members_view/presentation/widgets/employee_tile_widget.dart';
-import 'package:el_karma_ph/features/team_members_view/presentation/widgets/search_field_widget.dart';
+import 'package:el_karma_ph/features/employees_view/presentation/widgets/employee_item_widget.dart';
+import 'package:el_karma_ph/features/employees_view/presentation/widgets/employee_tile_widget.dart';
+import 'package:el_karma_ph/features/employees_view/presentation/widgets/search_field_widget.dart';
 import 'package:flutter/material.dart';
 
 class EmployeesListBody extends StatefulWidget {
