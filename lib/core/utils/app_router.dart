@@ -7,7 +7,7 @@ import 'package:el_karma_ph/features/reset_email_sent_view/presentation/view/res
 import 'package:el_karma_ph/features/reset_pass_view/presentation/view/reset_pass_view.dart';
 import 'package:el_karma_ph/features/settings_view/presentation/view/settings_view.dart';
 import 'package:el_karma_ph/features/splash_view/presentation/views/splash_view.dart';
-import 'package:el_karma_ph/features/team/presentation/team.dart';
+import 'package:el_karma_ph/features/team_members_view/presentation/view/employees_list_view.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class AppRouter {
@@ -17,7 +17,7 @@ abstract class AppRouter {
   static const kResetEmailSentView = '/resetEmailSentView';
   static const kInactiveAccountView = '/inactiveAccountView';
   static const kSettingsView = '/settingsView';
-  static const kAddTeam = '/addTeam';
+  static const kEmployeeListView = '/employeeListView';
 
   static final router = GoRouter(
     routes: <RouteBase>[
@@ -54,9 +54,9 @@ abstract class AppRouter {
         builder: (context, state) => const SettingsView(),
       ),
       GoRoute(
-        path: kAddTeam,
-        name: kAddTeam,
-        builder: (context, state) => const TeamMembers(),
+        path: kEmployeeListView,
+        name: kEmployeeListView,
+        builder: (context, state) => const EmployeesListView(),
       ),
     ],
   );

@@ -7,6 +7,7 @@
     "common.required": "Required",
     "common.min": "min",
     "common.egp": "EGP",
+    "common.delete": "Delete",
     "login.welcome_back": "Welcome Back",
     "login.to": "to",
     "login.subtitle": "Hello there, login to continue",
@@ -80,5 +81,10 @@
     "settings.save_failed": "Could not save settings. Please try again.",
     "settings.invalid_number": "Enter a valid number",
     "settings.max_minutes": "Max is 1440 minutes",
-    "settings.invalid_amount": "Enter a valid amount"
+    "settings.invalid_amount": "Enter a valid amount",
+    "employees.title": "Employees",
+    "employees.search_hint": "Search",
+    "employees.count": "Number of Employees",
+    "employees.add": "Add Employee",
+    "employees.empty": "No Employees"
 }

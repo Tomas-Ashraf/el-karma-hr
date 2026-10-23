@@ -1,5 +1,5 @@
 import 'package:el_karma_ph/core/utils/employee/employee.dart';
-import 'package:el_karma_ph/features/team/presentation/view_model/spam_data/names.dart';
+import 'package:el_karma_ph/features/team_members_view/presentation/view_model/spam_data/names.dart';
 
 final List<Employee> employees = List.generate(5, (i) => fakeEmployee(i + 1));
 int lastId = 5;

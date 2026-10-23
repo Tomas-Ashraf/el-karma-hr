@@ -29,7 +29,8 @@ class _AppDrawerState extends State<AppDrawer> {
       DrawerEntry(
         icon: Icons.people_alt_outlined,
         label: context.tr('drawer.employees'),
-        onTap: () => GoRouter.of(context).pushNamed(AppRouter.kAddTeam),
+        onTap: () =>
+            GoRouter.of(context).pushNamed(AppRouter.kEmployeeListView),
       ),
       DrawerEntry(
         icon: Icons.fingerprint_rounded,
