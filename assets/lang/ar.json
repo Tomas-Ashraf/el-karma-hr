@@ -7,6 +7,7 @@
     "common.required": "هذا الحقل مطلوب",
     "common.min": "دقيقة",
     "common.egp": "ج.م",
+    "common.delete": "حذف",
     "login.welcome_back": "مرحبًا بعودتك",
     "login.to": "في",
     "login.subtitle": "أهلًا بك، سجّل الدخول للمتابعة",
@@ -80,5 +81,10 @@
     "settings.save_failed": "تعذّر حفظ الإعدادات. حاول مرة أخرى.",
     "settings.invalid_number": "أدخل رقمًا صحيحًا",
     "settings.max_minutes": "الحد الأقصى 1440 دقيقة",
-    "settings.invalid_amount": "أدخل مبلغًا صحيحًا"
+    "settings.invalid_amount": "أدخل مبلغًا صحيحًا",
+    "employees.title": "الموظفين",
+    "employees.search_hint": "البحث",
+    "employees.count": "عدد الموظفين",
+    "employees.add": "أضافة موظف",
+    "employees.empty": "لا يوجد موظفين"
 }

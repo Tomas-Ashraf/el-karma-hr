@@ -2,8 +2,8 @@ import 'package:el_karma_ph/core/utils/employee/employee.dart';
 import 'package:el_karma_ph/core/utils/employee/employee_field.dart';
 import 'package:el_karma_ph/core/widgets/New%20folder/app_page_bar.dart';
 import 'package:el_karma_ph/core/widgets/New%20folder/app_snack_bar.dart';
-import 'package:el_karma_ph/features/team/presentation/widgets/add_shift_button.dart';
-import 'package:el_karma_ph/features/team/presentation/widgets/header.dart';
+import 'package:el_karma_ph/features/team_members_view/presentation/widgets/add_shift_button.dart';
+import 'package:el_karma_ph/features/team_members_view/presentation/widgets/header.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/editable_info_card.dart';

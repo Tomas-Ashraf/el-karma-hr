@@ -1,4 +1,3 @@
-import 'package:el_karma_ph/core/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SoftButton extends StatelessWidget {
@@ -7,20 +6,20 @@ class SoftButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.icon,
-    this.background = AppColors.blueSoft,
-    this.foreground = AppColors.blue,
+    // this.background = AppColors.blueSoft,
+    // this.foreground = AppColors.blue,
   });
 
   final String label;
   final VoidCallback onTap;
   final IconData? icon;
-  final Color background;
-  final Color foreground;
+  // final Color background;
+  // final Color foreground;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: background,
+      // color: background,
       borderRadius: BorderRadius.circular(10),
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
@@ -31,13 +30,13 @@ class SoftButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 14, color: foreground),
+                Icon(icon, size: 14, color: Colors.red),
                 const SizedBox(width: 5),
               ],
               Text(
                 label,
                 style: TextStyle(
-                  color: foreground,
+                  color: Colors.red,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),

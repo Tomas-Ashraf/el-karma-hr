@@ -1,6 +1,6 @@
 import 'package:el_karma_ph/core/utils/employee/employee.dart';
 import 'package:el_karma_ph/core/utils/employee/employee_field.dart';
-import 'package:el_karma_ph/features/team/presentation/view_model/spam_data/jobs.dart';
+import 'package:el_karma_ph/features/team_members_view/presentation/view_model/spam_data/jobs.dart';
 
 const names = [
   'Jane Hawkins',
