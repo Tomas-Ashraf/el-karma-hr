@@ -1,5 +1,6 @@
 // ignore_for_file: unused_field
 
+import 'package:el_karma_ph/features/add_employee_view/presentation/view/add_employee_view.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/view/dashboard_view.dart';
 import 'package:el_karma_ph/features/inactive_account_view/presentation/view/inactive_account_view.dart';
 import 'package:el_karma_ph/features/login_view/presentation/view/login_view.dart';
@@ -7,7 +8,7 @@ import 'package:el_karma_ph/features/reset_email_sent_view/presentation/view/res
 import 'package:el_karma_ph/features/reset_pass_view/presentation/view/reset_pass_view.dart';
 import 'package:el_karma_ph/features/settings_view/presentation/view/settings_view.dart';
 import 'package:el_karma_ph/features/splash_view/presentation/views/splash_view.dart';
-import 'package:el_karma_ph/features/team_members_view/presentation/view/employees_list_view.dart';
+import 'package:el_karma_ph/features/employees_view/presentation/view/employees_list_view.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class AppRouter {
@@ -18,6 +19,7 @@ abstract class AppRouter {
   static const kInactiveAccountView = '/inactiveAccountView';
   static const kSettingsView = '/settingsView';
   static const kEmployeeListView = '/employeeListView';
+  static const kAddEmployeeView = '/addEmployeeView';
 
   static final router = GoRouter(
     routes: <RouteBase>[
@@ -57,6 +59,11 @@ abstract class AppRouter {
         path: kEmployeeListView,
         name: kEmployeeListView,
         builder: (context, state) => const EmployeesListView(),
+      ),
+      GoRoute(
+        path: kAddEmployeeView,
+        name: kAddEmployeeView,
+        builder: (context, state) => const AddEmployeeView(),
       ),
     ],
   );
