@@ -1,11 +1,15 @@
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
+import 'package:el_karma_ph/core/utils/app_router.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
-import 'package:el_karma_ph/features/employees_view/presentation/widgets/employee_item_widget.dart';
+import 'package:el_karma_ph/features/employees_view/manager/cubit/employees_cubit.dart';
+import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:el_karma_ph/features/employees_view/presentation/widgets/employee_tile_widget.dart';
 import 'package:el_karma_ph/features/employees_view/presentation/widgets/search_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class EmployeesListBody extends StatefulWidget {
   const EmployeesListBody({super.key});
@@ -17,10 +21,10 @@ class EmployeesListBody extends StatefulWidget {
 class _EmployeesListBodyState extends State<EmployeesListBody> {
   String _query = '';
 
-  List<EmployeeItem> get _employees {
+  List<EmployeeModel> _filter(List<EmployeeModel> all) {
     final query = _query.trim().toLowerCase();
-    if (query.isEmpty) return sampleEmployees;
-    return sampleEmployees
+    if (query.isEmpty) return all;
+    return all
         .where(
           (e) =>
               e.name.toLowerCase().contains(query) ||
@@ -33,7 +37,6 @@ class _EmployeesListBodyState extends State<EmployeesListBody> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     const maxContentWidth = 700.0;
-    final employees = _employees;
 
     return SafeArea(
       child: Center(
@@ -52,29 +55,30 @@ class _EmployeesListBodyState extends State<EmployeesListBody> {
                   onChanged: (value) => setState(() => _query = value),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  '${context.tr('employees.count')}: 10',
-                  style: Styles.textStyle14,
-                ),
-                const SizedBox(height: 12),
                 Expanded(
-                  child: employees.isEmpty
-                      ? const _EmptyState()
-                      : ListView.separated(
-                          itemCount: employees.length,
-                          separatorBuilder: (_, _) =>
-                              const SizedBox(height: 12),
-                          itemBuilder: (context, index) => EmployeeTileWidget(
-                            employee: employees[index],
-                            onTap: () {},
-                          ),
-                        ),
+                  child: BlocBuilder<EmployeesCubit, EmployeesState>(
+                    builder: (context, state) {
+                      if (state is EmployeesSuccess) {
+                        return _buildList(context, _filter(state.employees));
+                      }
+                      if (state is EmployeesFailure) {
+                        return _ErrorState(
+                          message: context.tr(state.errorMessage),
+                          onRetry: () =>
+                              context.read<EmployeesCubit>().fetchEmployees(),
+                        );
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
                 ),
                 const SizedBox(height: 12),
                 ButtonWidget(
                   width: double.infinity,
                   height: 52,
-                  onPressed: () {},
+                  onPressed: () {
+                    GoRouter.of(context).pushNamed(AppRouter.kAddEmployeeView);
+                  },
                   backgroundColor: kPrimaryBlue,
                   foregroundColor: Colors.white,
                   text: Text(
@@ -88,6 +92,37 @@ class _EmployeesListBodyState extends State<EmployeesListBody> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<EmployeeModel> employees) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.tr('employees.count', args: {'count': '${employees.length}'}),
+          style: Styles.textStyle14,
+        ),
+        const SizedBox(height: 12),
+        Expanded(
+          child: employees.isEmpty
+              ? const _EmptyState()
+              : RefreshIndicator(
+                  onRefresh: () => context
+                      .read<EmployeesCubit>()
+                      .fetchEmployees(silent: true),
+                  child: ListView.separated(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: employees.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) => EmployeeTileWidget(
+                      employee: employees[index],
+                      onTap: () {},
+                    ),
+                  ),
+                ),
+        ),
+      ],
     );
   }
 }
@@ -116,6 +151,30 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(context.tr('employees.empty'), style: Styles.textStyle14),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message, style: Styles.textStyle14, textAlign: TextAlign.center),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: onRetry,
+            child: Text(context.tr('common.retry')),
+          ),
         ],
       ),
     );
