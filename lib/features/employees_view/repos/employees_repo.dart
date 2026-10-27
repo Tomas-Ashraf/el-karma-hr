@@ -48,4 +48,20 @@ class EmployeesRepo {
 
     await _users.add(employee.toMap());
   }
+
+  Future<void> updateEmployee(String id, Map<String, dynamic> data) async {
+    final newDeviceId = data['device_id'];
+    if (newDeviceId != null) {
+      final query = await _users
+          .where('device_id', isEqualTo: newDeviceId)
+          .limit(2)
+          .get();
+      if (query.docs.any((doc) => doc.id != id)) {
+        throw const DeviceIdExistsException();
+      }
+    }
+    await _users.doc(id).update(data);
+  }
+
+  Future<void> deleteEmployee(String id) => _users.doc(id).delete();
 }

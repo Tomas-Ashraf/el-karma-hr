@@ -34,4 +34,20 @@ class EmployeesCubit extends Cubit<EmployeesState> {
       emit(EmployeesFailure('employees.load_failed'));
     }
   }
+
+  Future<String?> deleteEmployee(String id) async {
+    try {
+      await _repo.deleteEmployee(id);
+      await fetchEmployees(silent: true);
+      return null;
+    } on FirebaseException catch (e) {
+      log('Failed to delete employee: ${e.code}');
+      return e.code == 'unavailable'
+          ? 'error.no_internet'
+          : 'employees.delete_failed';
+    } catch (e) {
+      log('Unexpected error deleting employee: $e');
+      return 'employees.delete_failed';
+    }
+  }
 }

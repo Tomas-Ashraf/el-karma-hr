@@ -1,7 +1,7 @@
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
-import 'package:el_karma_ph/core/widgets/New%20folder/soft_button.dart';
+import 'package:el_karma_ph/core/widgets/soft_button.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:flutter/material.dart';
 
@@ -10,10 +10,12 @@ class EmployeeTileWidget extends StatelessWidget {
     super.key,
     required this.employee,
     required this.onTap,
+    required this.onDelete,
   });
 
   final EmployeeModel employee;
   final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +78,7 @@ class EmployeeTileWidget extends StatelessWidget {
                 const SizedBox(width: 8),
                 SoftButton(
                   label: context.tr('common.delete'),
-                  onTap: onTap,
+                  onTap: onDelete,
                   icon: Icons.delete,
                 ),
                 const SizedBox(width: 4),

@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:el_karma_ph/features/add_employee_view/models/add_employee_model.dart';
 
 class EmployeeModel {
+  static const maxShifts = 3;
+
   final String id;
   final String name;
   final String email;
@@ -11,10 +14,9 @@ class EmployeeModel {
   final String paymentMethod;
   final String userStatus;
   final int deviceId;
-  final Timestamp shift1Start;
-  final Timestamp shift1End;
+  final List<ShiftRange> shifts;
 
-  EmployeeModel({
+  const EmployeeModel({
     required this.id,
     required this.name,
     required this.email,
@@ -25,8 +27,7 @@ class EmployeeModel {
     required this.paymentMethod,
     required this.userStatus,
     required this.deviceId,
-    required this.shift1Start,
-    required this.shift1End,
+    required this.shifts,
   });
 
   bool get isActive => userStatus.trim().toLowerCase() != 'inactive';
@@ -44,6 +45,15 @@ class EmployeeModel {
   }
 
   factory EmployeeModel.fromDocument(String id, Map<String, dynamic> data) {
+    final shifts = <ShiftRange>[];
+    for (var n = 1; n <= maxShifts; n++) {
+      final start = data['shift${n}_start'];
+      final end = data['shift${n}_end'];
+      if (start is Timestamp && end is Timestamp) {
+        shifts.add(ShiftRange(start: start.toDate(), end: end.toDate()));
+      }
+    }
+
     return EmployeeModel(
       id: id,
       name: (data['name'] as String?) ?? '',
@@ -55,9 +65,29 @@ class EmployeeModel {
       paymentMethod: (data['payment_method'] as String?) ?? '',
       userStatus: (data['status'] as String?) ?? '',
       deviceId: _toInt(data['device_id']),
-      shift1Start: _toTimestamp(data['shift1_start']),
-      shift1End: _toTimestamp(data['shift1_end']),
+      shifts: shifts,
     );
+  }
+
+  /// نفس شكل الـ document في Firestore (من غير created_at).
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{
+      'name': name,
+      'email': email,
+      'job': job,
+      'user_type': userType,
+      'phone_number': phoneNumber,
+      'salary': salary,
+      'payment_method': paymentMethod,
+      'status': userStatus,
+      'device_id': deviceId,
+    };
+    for (var i = 0; i < shifts.length; i++) {
+      final n = i + 1;
+      map['shift${n}_start'] = Timestamp.fromDate(shifts[i].start);
+      map['shift${n}_end'] = Timestamp.fromDate(shifts[i].end);
+    }
+    return map;
   }
 
   static double _toDouble(dynamic value) {
@@ -70,10 +100,5 @@ class EmployeeModel {
     if (value is num) return value.toInt();
     if (value is String) return int.tryParse(value) ?? 0;
     return 0;
-  }
-
-  static Timestamp _toTimestamp(dynamic value) {
-    if (value is Timestamp) return value;
-    return Timestamp.fromMillisecondsSinceEpoch(0);
   }
 }
