@@ -3,6 +3,7 @@ import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
+import 'package:el_karma_ph/core/utils/weekdays.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
 import 'package:el_karma_ph/features/add_employee_view/manager/cubit/add_employee_cubit.dart';
 import 'package:el_karma_ph/features/add_employee_view/models/add_employee_model.dart';
@@ -37,6 +38,7 @@ class _AddEmployeeViewBodyState extends State<AddEmployeeViewBody> {
   String? _paymentMethod;
   String _status = 'active';
   final List<ShiftEntry> _shifts = [ShiftEntry()];
+  String? _dayOff;
 
   @override
   void dispose() {
@@ -148,6 +150,7 @@ class _AddEmployeeViewBodyState extends State<AddEmployeeViewBody> {
         status: _status,
         deviceId: int.parse(_deviceIdController.text.trim()),
         shifts: _buildShifts(),
+        dayOff: _dayOff,
       ),
     );
   }
@@ -282,6 +285,15 @@ class _AddEmployeeViewBodyState extends State<AddEmployeeViewBody> {
                         'inactive': context.tr('employees.status_inactive'),
                       },
                       onChanged: (value) => _status = value ?? _status,
+                    ),
+                    gap,
+                    LabeledDropdown<String>(
+                      label: context.tr('add_employee.day_off'),
+                      hint: context.tr('add_employee.select'),
+                      initialValue: _dayOff,
+                      items: weekdayOptions(context),
+                      validator: _requiredSelection,
+                      onChanged: (value) => _dayOff = value,
                     ),
                     gap,
                     LabeledTextField(

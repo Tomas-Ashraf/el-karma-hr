@@ -136,5 +136,15 @@
     "employees.delete_failed": "Couldn't delete the employee. Please try again.",
     "dashboard.load_failed": "Couldn't load attendance data. Please try again.",
     "dashboard.empty": "No attendance records yet",
-    "dashboard.late_by": "Late by {min} min"
+    "dashboard.late_by": "Late by {min} min",
+    "add_employee.day_off": "Day off",
+    "day.saturday": "Saturday",
+    "day.sunday": "Sunday",
+    "day.monday": "Monday",
+    "day.tuesday": "Tuesday",
+    "day.wednesday": "Wednesday",
+    "day.thursday": "Thursday",
+    "day.friday": "Friday",
+    "employee_details.delete_shift_title": "Delete shift",
+    "employee_details.delete_shift_message": "Are you sure you want to delete {name}?"
 }

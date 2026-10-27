@@ -136,5 +136,15 @@
     "employees.delete_failed": "تعذّر حذف الموظف. حاول مرة أخرى.",
     "dashboard.load_failed": "تعذّر تحميل بيانات الحضور. حاول مرة أخرى.",
     "dashboard.empty": "لا توجد سجلات حضور بعد",
-    "dashboard.late_by": "متأخر {min} دقيقة"
+    "dashboard.late_by": "متأخر {min} دقيقة",
+    "add_employee.day_off": "يوم الإجازة",
+    "day.saturday": "السبت",
+    "day.sunday": "الأحد",
+    "day.monday": "الاثنين",
+    "day.tuesday": "الثلاثاء",
+    "day.wednesday": "الأربعاء",
+    "day.thursday": "الخميس",
+    "day.friday": "الجمعة",
+    "employee_details.delete_shift_title": "حذف الشيفت",
+    "employee_details.delete_shift_message": "هل أنت متأكد من حذف {name}؟"
 }
