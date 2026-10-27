@@ -5,8 +5,49 @@ import 'package:el_karma_ph/features/add_employee_view/models/add_employee_model
 import 'package:el_karma_ph/features/add_employee_view/presentation/widgets/form_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:el_karma_ph/core/utils/styles.dart';
 
-/// بيبني ShiftRange من وقتين، ولو النهاية قبل البداية بتعتبرها تاني يوم.
+Future<bool?> showConfirmDialog(
+  BuildContext context, {
+  required String title,
+  required String message,
+  required String confirmLabel,
+  bool destructive = false,
+}) {
+  return showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: ctx.colors.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      content: Text(message, style: Styles.textStyle14),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(false),
+          child: Text(ctx.tr('common.cancel')),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.of(ctx).pop(true),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: destructive
+                ? const Color(0xFFEF4444)
+                : kPrimaryBlue,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: Text(confirmLabel),
+        ),
+      ],
+    ),
+  );
+}
+
 ShiftRange buildShiftRange(TimeOfDay start, TimeOfDay end) {
   final now = DateTime.now();
   final startDate = DateTime(

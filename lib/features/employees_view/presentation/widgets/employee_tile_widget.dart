@@ -72,6 +72,19 @@ class EmployeeTileWidget extends StatelessWidget {
                           color: Colors.grey,
                         ),
                       ),
+                      if (employee.dayOff.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          '${context.tr('add_employee.day_off')}: '
+                          '${context.tr('day.${employee.dayOff}')}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),

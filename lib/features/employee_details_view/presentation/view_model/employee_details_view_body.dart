@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
+import 'package:el_karma_ph/core/utils/weekdays.dart';
 import 'package:el_karma_ph/features/employee_details_view/manager/cubit/employee_details_cubit.dart';
 import 'package:el_karma_ph/features/employee_details_view/manager/cubit/employee_details_state.dart';
 import 'package:el_karma_ph/features/employee_details_view/presentation/widgets/details_info_card_widget.dart';
@@ -142,6 +143,43 @@ class EmployeeDetailsViewBody extends StatelessWidget {
       'shift${number}_start': Timestamp.fromDate(result.start),
       'shift${number}_end': Timestamp.fromDate(result.end),
     });
+  }
+
+  Future<void> _addShift(BuildContext context) async {
+    final cubit = context.read<EmployeeDetailsCubit>();
+    final number = cubit.state.employee.shifts.length + 1;
+    final result = await showEditShiftDialog(
+      context,
+      title: context.tr('add_employee.shift_title', args: {'n': '$number'}),
+      number: number,
+    );
+    if (result == null) return;
+    cubit.saveShifts([...cubit.state.employee.shifts, result]);
+  }
+
+  Future<void> _deleteShift(BuildContext context, int index) async {
+    final cubit = context.read<EmployeeDetailsCubit>();
+    final confirmed = await showConfirmDialog(
+      context,
+      title: context.tr('employee_details.delete_shift_title'),
+      message: context.tr(
+        'employee_details.delete_shift_message',
+        args: {
+          'name': context.tr(
+            'add_employee.shift_title',
+            args: {'n': '${index + 1}'},
+          ),
+        },
+      ),
+      confirmLabel: context.tr('common.delete'),
+      destructive: true,
+    );
+    if (confirmed != true) return;
+
+    final shifts = [...cubit.state.employee.shifts];
+    if (index >= shifts.length) return;
+    shifts.removeAt(index);
+    cubit.saveShifts(shifts);
   }
 
   @override
@@ -292,6 +330,17 @@ class EmployeeDetailsViewBody extends StatelessWidget {
                           ),
                         ),
                         DetailsInfoCard(
+                          label: context.tr('add_employee.day_off'),
+                          value: weekdayOptions(context)[e.dayOff] ?? e.dayOff,
+                          onEdit: () => _editDropdown(
+                            context,
+                            label: context.tr('add_employee.day_off'),
+                            key: 'day_off',
+                            items: weekdayOptions(context),
+                            current: e.dayOff,
+                          ),
+                        ),
+                        DetailsInfoCard(
                           label: context.tr('add_employee.device_id'),
                           value: '${e.deviceId}',
                           onEdit: () => _editText(
@@ -316,6 +365,26 @@ class EmployeeDetailsViewBody extends StatelessWidget {
                                 ' - '
                                 '${TimeOfDay.fromDateTime(shift.end).format(context)}',
                             onEdit: () => _editShift(context, e, index),
+                            onDelete: index == 0
+                                ? null
+                                : () => _deleteShift(context, index),
+                          ),
+                        if (e.shifts.length < EmployeeModel.maxShifts)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: OutlinedButton.icon(
+                              onPressed: () => _addShift(context),
+                              icon: const Icon(Icons.add_rounded),
+                              label: Text(context.tr('add_employee.add_shift')),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: kPrimaryBlue,
+                                side: const BorderSide(color: kPrimaryBlue),
+                                minimumSize: const Size.fromHeight(48),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            ),
                           ),
                         const SizedBox(height: 8),
                       ],

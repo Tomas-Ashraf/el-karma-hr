@@ -19,6 +19,7 @@ class NewEmployee {
     required this.status,
     required this.deviceId,
     required this.shifts,
+    this.dayOff,
   });
 
   final String name;
@@ -31,6 +32,7 @@ class NewEmployee {
   final String status;
   final int deviceId;
   final List<ShiftRange> shifts;
+  final String? dayOff;
 
   String get normalizedEmail => email.trim().toLowerCase();
 
@@ -45,6 +47,7 @@ class NewEmployee {
       'payment_method': paymentMethod,
       'status': status,
       'device_id': deviceId,
+      if (dayOff != null) 'day_off': dayOff,
       'created_at': FieldValue.serverTimestamp(),
     };
 

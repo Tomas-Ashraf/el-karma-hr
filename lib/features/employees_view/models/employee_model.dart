@@ -14,6 +14,7 @@ class EmployeeModel {
   final String paymentMethod;
   final String userStatus;
   final int deviceId;
+  final String dayOff;
   final List<ShiftRange> shifts;
 
   const EmployeeModel({
@@ -28,6 +29,7 @@ class EmployeeModel {
     required this.userStatus,
     required this.deviceId,
     required this.shifts,
+    this.dayOff = '',
   });
 
   bool get isActive => userStatus.trim().toLowerCase() != 'inactive';
@@ -65,11 +67,28 @@ class EmployeeModel {
       paymentMethod: (data['payment_method'] as String?) ?? '',
       userStatus: (data['status'] as String?) ?? '',
       deviceId: _toInt(data['device_id']),
+      dayOff: (data['day_off'] as String?) ?? '',
       shifts: shifts,
     );
   }
 
-  /// نفس شكل الـ document في Firestore (من غير created_at).
+  EmployeeModel copyWith({List<ShiftRange>? shifts}) {
+    return EmployeeModel(
+      id: id,
+      name: name,
+      email: email,
+      job: job,
+      userType: userType,
+      phoneNumber: phoneNumber,
+      salary: salary,
+      paymentMethod: paymentMethod,
+      userStatus: userStatus,
+      deviceId: deviceId,
+      dayOff: dayOff,
+      shifts: shifts ?? this.shifts,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{
       'name': name,
@@ -81,6 +100,7 @@ class EmployeeModel {
       'payment_method': paymentMethod,
       'status': userStatus,
       'device_id': deviceId,
+      'day_off': dayOff,
     };
     for (var i = 0; i < shifts.length; i++) {
       final n = i + 1;

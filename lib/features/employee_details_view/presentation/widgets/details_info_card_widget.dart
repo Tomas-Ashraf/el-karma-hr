@@ -3,18 +3,19 @@ import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-/// كارت فيه عنوان + قيمة + زرار Edit (لو [onEdit] مش null).
 class DetailsInfoCard extends StatelessWidget {
   const DetailsInfoCard({
     super.key,
     required this.label,
     required this.value,
     this.onEdit,
+    this.onDelete,
   });
 
   final String label;
   final String value;
   final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +85,19 @@ class DetailsInfoCard extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
+              ),
+            ),
+          ],
+          if (onDelete != null) ...[
+            const SizedBox(width: 4),
+            IconButton(
+              onPressed: onDelete,
+              tooltip: context.tr('common.delete'),
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(
+                Icons.delete_outline_rounded,
+                size: 20,
+                color: Color(0xFFEF4444),
               ),
             ),
           ],
