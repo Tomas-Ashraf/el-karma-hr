@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
@@ -20,6 +22,16 @@ class EmployeesListBody extends StatefulWidget {
 
 class _EmployeesListBodyState extends State<EmployeesListBody> {
   String _query = '';
+  Future<void> _openDetails(
+    BuildContext context,
+    EmployeeModel employee,
+  ) async {
+    final cubit = context.read<EmployeesCubit>();
+    await GoRouter.of(context)
+        .pushNamed(AppRouter.kEmployeeDetailsView, extra: employee);
+    if (!mounted) return;
+    cubit.fetchEmployees(silent: true);
+  }
 
   List<EmployeeModel> _filter(List<EmployeeModel> all) {
     final query = _query.trim().toLowerCase();
@@ -31,6 +43,30 @@ class _EmployeesListBodyState extends State<EmployeesListBody> {
               e.job.toLowerCase().contains(query),
         )
         .toList();
+  }
+
+  Future<void> _confirmDelete(
+    BuildContext context,
+    EmployeeModel employee,
+  ) async {
+    final cubit = context.read<EmployeesCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => _DeleteDialog(name: employee.name),
+    );
+    if (confirmed != true) return;
+
+    final error = await cubit.deleteEmployee(employee.id);
+    if (!mounted) return;
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(context.tr(error ?? 'employees.deleted')),
+        backgroundColor: error == null ? Colors.green : Colors.red,
+      ),
+    );
   }
 
   @override
@@ -76,8 +112,14 @@ class _EmployeesListBodyState extends State<EmployeesListBody> {
                 ButtonWidget(
                   width: double.infinity,
                   height: 52,
-                  onPressed: () {
-                    GoRouter.of(context).pushNamed(AppRouter.kAddEmployeeView);
+                  onPressed: () async {
+                    final added = await GoRouter.of(context)
+                        .pushNamed<bool>(AppRouter.kAddEmployeeView);
+                    if (added == true && context.mounted) {
+                      context.read<EmployeesCubit>().fetchEmployees(
+                        silent: true,
+                      );
+                    }
                   },
                   backgroundColor: kPrimaryBlue,
                   foregroundColor: Colors.white,
@@ -115,10 +157,14 @@ class _EmployeesListBodyState extends State<EmployeesListBody> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     itemCount: employees.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) => EmployeeTileWidget(
-                      employee: employees[index],
-                      onTap: () {},
-                    ),
+                    itemBuilder: (context, index) {
+                      final employee = employees[index];
+                      return EmployeeTileWidget(
+                        employee: employee,
+                        onTap: () => _openDetails(context, employee),
+                        onDelete: () => _confirmDelete(context, employee),
+                      );
+                    },
                   ),
                 ),
         ),
@@ -177,6 +223,45 @@ class _ErrorState extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _DeleteDialog extends StatelessWidget {
+  const _DeleteDialog({required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text(
+        context.tr('employees.delete_title'),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      content: Text(
+        context.tr('employees.delete_message', args: {'name': name}),
+        style: Styles.textStyle14,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(context.tr('common.cancel')),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFEF4444),
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: Text(context.tr('common.delete')),
+        ),
+      ],
     );
   }
 }

@@ -2,6 +2,8 @@
 
 import 'package:el_karma_ph/features/add_employee_view/presentation/view/add_employee_view.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/view/dashboard_view.dart';
+import 'package:el_karma_ph/features/employee_details_view/presentation/view/employee_details_view.dart';
+import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:el_karma_ph/features/inactive_account_view/presentation/view/inactive_account_view.dart';
 import 'package:el_karma_ph/features/login_view/presentation/view/login_view.dart';
 import 'package:el_karma_ph/features/reset_email_sent_view/presentation/view/reset_email_sent_view.dart';
@@ -20,6 +22,7 @@ abstract class AppRouter {
   static const kSettingsView = '/settingsView';
   static const kEmployeeListView = '/employeeListView';
   static const kAddEmployeeView = '/addEmployeeView';
+  static const kEmployeeDetailsView = '/employeeDetailsView';
 
   static final router = GoRouter(
     routes: <RouteBase>[
@@ -64,6 +67,14 @@ abstract class AppRouter {
         path: kAddEmployeeView,
         name: kAddEmployeeView,
         builder: (context, state) => const AddEmployeeView(),
+      ),
+      GoRoute(
+        path: kEmployeeDetailsView,
+        name: kEmployeeDetailsView,
+        redirect: (context, state) =>
+            state.extra is EmployeeModel ? null : kEmployeeListView,
+        builder: (context, state) =>
+            EmployeeDetailsView(employee: state.extra as EmployeeModel),
       ),
     ],
   );
