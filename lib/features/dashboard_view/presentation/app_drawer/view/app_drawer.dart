@@ -35,7 +35,7 @@ class _AppDrawerState extends State<AppDrawer> {
       DrawerEntry(
         icon: Icons.fingerprint_rounded,
         label: context.tr('drawer.attendance'),
-        onTap: () {},
+        onTap: () => GoRouter.of(context).pushNamed(AppRouter.kAttendanceView),
       ),
       DrawerEntry(
         icon: Icons.edit_calendar_outlined,

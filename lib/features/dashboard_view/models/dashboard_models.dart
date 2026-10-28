@@ -16,6 +16,7 @@ class DashboardStats {
   final int onTime;
 }
 
+/// حضور/انصراف موظف في شيفت واحد (واحد منهم على الأقل مش null).
 class ShiftAttendance {
   const ShiftAttendance({
     required this.employee,
@@ -23,6 +24,7 @@ class ShiftAttendance {
     required this.shiftStart,
     required this.shiftEnd,
     required this.isLate,
+    this.leftEarly = false,
     this.checkIn,
     this.checkOut,
   });
@@ -34,6 +36,7 @@ class ShiftAttendance {
   final DateTime? checkIn;
   final DateTime? checkOut;
   final bool isLate;
+  final bool leftEarly;
 
   DateTime get lastActivity => (checkOut ?? checkIn)!;
 
@@ -41,6 +44,13 @@ class ShiftAttendance {
     final inTime = checkIn;
     if (inTime == null) return 0;
     final minutes = inTime.difference(shiftStart).inMinutes;
+    return minutes < 0 ? 0 : minutes;
+  }
+
+  int get minutesEarly {
+    final out = checkOut;
+    if (out == null) return 0;
+    final minutes = shiftEnd.difference(out).inMinutes;
     return minutes < 0 ? 0 : minutes;
   }
 }

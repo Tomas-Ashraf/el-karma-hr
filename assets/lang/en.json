@@ -139,6 +139,7 @@
     "dashboard.empty": "No attendance records yet",
     "dashboard.late_by": "Late by {min} min",
     "add_employee.day_off": "Day off",
+    "dashboard.left_early_by": "Left Early",
     "day.saturday": "Saturday",
     "day.sunday": "Sunday",
     "day.monday": "Monday",
@@ -147,5 +148,16 @@
     "day.thursday": "Thursday",
     "day.friday": "Friday",
     "employee_details.delete_shift_title": "Delete shift",
-    "employee_details.delete_shift_message": "Are you sure you want to delete {name}?"
+    "employee_details.delete_shift_message": "Are you sure you want to delete {name}?",
+    "attendance.dialog_title": "Select period",
+    "attendance.from": "From",
+    "attendance.to": "To",
+    "attendance.select_date": "Select date",
+    "attendance.employee": "Employee",
+    "attendance.invalid_range": "End date can't be before start date",
+    "attendance.select_period": "Select employee and period",
+    "attendance.prompt": "Choose an employee and a period to view attendance.",
+    "attendance.empty": "No attendance records in this period",
+    "attendance.absent": "Absent",
+    "attendance.load_failed": "Couldn't load attendance. Please try again."
 }
