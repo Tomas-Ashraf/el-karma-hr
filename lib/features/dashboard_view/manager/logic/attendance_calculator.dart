@@ -7,8 +7,6 @@ class AttendanceCalculator {
 
   static const _windowMargin = Duration(hours: 3);
 
-  static const _minStay = Duration(minutes: 30);
-
   static DashboardData calculate({
     required List<EmployeeModel> employees,
     required Map<int, List<DateTime>> punchesByDevice,
@@ -98,9 +96,12 @@ class AttendanceCalculator {
             ..sort();
       if (inWindow.isEmpty) continue;
 
-      final checkIn = inWindow.first;
-      final last = inWindow.last;
-      final checkOut = last.difference(checkIn) >= _minStay ? last : null;
+      final mid = _midpoint(slot.start, slot.end);
+      final before = inWindow.where((p) => !p.isAfter(mid)).toList();
+      final after = inWindow.where((p) => p.isAfter(mid)).toList();
+
+      final checkIn = before.isEmpty ? null : before.first;
+      final checkOut = after.isEmpty ? null : after.last;
       final lateAfter = slot.start.add(Duration(minutes: settings.lateMinutes));
 
       result.add(
@@ -111,7 +112,7 @@ class AttendanceCalculator {
           shiftEnd: slot.end,
           checkIn: checkIn,
           checkOut: checkOut,
-          isLate: checkIn.isAfter(lateAfter),
+          isLate: checkIn != null && checkIn.isAfter(lateAfter),
         ),
       );
     }

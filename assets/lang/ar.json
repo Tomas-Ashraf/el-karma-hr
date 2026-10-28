@@ -54,6 +54,7 @@
     "dashboard.on_time": "في الميعاد",
     "dashboard.employees_unit": "موظف",
     "dashboard.recent": "الأحدث",
+    "dashboard.no_check_in": "لم يسجل حضور",
     "time.am": "ص",
     "time.pm": "م",
     "drawer.employees": "الموظفين",

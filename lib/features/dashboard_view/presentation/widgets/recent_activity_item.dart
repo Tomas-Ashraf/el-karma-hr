@@ -9,13 +9,13 @@ class RecentActivityItem extends StatelessWidget {
   const RecentActivityItem({super.key, required this.record});
 
   final ShiftAttendance record;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final muted = theme.colorScheme.onSurfaceVariant;
     final checkOut = record.checkOut;
+    final checkIn = record.checkIn;
 
     Widget line(IconData icon, String label, DateTime time) {
       return Padding(
@@ -66,11 +66,12 @@ class RecentActivityItem extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                line(
-                  Icons.login_rounded,
-                  context.tr('dashboard.check_in'),
-                  record.checkIn,
-                ),
+                if (checkIn != null)
+                  line(
+                    Icons.login_rounded,
+                    context.tr('dashboard.check_in'),
+                    checkIn,
+                  ),
                 if (checkOut != null)
                   line(
                     Icons.logout_rounded,
@@ -82,13 +83,17 @@ class RecentActivityItem extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            record.isLate
+            checkIn == null
+                ? context.tr('dashboard.no_check_in')
+                : record.isLate
                 ? context.tr('dashboard.late')
                 : context.tr('dashboard.on_time'),
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: record.isLate
+              color: checkIn == null
+                  ? const Color(0xFFF59E0B)
+                  : record.isLate
                   ? const Color(0xFFEF4444)
                   : const Color(0xFF22C55E),
             ),

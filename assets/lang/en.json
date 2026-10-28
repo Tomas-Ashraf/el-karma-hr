@@ -54,6 +54,7 @@
     "dashboard.on_time": "On Time",
     "dashboard.employees_unit": "Employees",
     "dashboard.recent": "Recent",
+    "dashboard.no_check_in": "No check-in",
     "time.am": "am",
     "time.pm": "pm",
     "drawer.employees": "Employees",
