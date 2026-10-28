@@ -22,8 +22,8 @@ class ShiftAttendance {
     required this.shiftNumber,
     required this.shiftStart,
     required this.shiftEnd,
-    required this.checkIn,
     required this.isLate,
+    this.checkIn,
     this.checkOut,
   });
 
@@ -31,14 +31,16 @@ class ShiftAttendance {
   final int shiftNumber;
   final DateTime shiftStart;
   final DateTime shiftEnd;
-  final DateTime checkIn;
+  final DateTime? checkIn;
   final DateTime? checkOut;
   final bool isLate;
 
-  DateTime get lastActivity => checkOut ?? checkIn;
+  DateTime get lastActivity => (checkOut ?? checkIn)!;
 
   int get minutesLate {
-    final minutes = checkIn.difference(shiftStart).inMinutes;
+    final inTime = checkIn;
+    if (inTime == null) return 0;
+    final minutes = inTime.difference(shiftStart).inMinutes;
     return minutes < 0 ? 0 : minutes;
   }
 }
@@ -50,11 +52,20 @@ class EmployeeDayStatus {
 
   final List<ShiftAttendance> shifts;
 
+  bool get hasCheckIn => shifts.any((s) => s.checkIn != null);
+
   bool get checkedOut => shifts.every((s) => s.checkOut != null);
 
   bool get isLate => shifts.any((s) => s.isLate);
 
-  DateTime get firstCheckIn => shifts.first.checkIn;
+  DateTime get firstActivity => shifts.first.checkIn ?? shifts.first.checkOut!;
+
+  DateTime? get firstCheckIn {
+    for (final s in shifts) {
+      if (s.checkIn != null) return s.checkIn;
+    }
+    return null;
+  }
 
   DateTime? get lastCheckOut => checkedOut ? shifts.last.checkOut : null;
 
@@ -74,7 +85,7 @@ class DashboardData {
     final employees = byEmployee.values.map((shifts) {
       shifts.sort((a, b) => a.shiftStart.compareTo(b.shiftStart));
       return EmployeeDayStatus(shifts.first.employee, shifts);
-    }).toList()..sort((a, b) => a.firstCheckIn.compareTo(b.firstCheckIn));
+    }).toList()..sort((a, b) => a.firstActivity.compareTo(b.firstActivity));
 
     final recent = [...records]
       ..sort((a, b) => b.lastActivity.compareTo(a.lastActivity));
@@ -86,12 +97,13 @@ class DashboardData {
 
   final List<EmployeeDayStatus> employees;
 
-  List<EmployeeDayStatus> get checkedIn => employees;
+  List<EmployeeDayStatus> get checkedIn =>
+      employees.where((e) => e.hasCheckIn).toList();
   List<EmployeeDayStatus> get checkedOut =>
       employees.where((e) => e.checkedOut).toList();
   List<EmployeeDayStatus> get late => employees.where((e) => e.isLate).toList();
   List<EmployeeDayStatus> get onTime =>
-      employees.where((e) => !e.isLate).toList();
+      employees.where((e) => e.hasCheckIn && !e.isLate).toList();
 
   DashboardStats get stats => DashboardStats(
     checkedIn: checkedIn.length,
