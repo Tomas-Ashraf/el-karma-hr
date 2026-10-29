@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key});
 
-  static const _recentLimit = 10;
+  // static const _recentLimit = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,8 @@ class HomeViewBody extends StatelessWidget {
                   builder: (context, state) {
                     if (state is DashboardAttendanceSuccess) {
                       final data = state.data;
-                      final recent = data.recent.take(_recentLimit).toList();
+                      // final recent = data.recent.take(_recentLimit).toList();
+                      final recent = data.recent.toList();
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

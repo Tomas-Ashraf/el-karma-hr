@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field
 
 import 'package:el_karma_ph/features/add_employee_view/presentation/view/add_employee_view.dart';
+import 'package:el_karma_ph/features/attendance_view.dart/presentation/view/attendance_view.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/view/dashboard_view.dart';
 import 'package:el_karma_ph/features/employee_details_view/presentation/view/employee_details_view.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
@@ -23,6 +24,7 @@ abstract class AppRouter {
   static const kEmployeeListView = '/employeeListView';
   static const kAddEmployeeView = '/addEmployeeView';
   static const kEmployeeDetailsView = '/employeeDetailsView';
+  static const kAttendanceView = '/attendanceView';
 
   static final router = GoRouter(
     routes: <RouteBase>[
@@ -75,6 +77,11 @@ abstract class AppRouter {
             state.extra is EmployeeModel ? null : kEmployeeListView,
         builder: (context, state) =>
             EmployeeDetailsView(employee: state.extra as EmployeeModel),
+      ),
+      GoRoute(
+        path: kAttendanceView,
+        name: kAttendanceView,
+        builder: (context, state) => const AttendanceView(),
       ),
     ],
   );

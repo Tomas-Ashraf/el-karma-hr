@@ -25,7 +25,7 @@ class RecentActivityItem extends StatelessWidget {
             Icon(icon, size: 14, color: kPrimaryBlue),
             const SizedBox(width: 6),
             Text(
-              '$label  ${formatTime(context, time)}',
+              '$label  ${formatDateTime(context, time)}',
               style: TextStyle(fontSize: 12, color: muted),
             ),
           ],

@@ -139,6 +139,7 @@
     "dashboard.empty": "لا توجد سجلات حضور بعد",
     "dashboard.late_by": "متأخر {min} دقيقة",
     "add_employee.day_off": "يوم الإجازة",
+    "dashboard.left_early_by": "انصراف مبكر",
     "day.saturday": "السبت",
     "day.sunday": "الأحد",
     "day.monday": "الاثنين",
@@ -147,5 +148,19 @@
     "day.thursday": "الخميس",
     "day.friday": "الجمعة",
     "employee_details.delete_shift_title": "حذف الشيفت",
-    "employee_details.delete_shift_message": "هل أنت متأكد من حذف {name}؟"
+    "employee_details.delete_shift_message": "هل أنت متأكد من حذف {name}؟",
+    "attendance.dialog_title": "اختر الفترة",
+    "attendance.from": "من",
+    "attendance.to": "إلى",
+    "attendance.select_date": "اختر التاريخ",
+    "attendance.employee": "الموظف",
+    "attendance.invalid_range": "تاريخ النهاية لا يمكن أن يسبق تاريخ البداية",
+    "attendance.select_period": "اختر الموظف والفترة",
+    "attendance.prompt": "اختر الموظف والفترة لعرض الحضور والانصراف.",
+    "attendance.empty": "لا توجد سجلات حضور في هذه الفترة",
+    "attendance.absent": "غائب",
+    "attendance.load_failed": "تعذّر تحميل الحضور. حاول مرة أخرى.",
+    "attendance.add_record": "إضافة سجل",
+    "attendance.record_saved": "تم حفظ السجل بنجاح.",
+    "attendance.record_failed": "تعذّر حفظ السجل. حاول مرة أخرى."
 }

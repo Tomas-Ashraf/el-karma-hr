@@ -154,7 +154,7 @@ class _EntryRow extends StatelessWidget {
           children: [
             if (time != null)
               Text(
-                formatTime(context, time),
+                formatDateTime(context, time),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
