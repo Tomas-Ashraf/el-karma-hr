@@ -1,5 +1,6 @@
 import 'package:el_karma_ph/features/attendance_view.dart/models/attendance_entry.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
+import 'package:el_karma_ph/features/settings_view/models/attendance_settings.dart';
 
 enum AttendanceReportStatus {
   loadingEmployees,
@@ -8,6 +9,8 @@ enum AttendanceReportStatus {
   success,
   failure,
 }
+
+enum RecordSaveStatus { idle, saving, saved, failed }
 
 class AttendanceFilter {
   const AttendanceFilter({
@@ -27,6 +30,8 @@ class AttendanceReportState {
     this.employees = const [],
     this.filter,
     this.entries = const [],
+    this.settings,
+    this.saveStatus = RecordSaveStatus.idle,
     this.message,
   });
 
@@ -34,6 +39,9 @@ class AttendanceReportState {
   final List<EmployeeModel> employees;
   final AttendanceFilter? filter;
   final List<AttendanceEntry> entries;
+
+  final AttendanceSettings? settings;
+  final RecordSaveStatus saveStatus;
   final String? message;
 
   AttendanceReportState copyWith({
@@ -41,6 +49,8 @@ class AttendanceReportState {
     List<EmployeeModel>? employees,
     AttendanceFilter? filter,
     List<AttendanceEntry>? entries,
+    AttendanceSettings? settings,
+    RecordSaveStatus? saveStatus,
     String? message,
   }) {
     return AttendanceReportState(
@@ -48,6 +58,8 @@ class AttendanceReportState {
       employees: employees ?? this.employees,
       filter: filter ?? this.filter,
       entries: entries ?? this.entries,
+      settings: settings ?? this.settings,
+      saveStatus: saveStatus ?? this.saveStatus,
       message: message,
     );
   }

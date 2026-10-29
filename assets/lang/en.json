@@ -159,5 +159,8 @@
     "attendance.prompt": "Choose an employee and a period to view attendance.",
     "attendance.empty": "No attendance records in this period",
     "attendance.absent": "Absent",
-    "attendance.load_failed": "Couldn't load attendance. Please try again."
+    "attendance.load_failed": "Couldn't load attendance. Please try again.",
+    "attendance.add_record": "Add Record",
+    "attendance.record_saved": "Record saved successfully.",
+    "attendance.record_failed": "Couldn't save the record. Please try again."
 }

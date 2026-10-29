@@ -159,5 +159,8 @@
     "attendance.prompt": "اختر الموظف والفترة لعرض الحضور والانصراف.",
     "attendance.empty": "لا توجد سجلات حضور في هذه الفترة",
     "attendance.absent": "غائب",
-    "attendance.load_failed": "تعذّر تحميل الحضور. حاول مرة أخرى."
+    "attendance.load_failed": "تعذّر تحميل الحضور. حاول مرة أخرى.",
+    "attendance.add_record": "إضافة سجل",
+    "attendance.record_saved": "تم حفظ السجل بنجاح.",
+    "attendance.record_failed": "تعذّر حفظ السجل. حاول مرة أخرى."
 }

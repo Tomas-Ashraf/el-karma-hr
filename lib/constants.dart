@@ -6,3 +6,5 @@ const kUsersCollection = 'users';
 const kRawLogsCollection = 'raw_logs';
 const kPunchesCollection = 'punches';
 const kPunchTimestampField = 'timestamp';
+const kRecordsCollection = 'records';
+const kRecordPeriodsCollection = 'periods';

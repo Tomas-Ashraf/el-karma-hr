@@ -3,6 +3,7 @@ import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/utils/time_format.dart';
+import 'package:el_karma_ph/core/widgets/button_widget.dart';
 import 'package:el_karma_ph/features/attendance_view.dart/manager/cubit/attendance_report_cubit.dart';
 import 'package:el_karma_ph/features/attendance_view.dart/manager/cubit/attendance_report_state.dart';
 import 'package:el_karma_ph/features/attendance_view.dart/presentation/widgets/attendance_entry_card.dart';
@@ -31,44 +32,98 @@ class AttendanceViewBody extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
     const maxContentWidth = 600.0;
 
-    return BlocConsumer<AttendanceReportCubit, AttendanceReportState>(
+    return BlocListener<AttendanceReportCubit, AttendanceReportState>(
       listenWhen: (previous, current) =>
-          previous.status == AttendanceReportStatus.loadingEmployees &&
-          current.status == AttendanceReportStatus.ready,
-      listener: (context, state) => _openFilter(context),
-      builder: (context, state) {
-        final filter = state.filter;
-        final label = filter == null
-            ? context.tr('attendance.select_period')
-            : '${formatMediumDate(context, filter.from)}  -  '
-                  '${formatMediumDate(context, filter.to)}';
-
-        return SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: maxContentWidth),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: screenSize.width * 0.05,
-                  vertical: screenSize.height * 0.015,
+          previous.saveStatus != current.saveStatus &&
+          (current.saveStatus == RecordSaveStatus.saved ||
+              current.saveStatus == RecordSaveStatus.failed),
+      listener: (context, state) {
+        final saved = state.saveStatus == RecordSaveStatus.saved;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(
+                context.tr(
+                  saved
+                      ? 'attendance.record_saved'
+                      : (state.message ?? 'attendance.record_failed'),
                 ),
-                child: Column(
-                  children: [
-                    _PeriodButton(
-                      label: label,
-                      onTap: state.employees.isEmpty
-                          ? null
-                          : () => _openFilter(context),
-                    ),
-                    const SizedBox(height: 12),
-                    Expanded(child: _Content(state: state)),
-                  ],
+              ),
+              backgroundColor: saved ? Colors.green : Colors.red,
+            ),
+          );
+      },
+      child: BlocConsumer<AttendanceReportCubit, AttendanceReportState>(
+        listenWhen: (previous, current) =>
+            previous.status == AttendanceReportStatus.loadingEmployees &&
+            current.status == AttendanceReportStatus.ready,
+        listener: (context, state) => _openFilter(context),
+        builder: (context, state) {
+          final filter = state.filter;
+          final label = filter == null
+              ? context.tr('attendance.select_period')
+              : '${formatMediumDate(context, filter.from)}  -  '
+                    '${formatMediumDate(context, filter.to)}';
+          final canSave =
+              state.status == AttendanceReportStatus.success &&
+              state.entries.isNotEmpty;
+          final isSaving = state.saveStatus == RecordSaveStatus.saving;
+
+          return SafeArea(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: maxContentWidth),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenSize.width * 0.05,
+                    vertical: screenSize.height * 0.015,
+                  ),
+                  child: Column(
+                    children: [
+                      _PeriodButton(
+                        label: label,
+                        onTap: state.employees.isEmpty
+                            ? null
+                            : () => _openFilter(context),
+                      ),
+                      const SizedBox(height: 12),
+                      Expanded(child: _Content(state: state)),
+                      if (canSave) ...[
+                        const SizedBox(height: 12),
+                        ButtonWidget(
+                          width: double.infinity,
+                          height: 52,
+                          onPressed: () {
+                            if (isSaving) return;
+                            context.read<AttendanceReportCubit>().saveRecord();
+                          },
+                          backgroundColor: kPrimaryBlue,
+                          foregroundColor: Colors.white,
+                          text: isSaving
+                              ? const SizedBox(
+                                  height: 22,
+                                  width: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  context.tr('attendance.add_record'),
+                                  style: Styles.textStyle16,
+                                ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
@@ -172,7 +227,7 @@ class _Content extends StatelessWidget {
           );
         }
         return ListView.separated(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.only(bottom: 8),
           itemCount: state.entries.length,
           separatorBuilder: (_, _) => const SizedBox(height: 12),
           itemBuilder: (context, index) =>
