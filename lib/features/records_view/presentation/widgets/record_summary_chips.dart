@@ -1,12 +1,12 @@
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
+import 'package:el_karma_ph/core/utils/time_format.dart';
 import 'package:el_karma_ph/features/records_view/models/record_preview_models.dart';
 import 'package:flutter/material.dart';
 
 const _absentColor = Color(0xFFEF4444);
 const _lateColor = Color(0xFFF59E0B);
 
-/// شارات صغيرة بتلخّص السجل: عدد الأيام والغياب والتأخير.
 class RecordSummaryChips extends StatelessWidget {
   const RecordSummaryChips({super.key, required this.record});
 
@@ -37,7 +37,7 @@ class RecordSummaryChips extends StatelessWidget {
           _Chip(
             text: context.tr(
               'records.late_total',
-              args: {'min': '${record.lateMinutesTotal}'},
+              args: {'time': formatDuration(context, record.lateMinutesTotal)},
             ),
             color: _lateColor,
           ),
