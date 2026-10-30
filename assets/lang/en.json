@@ -162,5 +162,19 @@
     "attendance.load_failed": "Couldn't load attendance. Please try again.",
     "attendance.add_record": "Add Record",
     "attendance.record_saved": "Record saved successfully.",
-    "attendance.record_failed": "Couldn't save the record. Please try again."
+    "attendance.record_failed": "Couldn't save the record. Please try again.",
+    "records.title": "Records",
+    "records.select_employee": "Select employee",
+    "records.prompt": "Choose an employee to view their records.",
+    "records.days_count": "{n} days",
+    "records.absent_count": "Absent: {n}",
+    "records.late_total": "Late: {min} min",
+    "records.delete_title": "Delete record",
+    "records.delete_message": "Are you sure you want to delete the record for {period}? This action can't be undone.",
+    "records.deleted": "Record deleted.",
+    "records.empty": "{name} has no records yet",
+    "records.empty_hint": "Start by adding an attendance record for this employee.",
+    "records.details_title": "Record details",
+    "records.export_pdf": "Export as PDF",
+    "records.pdf_soon": "PDF export isn't connected yet."
 }
