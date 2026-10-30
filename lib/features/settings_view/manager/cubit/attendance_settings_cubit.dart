@@ -27,8 +27,7 @@ class AttendanceSettingsCubit extends Cubit<AttendanceSettingsState> {
       emit(
         const AttendanceSettingsState(
           status: AttendanceSettingsStatus.failure,
-          message:
-              "Couldn't load settings. Check your connection and try again.",
+          message: "settings.load_failed",
         ),
       );
     }
@@ -49,7 +48,7 @@ class AttendanceSettingsCubit extends Cubit<AttendanceSettingsState> {
       emit(
         state.copyWith(
           status: AttendanceSettingsStatus.failure,
-          message: 'Could not save settings. Please try again.',
+          message: 'settings.save_failed',
         ),
       );
     }

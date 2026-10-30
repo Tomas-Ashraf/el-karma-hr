@@ -1,4 +1,5 @@
 import 'package:el_karma_ph/constants.dart';
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
 import 'package:el_karma_ph/features/no_internet_view/manager/cubit/connection_cubit.dart';
@@ -25,7 +26,6 @@ class _NoInternetViewState extends State<NoInternetViewBody> {
 
     final online = await context.read<ConnectionCubit>().checkNow();
 
-    // لو النت رجع، الـ ConnectionWrapper هيشيل الشاشة دي لوحده
     if (!mounted) return;
     setState(() {
       _isChecking = false;
@@ -42,7 +42,6 @@ class _NoInternetViewState extends State<NoInternetViewBody> {
         .toDouble();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -64,10 +63,10 @@ class _NoInternetViewState extends State<NoInternetViewBody> {
                         children: [
                           _NoInternetIllustration(size: illustrationSize),
                           SizedBox(height: screenSize.height * 0.04),
-                          const Text.rich(
+                          Text.rich(
                             TextSpan(
                               children: [
-                                TextSpan(text: 'No internet connection '),
+                                TextSpan(text: context.tr('offline.title')),
                                 TextSpan(
                                   text: '📡',
                                   style: TextStyle(fontSize: 24),
@@ -78,17 +77,15 @@ class _NoInternetViewState extends State<NoInternetViewBody> {
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 12),
-                          const Text(
-                            'Please check your Wi-Fi or mobile data, '
-                            'then try again.',
+                          Text(
+                            context.tr('offline.message'),
                             style: Styles.textStyle14,
                             textAlign: TextAlign.center,
                           ),
                           if (_stillOffline) ...[
                             const SizedBox(height: 12),
-                            const Text(
-                              'Still no connection. Please try again in a '
-                              'moment.',
+                            Text(
+                              context.tr('offline.still'),
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Color(0xFFEF4444),
@@ -112,8 +109,8 @@ class _NoInternetViewState extends State<NoInternetViewBody> {
                                       color: Colors.white,
                                     ),
                                   )
-                                : const Text(
-                                    'Try Again',
+                                : Text(
+                                    context.tr('common.try_again'),
                                     style: Styles.textStyle16,
                                   ),
                           ),
@@ -149,16 +146,16 @@ class _NoInternetIllustration extends StatelessWidget {
           Container(
             width: size * 0.85,
             height: size * 0.85,
-            decoration: const BoxDecoration(
-              color: Color(0xFFEFF6FF),
+            decoration: BoxDecoration(
+              color: kPrimaryBlue.withAlpha(20),
               shape: BoxShape.circle,
             ),
           ),
           Container(
             width: size * 0.55,
             height: size * 0.55,
-            decoration: const BoxDecoration(
-              color: Color(0xFFDBEAFE),
+            decoration: BoxDecoration(
+              color: kPrimaryBlue.withAlpha(46),
               shape: BoxShape.circle,
             ),
           ),

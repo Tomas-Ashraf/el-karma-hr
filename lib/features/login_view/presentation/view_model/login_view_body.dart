@@ -1,7 +1,9 @@
 // ignore_for_file: unused_field
 
 import 'package:el_karma_ph/constants.dart';
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
+import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/login_view/manager/login_cubit/cubit/auth_cubit.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/input_field_widget.dart';
 import 'package:el_karma_ph/features/login_view/presentation/widgets/login_button.dart';
@@ -42,8 +44,9 @@ class _LoginViewState extends State<LoginViewBody> {
           if (state is AuthSuccessState) {
             GoRouter.of(context).pushReplacementNamed(AppRouter.kDashboardView);
           } else if (state is AuthFailureState) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorMessage)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.tr(state.errorMessage))),
+            );
           }
         },
         child: SafeArea(
@@ -64,17 +67,18 @@ class _LoginViewState extends State<LoginViewBody> {
                     WelcomeWidget(),
                     SizedBox(height: screenSize.height * 0.03),
                     InputFieldWidget(
-                      label: 'Email Address',
+                      label: context.tr('login.email_label'),
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       onChanged: (value) {
                         _emailController = value as TextEditingController;
                       },
                       onSubmitted: (value) {},
+                      textStyle: TextStyle(color: Colors.black),
                     ),
                     SizedBox(height: screenSize.height * 0.02),
                     InputFieldWidget(
-                      label: 'Password',
+                      label: context.tr('login.password_label'),
                       controller: _passwordController,
                       obscureText: _obscurePassword,
                       onChanged: (value) {
@@ -92,6 +96,7 @@ class _LoginViewState extends State<LoginViewBody> {
                           () => _obscurePassword = !_obscurePassword,
                         ),
                       ),
+                      textStyle: TextStyle(color: Colors.black),
                     ),
                     SizedBox(height: 8),
                     Align(
@@ -106,8 +111,8 @@ class _LoginViewState extends State<LoginViewBody> {
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        child: const Text(
-                          'Forgot Password ?',
+                        child: Text(
+                          context.tr('login.forgot_password'),
                           style: TextStyle(
                             color: kPrimaryBlue,
                             fontWeight: FontWeight.w500,
@@ -119,6 +124,10 @@ class _LoginViewState extends State<LoginViewBody> {
                     LoginButton(
                       emailController: _emailController,
                       passwordController: _passwordController,
+                      lable: Text(
+                        context.tr('login.button'),
+                        style: Styles.textStyle16,
+                      ),
                     ),
                     SizedBox(height: screenSize.height * 0.06),
                   ],

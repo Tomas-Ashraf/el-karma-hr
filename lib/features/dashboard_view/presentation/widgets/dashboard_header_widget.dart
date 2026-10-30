@@ -1,3 +1,4 @@
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/widgets/circle_icon_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,12 @@ class DashboardHeaderWidget extends StatelessWidget {
           onTap: () => Scaffold.of(context).openDrawer(),
         ),
         const SizedBox(width: 14),
-        const Expanded(child: Text('Dashboard', style: Styles.textStyle22B)),
+        Expanded(
+          child: Text(
+            context.tr('dashboard.title'),
+            style: Styles.textStyle22B,
+          ),
+        ),
         CircleIconButton(icon: Icons.notifications_none_rounded, onTap: () {}),
       ],
     );

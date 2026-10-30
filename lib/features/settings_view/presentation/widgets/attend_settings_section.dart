@@ -1,4 +1,5 @@
 import 'package:el_karma_ph/constants.dart';
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
 import 'package:el_karma_ph/features/settings_view/manager/cubit/attendance_settings_cubit.dart';
@@ -26,8 +27,8 @@ class AttendanceSettingsSection extends StatelessWidget {
           SnackBar(
             content: Text(
               isSaved
-                  ? 'Settings saved successfully.'
-                  : (state.message ?? 'Something went wrong.'),
+                  ? context.tr('settings.saved')
+                  : (context.tr('$state.message')),
             ),
             backgroundColor: isSaved ? Colors.green : Colors.red,
           ),
@@ -55,7 +56,7 @@ class AttendanceSettingsSection extends StatelessWidget {
         }
 
         return SettingsSectionCard(
-          title: 'Attendance Settings',
+          title: context.tr('settings.attendance_section'),
           child: content,
         );
       },
@@ -173,9 +174,9 @@ class _AttendanceSettingsFormState extends State<_AttendanceSettingsForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SettingsInputField(
-            label: 'Late time (mins)',
-            helperText: 'Grace period before an employee is counted as late',
-            suffixText: 'min',
+            label: context.tr('settings.late_time'),
+            helperText: context.tr('settings.late_time_hint'),
+            suffixText: context.tr('common.min'),
             controller: _lateController,
             validator: _validateMinutes,
             inputFormatters: minutesFormatters,
@@ -183,9 +184,9 @@ class _AttendanceSettingsFormState extends State<_AttendanceSettingsForm> {
           ),
           const SizedBox(height: 16),
           SettingsInputField(
-            label: 'Leave early time (mins)',
-            helperText: 'How early an employee can leave without a deduction',
-            suffixText: 'min',
+            label: context.tr('settings.leave_early_time'),
+            helperText: context.tr('settings.leave_early_hint'),
+            suffixText: context.tr('common.min'),
             controller: _leaveEarlyController,
             validator: _validateMinutes,
             inputFormatters: minutesFormatters,
@@ -193,9 +194,9 @@ class _AttendanceSettingsFormState extends State<_AttendanceSettingsForm> {
           ),
           const SizedBox(height: 16),
           SettingsInputField(
-            label: 'Salary deduction value',
-            helperText: 'Deduction in EGP for each minute of lateness',
-            suffixText: 'EGP',
+            label: context.tr('settings.deduction_value'),
+            helperText: context.tr('settings.deduction_hint'),
+            suffixText: context.tr('common.egp'),
             controller: _deductionController,
             validator: _validateAmount,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -221,7 +222,7 @@ class _AttendanceSettingsFormState extends State<_AttendanceSettingsForm> {
                       color: Colors.white,
                     ),
                   )
-                : const Text('Save Changes', style: Styles.textStyle16),
+                : Text(context.tr('settings.save'), style: Styles.textStyle16),
           ),
         ],
       ),

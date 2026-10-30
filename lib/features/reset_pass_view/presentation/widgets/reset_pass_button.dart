@@ -1,4 +1,5 @@
 import 'package:el_karma_ph/constants.dart';
+import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
 import 'package:el_karma_ph/features/reset_pass_view/manager/cubit/reset_pass_cubit.dart';
@@ -33,7 +34,7 @@ class ResetPassButton extends StatelessWidget {
                     color: Colors.white,
                   ),
                 )
-              : const Text('Send Reset Link', style: Styles.textStyle16),
+              : Text(context.tr('forgot.button'), style: Styles.textStyle16),
         );
       },
     );

@@ -11,8 +11,6 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
 
   final SharedPreferences _prefs;
 
-  /// بيقرا الإعدادات المحفوظة. نادي عليها في main() قبل runApp
-  /// عشان التطبيق يفتح بالثيم واللغة الصح من غير وميض.
   static Future<AppSettingsCubit> load() async {
     final prefs = await SharedPreferences.getInstance();
     final isDark = prefs.getBool(_darkModeKey) ?? false;

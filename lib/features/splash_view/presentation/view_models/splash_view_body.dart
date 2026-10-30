@@ -73,27 +73,6 @@ class _SplashViewBodyState extends State<SplashViewBody>
       return AppRouter.kDashboardView;
     }
   }
-  // Future<void> navigateToHome() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   bool? isLogged = prefs.getBool('loggedIn');
-  //   log('isLogged: $isLogged');
-  //   Future.delayed(const Duration(seconds: 1), () async {
-  //     final db = FirebaseFirestore.instance;
-  //     final snapshot = await db
-  //         .collection(kUsersCollection)
-  //         .where('email', isEqualTo: prefs.getString('userEmail'))
-  //         .get();
-  //     final status = snapshot.docs[0]['status'];
-  //     if (isLogged == true && status == 'active') {
-  //       GoRouter.of(context).pushReplacementNamed(AppRouter.kDashboardView);
-  //     } else if (isLogged == true && status == 'inactive') {
-  //       GoRouter.of(context)
-  //           .pushReplacementNamed(AppRouter.kInactiveAccountView);
-  //     } else if (isLogged == false || isLogged == null) {
-  //       GoRouter.of(context).pushReplacementNamed(AppRouter.kLoginView);
-  //     }
-  //   });
-  // }
 
   @override
   void dispose() {
