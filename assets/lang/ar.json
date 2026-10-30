@@ -162,5 +162,19 @@
     "attendance.load_failed": "تعذّر تحميل الحضور. حاول مرة أخرى.",
     "attendance.add_record": "إضافة سجل",
     "attendance.record_saved": "تم حفظ السجل بنجاح.",
-    "attendance.record_failed": "تعذّر حفظ السجل. حاول مرة أخرى."
+    "attendance.record_failed": "تعذّر حفظ السجل. حاول مرة أخرى.",
+    "records.title": "السجلات",
+    "records.select_employee": "اختر الموظف",
+    "records.prompt": "اختر موظفًا لعرض سجلاته.",
+    "records.days_count": "{n} يوم",
+    "records.absent_count": "غياب: {n}",
+    "records.late_total": "تأخير: {min} دقيقة",
+    "records.delete_title": "حذف السجل",
+    "records.delete_message": "هل أنت متأكد من حذف سجل الفترة {period}؟ لا يمكن التراجع عن هذا الإجراء.",
+    "records.deleted": "تم حذف السجل.",
+    "records.empty": "لا توجد سجلات لـ {name}",
+    "records.empty_hint": "ابدأ بإضافة سجل حضور وانصراف لهذا الموظف.",
+    "records.details_title": "تفاصيل السجل",
+    "records.export_pdf": "تصدير كملف PDF",
+    "records.pdf_soon": "تصدير PDF غير مفعّل بعد."
 }
