@@ -70,7 +70,7 @@ class AttendanceCalculator {
       ));
     }
 
-    final days = byDay.keys.toList()..sort((a, b) => b.compareTo(a));
+    final days = byDay.keys.toList()..sort();
     final multiShift = employee.shifts.length > 1;
     final entries = <AttendanceEntry>[];
 

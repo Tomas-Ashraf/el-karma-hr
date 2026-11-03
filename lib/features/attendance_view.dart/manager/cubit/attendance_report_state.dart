@@ -39,7 +39,6 @@ class AttendanceReportState {
   final List<EmployeeModel> employees;
   final AttendanceFilter? filter;
   final List<AttendanceEntry> entries;
-
   final AttendanceSettings? settings;
   final RecordSaveStatus saveStatus;
   final String? message;
