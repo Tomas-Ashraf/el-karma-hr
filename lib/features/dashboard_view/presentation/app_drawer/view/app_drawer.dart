@@ -43,9 +43,10 @@ class _AppDrawerState extends State<AppDrawer> {
         onTap: () => GoRouter.of(context).pushNamed(AppRouter.kRecordsView),
       ),
       DrawerEntry(
-        icon: Icons.edit_calendar_outlined,
+        icon: Icons.sticky_note_2_outlined,
         label: context.tr('drawer.notes_records'),
-        onTap: () {},
+        onTap: () =>
+            GoRouter.of(context).pushNamed(AppRouter.kNotesRecordsView),
       ),
       DrawerEntry(
         icon: Icons.payments_outlined,
