@@ -7,7 +7,7 @@ import 'package:el_karma_ph/features/records_view/presentation/widgets/record_su
 import 'package:flutter/material.dart';
 
 class HeaderCard extends StatelessWidget {
-  const HeaderCard({required this.record});
+  const HeaderCard({super.key, required this.record});
 
   final RecordPreview record;
 

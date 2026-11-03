@@ -64,4 +64,10 @@ class EmployeesRepo {
   }
 
   Future<void> deleteEmployee(String id) => _users.doc(id).delete();
+  Future<EmployeeModel?> getEmployee(String id) async {
+    final doc = await _users.doc(id).get();
+    final data = doc.data();
+    if (data == null) return null;
+    return EmployeeModel.fromDocument(doc.id, data);
+  }
 }
