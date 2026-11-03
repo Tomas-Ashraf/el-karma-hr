@@ -27,4 +27,17 @@ abstract class Styles {
     fontSize: 26,
     fontWeight: FontWeight.bold,
   );
+
+  // ── Notes ───────────────────────────────────────────────────────────────
+  static const noteEditorTitle = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.bold,
+  );
+  static const noteEditorBody = TextStyle(fontSize: 16, height: 1.5);
+  static const noteCardTitle = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+  );
+  static const noteCardBody = TextStyle(fontSize: 13, height: 1.4);
+  static const noteCaption = TextStyle(fontSize: 11);
 }

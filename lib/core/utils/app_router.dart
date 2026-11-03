@@ -8,6 +8,8 @@ import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:el_karma_ph/features/employees_view/presentation/view/employees_list_view.dart';
 import 'package:el_karma_ph/features/inactive_account_view/presentation/view/inactive_account_view.dart';
 import 'package:el_karma_ph/features/login_view/presentation/view/login_view.dart';
+import 'package:el_karma_ph/features/notes_records_view/presentation/view/notes_records_view.dart';
+import 'package:el_karma_ph/features/notes_records_view/presentation/view/notes_summary_view.dart';
 import 'package:el_karma_ph/features/record_details_view/presentation/view/record_details_view.dart';
 import 'package:el_karma_ph/features/records_view/models/record_preview_models.dart';
 import 'package:el_karma_ph/features/records_view/presentation/view/records_view.dart';
@@ -30,6 +32,8 @@ abstract class AppRouter {
   static const kAttendanceView = '/attendanceView';
   static const kRecordsView = '/recordsView';
   static const kRecordDetailsView = '/recordDetailsView';
+  static const kNotesRecordsView = '/notesRecordsView';
+  static const kNotesSummaryView = '/notesSummaryView';
 
   static final router = GoRouter(
     routes: <RouteBase>[
@@ -100,6 +104,16 @@ abstract class AppRouter {
             state.extra is RecordPreview ? null : kRecordsView,
         builder: (context, state) =>
             RecordDetailsView(record: state.extra as RecordPreview),
+      ),
+      GoRoute(
+        path: kNotesRecordsView,
+        name: kNotesRecordsView,
+        builder: (context, state) => const NotesRecordsView(),
+      ),
+      GoRoute(
+        path: kNotesSummaryView,
+        name: kNotesSummaryView,
+        builder: (context, state) => const NotesSummaryView(),
       ),
     ],
   );

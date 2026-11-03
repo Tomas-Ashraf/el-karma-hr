@@ -65,4 +65,11 @@ class AppTheme {
 extension AppThemeContext on BuildContext {
   ColorScheme get colors => Theme.of(this).colorScheme;
   bool get isDark => Theme.of(this).brightness == Brightness.dark;
+
+  // ── Notes ───────────────────────────────────────────────────────────────
+  /// لون الملاحظة الشخصية حسب الثيم (فاتح / داكن).
+  Color noteColor(int index) {
+    final palette = isDark ? kNoteColorsDark : kNoteColorsLight;
+    return palette[index % palette.length];
+  }
 }
