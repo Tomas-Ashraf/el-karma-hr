@@ -4,9 +4,12 @@ import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/utils/time_format.dart';
 import 'package:el_karma_ph/features/employee_details_view/presentation/widgets/edit_dialogs_widget.dart';
+import 'package:el_karma_ph/features/notes_records_view/manager/cubit/personal_notes_cubit.dart';
+import 'package:el_karma_ph/features/notes_records_view/manager/cubit/personal_notes_state.dart';
 import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/note_editor_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PersonalNotesTab extends StatefulWidget {
   const PersonalNotesTab({super.key});
@@ -17,32 +20,55 @@ class PersonalNotesTab extends StatefulWidget {
 
 class _PersonalNotesTabState extends State<PersonalNotesTab>
     with AutomaticKeepAliveClientMixin {
-  final List<PersonalNote> _notes = [...dummyPersonalNotes];
-
   @override
   bool get wantKeepAlive => true;
 
-  Future<void> _openEditor([PersonalNote? note]) async {
-    final draft = await showNoteEditorDialog(context, initial: note);
-    if (draft == null || !mounted) return;
-    setState(() {
-      final updated = PersonalNote(
-        id: note?.id ?? DateTime.now().microsecondsSinceEpoch.toString(),
-        title: draft.title,
-        body: draft.body,
-        date: DateTime.now(),
-        colorIndex: draft.colorIndex,
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return BlocProvider(
+      create: (_) => PersonalNotesCubit()..load(),
+      child: const _PersonalNotesView(),
+    );
+  }
+}
+
+class _PersonalNotesView extends StatelessWidget {
+  const _PersonalNotesView();
+
+  void _snack(ScaffoldMessengerState messenger, String text, bool ok) {
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(text),
+          backgroundColor: ok ? Colors.green : Colors.red,
+        ),
       );
-      if (note == null) {
-        _notes.insert(0, updated);
-      } else {
-        final i = _notes.indexWhere((n) => n.id == note.id);
-        if (i != -1) _notes[i] = updated;
-      }
-    });
   }
 
-  Future<void> _delete(PersonalNote note) async {
+  Future<void> _openEditor(BuildContext context, [PersonalNote? note]) async {
+    final cubit = context.read<PersonalNotesCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    final draft = await showNoteEditorDialog(context, initial: note);
+    if (draft == null) return;
+
+    final error = await cubit.save(
+      note: note,
+      title: draft.title,
+      body: draft.body,
+      colorIndex: draft.colorIndex,
+    );
+    if (error != null && context.mounted) {
+      _snack(messenger, context.tr(error), false);
+    }
+  }
+
+  Future<void> _delete(BuildContext context, PersonalNote note) async {
+    final cubit = context.read<PersonalNotesCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+
     final confirmed = await showConfirmDialog(
       context,
       title: context.tr('notes.delete_note_title'),
@@ -50,19 +76,21 @@ class _PersonalNotesTabState extends State<PersonalNotesTab>
       confirmLabel: context.tr('common.delete'),
       destructive: true,
     );
-    if (confirmed != true || !mounted) return;
-    setState(() => _notes.removeWhere((n) => n.id == note.id));
+    if (confirmed != true || !context.mounted) return;
+
+    final error = await cubit.delete(note);
+    if (!context.mounted) return;
+    _snack(messenger, context.tr(error ?? 'notes.deleted'), error == null);
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _openEditor(),
+        onPressed: () => _openEditor(context),
         backgroundColor: kPrimaryBlue,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -73,26 +101,46 @@ class _PersonalNotesTabState extends State<PersonalNotesTab>
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 600),
-            child: _notes.isEmpty
-                ? const _EmptyNotes()
-                : ListView.separated(
+            child: BlocBuilder<PersonalNotesCubit, PersonalNotesState>(
+              builder: (context, state) {
+                if (state.status == NotesLoadStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (state.status == NotesLoadStatus.failure) {
+                  return _ErrorState(
+                    message: context.tr(state.message ?? 'notes.load_failed'),
+                    onRetry: () => context.read<PersonalNotesCubit>().load(),
+                  );
+                }
+
+                if (state.notes.isEmpty) return const _EmptyNotes();
+
+                return RefreshIndicator(
+                  onRefresh: () =>
+                      context.read<PersonalNotesCubit>().load(silent: true),
+                  child: ListView.separated(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     padding: EdgeInsets.fromLTRB(
                       screenSize.width * 0.05,
                       screenSize.height * 0.02,
                       screenSize.width * 0.05,
                       90,
                     ),
-                    itemCount: _notes.length,
+                    itemCount: state.notes.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
-                      final note = _notes[index];
+                      final note = state.notes[index];
                       return _NoteCard(
                         note: note,
-                        onTap: () => _openEditor(note),
-                        onDelete: () => _delete(note),
+                        onTap: () => _openEditor(context, note),
+                        onDelete: () => _delete(context, note),
                       );
                     },
                   ),
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -115,13 +163,12 @@ class _NoteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isDark = context.isDark;
-    final accent = kNoteColorsLight[note.colorIndex % kNoteColorsLight.length];
 
     return Container(
       decoration: BoxDecoration(
-        color: colors.surface,
+        color: context.noteColor(note.colorIndex),
         borderRadius: BorderRadius.circular(16),
-        border: isDark ? Border.all(color: colors.outlineVariant) : null,
+        border: Border.all(color: colors.outlineVariant),
         boxShadow: isDark
             ? null
             : const [
@@ -138,51 +185,42 @@ class _NoteCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: onTap,
-          child: IntrinsicHeight(
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 4, 12),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  width: 5,
-                  decoration: BoxDecoration(
-                    color: accent,
-                    borderRadius: const BorderRadiusDirectional.horizontal(
-                      start: Radius.circular(16),
-                    ),
-                  ),
-                ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 12, 4, 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          note.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                          ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        note.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          note.body,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: colors.onSurfaceVariant,
-                          ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        note.body,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: colors.onSurfaceVariant,
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          formatMediumDate(context, note.date),
-                          style: TextStyle(fontSize: 11, color: accent),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        formatMediumDate(context, note.date),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colors.onSurfaceVariant,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 IconButton(
@@ -234,6 +272,30 @@ class _EmptyNotes extends StatelessWidget {
             context.tr('notes.personal_empty_hint'),
             style: Styles.textStyle14,
             textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message, style: Styles.textStyle14, textAlign: TextAlign.center),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: onRetry,
+            child: Text(context.tr('common.retry')),
           ),
         ],
       ),

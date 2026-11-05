@@ -3,24 +3,31 @@ import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/add_employee_view/presentation/widgets/form_fields.dart';
+import 'package:el_karma_ph/features/attendance_view.dart/presentation/widgets/attendance_filter_dialog.dart';
+import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-Future<EmployeeAdjustment?> showAddAdjustmentDialog(
+Future<AdjustmentDraft?> showAddAdjustmentDialog(
   BuildContext context, {
-  String? initialEmployee,
+  required List<EmployeeModel> employees,
+  EmployeeModel? initialEmployee,
 }) {
-  return showDialog<EmployeeAdjustment>(
+  return showDialog<AdjustmentDraft>(
     context: context,
-    builder: (_) => _AddAdjustmentDialog(initialEmployee: initialEmployee),
+    builder: (_) => _AddAdjustmentDialog(
+      employees: employees,
+      initialEmployee: initialEmployee,
+    ),
   );
 }
 
 class _AddAdjustmentDialog extends StatefulWidget {
-  const _AddAdjustmentDialog({this.initialEmployee});
+  const _AddAdjustmentDialog({required this.employees, this.initialEmployee});
 
-  final String? initialEmployee;
+  final List<EmployeeModel> employees;
+  final EmployeeModel? initialEmployee;
 
   @override
   State<_AddAdjustmentDialog> createState() => _AddAdjustmentDialogState();
@@ -30,7 +37,12 @@ class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
   final _formKey = GlobalKey<FormState>();
   final _amount = TextEditingController();
   final _reason = TextEditingController();
-  late String? _employee = widget.initialEmployee;
+  late String? _employeeId = widget.initialEmployee?.id;
+  late DateTime? _date = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
   AdjustmentType _type = AdjustmentType.bonus;
 
   @override
@@ -50,16 +62,24 @@ class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    Navigator.of(context).pop(
-      EmployeeAdjustment(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
-        employeeName: _employee!,
-        type: _type,
-        amount: double.parse(_amount.text.trim()),
-        reason: _reason.text.trim(),
-        date: DateTime.now(),
+    final employee = widget.employees.firstWhere((e) => e.id == _employeeId);
+    final day = _date!;
+    final now = DateTime.now();
+
+    Navigator.of(context).pop((
+      employee: employee,
+      type: _type,
+      amount: double.parse(_amount.text.trim()),
+      reason: _reason.text.trim(),
+      date: DateTime(
+        day.year,
+        day.month,
+        day.day,
+        now.hour,
+        now.minute,
+        now.second,
       ),
-    );
+    ));
   }
 
   @override
@@ -83,11 +103,11 @@ class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
                 LabeledDropdown<String>(
                   label: context.tr('attendance.employee'),
                   hint: context.tr('add_employee.select'),
-                  initialValue: _employee,
-                  items: {for (final e in kDummyEmployees) e: e},
+                  initialValue: _employeeId,
+                  items: {for (final e in widget.employees) e.id: e.name},
                   validator: (v) =>
                       v == null ? context.tr('common.required') : null,
-                  onChanged: (v) => _employee = v,
+                  onChanged: (v) => _employeeId = v,
                 ),
                 const SizedBox(height: 16),
                 Text(context.tr('notes.type'), style: Styles.textStyle13),
@@ -132,6 +152,15 @@ class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
                     ),
                   ],
                   textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 16),
+                DatePickerFormField(
+                  label: context.tr('notes.date'),
+                  placeholder: context.tr('attendance.select_date'),
+                  initialValue: _date,
+                  onChanged: (d) => _date = d,
+                  validator: (d) =>
+                      d == null ? context.tr('common.required') : null,
                 ),
                 const SizedBox(height: 16),
                 Text(context.tr('notes.reason'), style: Styles.textStyle13),

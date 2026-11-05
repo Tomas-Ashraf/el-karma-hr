@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class EmployeeRow extends StatelessWidget {
   const EmployeeRow({
+    super.key,
     required this.name,
     required this.bonus,
     required this.deduction,
@@ -15,22 +16,26 @@ class EmployeeRow extends StatelessWidget {
   final double bonus;
   final double deduction;
 
-  @override
-  Widget build(BuildContext context) {
-    final initials = name
+  String get _initials {
+    final letters = name
         .trim()
         .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
         .take(2)
         .map((p) => p[0])
         .join()
         .toUpperCase();
+    return letters.isEmpty ? '?' : letters;
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: cardDecoration(context),
       child: Row(
         children: [
-          InitialsAvatar(initials: initials, size: 44),
+          InitialsAvatar(initials: _initials, size: 44),
           const SizedBox(width: 12),
           Expanded(
             child: Text(

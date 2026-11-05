@@ -234,6 +234,15 @@
     "notes.summary_title": "الإجمالي",
     "notes.total_bonuses": "إجمالي المكافآت",
     "notes.total_deductions": "إجمالي الخصومات",
-    "notes.net": "الصافي",
-    "notes.by_employee": "حسب الموظف"
+    "notes.by_employee": "حسب الموظف",
+    "notes.date": "التاريخ",
+    "notes.deleted": "تم الحذف بنجاح.",
+    "notes.load_failed": "تعذّر تحميل الملاحظات. حاول مرة أخرى.",
+    "notes.save_failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "notes.delete_failed": "تعذّر الحذف. حاول مرة أخرى.",
+    "notes.delete_adjustment_title": "حذف مكافأة / خصم",
+    "notes.delete_adjustment_message": "هل أنت متأكد من حذف {type} ({amount})؟ لا يمكن التراجع عن هذا الإجراء.",
+    "notes.select_period": "اختر الفترة",
+    "notes.summary_prompt": "اختر فترة لعرض إجمالي المكافآت والخصومات لكل الموظفين.",
+    "notes.summary_empty": "لا توجد مكافآت أو خصومات في هذه الفترة"
 }

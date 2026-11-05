@@ -3,22 +3,25 @@ import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/features/add_employee_view/presentation/widgets/form_fields.dart';
 import 'package:el_karma_ph/features/attendance_view.dart/presentation/widgets/attendance_filter_dialog.dart';
+import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart';
 import 'package:flutter/material.dart';
 
 Future<NotesFilter?> showNotesFilterDialog(
   BuildContext context, {
+  required List<EmployeeModel> employees,
   NotesFilter? initial,
 }) {
   return showDialog<NotesFilter>(
     context: context,
-    builder: (_) => _NotesFilterDialog(initial: initial),
+    builder: (_) => _NotesFilterDialog(employees: employees, initial: initial),
   );
 }
 
 class _NotesFilterDialog extends StatefulWidget {
-  const _NotesFilterDialog({this.initial});
+  const _NotesFilterDialog({required this.employees, this.initial});
 
+  final List<EmployeeModel> employees;
   final NotesFilter? initial;
 
   @override
@@ -34,12 +37,13 @@ class _NotesFilterDialogState extends State<_NotesFilterDialog> {
   late DateTime? _to =
       widget.initial?.to ??
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  late String? _employee = widget.initial?.employee;
+  late String? _employeeId = widget.initial?.employee.id;
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
+    final employee = widget.employees.firstWhere((e) => e.id == _employeeId);
     Navigator.of(context)
-        .pop(NotesFilter(employee: _employee!, from: _from!, to: _to!));
+        .pop(NotesFilter(employee: employee, from: _from!, to: _to!));
   }
 
   @override
@@ -60,16 +64,6 @@ class _NotesFilterDialogState extends State<_NotesFilterDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                LabeledDropdown<String>(
-                  label: context.tr('attendance.employee'),
-                  hint: context.tr('add_employee.select'),
-                  initialValue: _employee,
-                  items: {for (final e in kDummyEmployees) e: e},
-                  validator: (v) =>
-                      v == null ? context.tr('common.required') : null,
-                  onChanged: (v) => _employee = v,
-                ),
-                const SizedBox(height: 16),
                 DatePickerFormField(
                   label: context.tr('attendance.from'),
                   placeholder: context.tr('attendance.select_date'),
@@ -91,6 +85,16 @@ class _NotesFilterDialogState extends State<_NotesFilterDialog> {
                     }
                     return null;
                   },
+                ),
+                const SizedBox(height: 16),
+                LabeledDropdown<String>(
+                  label: context.tr('attendance.employee'),
+                  hint: context.tr('add_employee.select'),
+                  initialValue: _employeeId,
+                  items: {for (final e in widget.employees) e.id: e.name},
+                  validator: (v) =>
+                      v == null ? context.tr('common.required') : null,
+                  onChanged: (v) => _employeeId = v,
                 ),
               ],
             ),

@@ -4,11 +4,15 @@ import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/utils/time_format.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
+import 'package:el_karma_ph/features/employee_details_view/presentation/widgets/edit_dialogs_widget.dart';
+import 'package:el_karma_ph/features/notes_records_view/manager/cubit/employee_notes_cubit.dart';
+import 'package:el_karma_ph/features/notes_records_view/manager/cubit/employee_notes_state.dart';
 import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/add_adjustment_dialog.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/adjustment_card.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/notes_filter_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmployeeNotesTab extends StatefulWidget {
   const EmployeeNotesTab({super.key});
@@ -19,141 +23,238 @@ class EmployeeNotesTab extends StatefulWidget {
 
 class _EmployeeNotesTabState extends State<EmployeeNotesTab>
     with AutomaticKeepAliveClientMixin {
-  final List<EmployeeAdjustment> _all = [...dummyAdjustments];
-  NotesFilter? _filter;
-
   @override
   bool get wantKeepAlive => true;
 
   @override
-  void initState() {
-    super.initState();
-    // أول ما التاب يتفتح يظهر dialog اختيار الموظف والمدة
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _openFilter();
-    });
-  }
-
-  Future<void> _openFilter() async {
-    final result = await showNotesFilterDialog(context, initial: _filter);
-    if (result != null && mounted) setState(() => _filter = result);
-  }
-
-  Future<void> _openAdd() async {
-    final result = await showAddAdjustmentDialog(
-      context,
-      initialEmployee: _filter?.employee,
+  Widget build(BuildContext context) {
+    super.build(context);
+    return BlocProvider(
+      create: (_) => EmployeeNotesCubit()..loadEmployees(),
+      child: const _EmployeeNotesView(),
     );
-    if (result == null || !mounted) return;
-    setState(() => _all.insert(0, result));
-    ScaffoldMessenger.of(context)
+  }
+}
+
+class _EmployeeNotesView extends StatelessWidget {
+  const _EmployeeNotesView();
+
+  void _snack(ScaffoldMessengerState messenger, String text, bool ok) {
+    messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(context.tr('notes.added')),
-          backgroundColor: Colors.green,
+          content: Text(text),
+          backgroundColor: ok ? Colors.green : Colors.red,
         ),
       );
   }
 
-  List<EmployeeAdjustment> get _visible {
-    final f = _filter;
-    if (f == null) return const [];
-    final from = DateTime(f.from.year, f.from.month, f.from.day);
-    final end = DateTime(f.to.year, f.to.month, f.to.day + 1);
-    return _all
-        .where(
-          (a) =>
-              a.employeeName == f.employee &&
-              !a.date.isBefore(from) &&
-              a.date.isBefore(end),
-        )
-        .toList();
+  Future<void> _openFilter(BuildContext context) async {
+    final cubit = context.read<EmployeeNotesCubit>();
+    final state = cubit.state;
+    if (state.employees.isEmpty) return;
+
+    final result = await showNotesFilterDialog(
+      context,
+      employees: state.employees,
+      initial: state.filter,
+    );
+    if (result != null) cubit.applyFilter(result);
+  }
+
+  Future<void> _openAdd(BuildContext context) async {
+    final cubit = context.read<EmployeeNotesCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final state = cubit.state;
+    if (state.employees.isEmpty) return;
+
+    final draft = await showAddAdjustmentDialog(
+      context,
+      employees: state.employees,
+      initialEmployee: state.filter?.employee,
+    );
+    if (draft == null) return;
+
+    final error = await cubit.addAdjustment(draft);
+    if (!context.mounted) return;
+    _snack(messenger, context.tr(error ?? 'notes.added'), error == null);
+  }
+
+  Future<void> _delete(BuildContext context, EmployeeAdjustment item) async {
+    final cubit = context.read<EmployeeNotesCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    final confirmed = await showConfirmDialog(
+      context,
+      title: context.tr('notes.delete_adjustment_title'),
+      message: context.tr(
+        'notes.delete_adjustment_message',
+        args: {
+          'type': context.tr(item.isBonus ? 'notes.bonus' : 'notes.deduction'),
+          'amount': formatAmount(context, item.amount),
+        },
+      ),
+      confirmLabel: context.tr('common.delete'),
+      destructive: true,
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final error = await cubit.deleteAdjustment(item);
+    if (!context.mounted) return;
+    _snack(messenger, context.tr(error ?? 'notes.deleted'), error == null);
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final screenSize = MediaQuery.of(context).size;
-    final filter = _filter;
-    final items = _visible;
 
-    final label = filter == null
-        ? context.tr('attendance.select_period')
-        : '${filter.employee}  •  ${formatMediumDate(context, filter.from)}'
-              ' - ${formatMediumDate(context, filter.to)}';
+    return BlocConsumer<EmployeeNotesCubit, EmployeeNotesState>(
+      listenWhen: (previous, current) =>
+          previous.status == EmployeeNotesStatus.loadingEmployees &&
+          current.status == EmployeeNotesStatus.ready,
+      listener: (context, state) => _openFilter(context),
+      builder: (context, state) {
+        final filter = state.filter;
+        final label = filter == null
+            ? context.tr('attendance.select_period')
+            : '${filter.employee.name}  •  '
+                  '${formatMediumDate(context, filter.from)}'
+                  ' - ${formatMediumDate(context, filter.to)}';
+        final canAdd = state.employees.isNotEmpty;
 
-    return SafeArea(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: screenSize.width * 0.05,
-              vertical: screenSize.height * 0.015,
-            ),
-            child: Column(
-              children: [
-                _FilterButton(label: label, onTap: _openFilter),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: filter == null
-                      ? _Message(
-                          icon: Icons.manage_search_rounded,
-                          text: context.tr('notes.prompt'),
-                        )
-                      : items.isEmpty
-                      ? _Message(
-                          icon: Icons.inbox_outlined,
-                          text: context.tr('notes.no_adjustments'),
-                          hint: context.tr(
-                            'notes.no_adjustments_hint',
-                            args: {'name': filter.employee},
-                          ),
-                        )
-                      : Column(
-                          children: [
-                            _TotalsRow(items: items),
-                            const SizedBox(height: 12),
-                            Expanded(
-                              child: ListView.separated(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                itemCount: items.length,
-                                separatorBuilder: (_, _) =>
-                                    const SizedBox(height: 12),
-                                itemBuilder: (_, i) =>
-                                    AdjustmentCard(item: items[i]),
-                              ),
-                            ),
-                          ],
-                        ),
+        return SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenSize.width * 0.05,
+                  vertical: screenSize.height * 0.015,
                 ),
-                const SizedBox(height: 12),
-                ButtonWidget(
-                  width: double.infinity,
-                  height: 52,
-                  onPressed: _openAdd,
-                  backgroundColor: kPrimaryBlue,
-                  foregroundColor: Colors.white,
-                  text: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.add_rounded, size: 22),
-                      const SizedBox(width: 6),
-                      Text(
-                        context.tr('notes.add_adjustment'),
-                        style: Styles.textStyle16,
+                child: Column(
+                  children: [
+                    _FilterButton(
+                      label: label,
+                      onTap: canAdd ? () => _openFilter(context) : null,
+                    ),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: _Content(
+                        state: state,
+                        onDelete: (item) => _delete(context, item),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 12),
+                    ButtonWidget(
+                      width: double.infinity,
+                      height: 52,
+                      onPressed: canAdd ? () => _openAdd(context) : null,
+                      backgroundColor: kPrimaryBlue,
+                      foregroundColor: Colors.white,
+                      text: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.add_rounded, size: 22),
+                          const SizedBox(width: 6),
+                          Text(
+                            context.tr('notes.add_adjustment'),
+                            style: Styles.textStyle16,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                 ),
-                const SizedBox(height: 8),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
+  }
+}
+
+class _Content extends StatelessWidget {
+  const _Content({required this.state, required this.onDelete});
+
+  final EmployeeNotesState state;
+  final void Function(EmployeeAdjustment item) onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<EmployeeNotesCubit>();
+    final filter = state.filter;
+
+    switch (state.status) {
+      case EmployeeNotesStatus.loadingEmployees:
+      case EmployeeNotesStatus.loading:
+        return const Center(child: CircularProgressIndicator());
+
+      case EmployeeNotesStatus.failure:
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                context.tr(state.message ?? 'notes.load_failed'),
+                style: Styles.textStyle14,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => filter == null
+                    ? cubit.loadEmployees()
+                    : cubit.applyFilter(filter),
+                child: Text(context.tr('common.retry')),
+              ),
+            ],
+          ),
+        );
+
+      case EmployeeNotesStatus.ready:
+        return state.employees.isEmpty
+            ? _Message(
+                icon: Icons.people_outline_rounded,
+                text: context.tr('employees.empty'),
+              )
+            : _Message(
+                icon: Icons.manage_search_rounded,
+                text: context.tr('notes.prompt'),
+              );
+
+      case EmployeeNotesStatus.success:
+        if (state.items.isEmpty) {
+          return _Message(
+            icon: Icons.inbox_outlined,
+            text: context.tr('notes.no_adjustments'),
+            hint: filter == null
+                ? null
+                : context.tr(
+                    'notes.no_adjustments_hint',
+                    args: {'name': filter.employee.name},
+                  ),
+          );
+        }
+        return Column(
+          children: [
+            _TotalsRow(items: state.items),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.only(bottom: 8),
+                itemCount: state.items.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 12),
+                itemBuilder: (_, i) => AdjustmentCard(
+                  item: state.items[i],
+                  onDelete: () => onDelete(state.items[i]),
+                ),
+              ),
+            ),
+          ],
+        );
+    }
   }
 }
 
@@ -161,7 +262,7 @@ class _FilterButton extends StatelessWidget {
   const _FilterButton({required this.label, required this.onTap});
 
   final String label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

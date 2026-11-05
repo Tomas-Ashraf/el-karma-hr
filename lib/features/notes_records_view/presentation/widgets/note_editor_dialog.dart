@@ -93,7 +93,7 @@ class _NoteEditorDialogState extends State<_NoteEditorDialog> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    for (final (i, c) in kNoteColorsLight.indexed)
+                    for (var i = 0; i < kNoteColorsLight.length; i++)
                       Padding(
                         padding: const EdgeInsetsDirectional.only(end: 10),
                         child: GestureDetector(
@@ -102,20 +102,20 @@ class _NoteEditorDialogState extends State<_NoteEditorDialog> {
                             width: 30,
                             height: 30,
                             decoration: BoxDecoration(
-                              color: c,
+                              color: context.noteColor(i),
                               shape: BoxShape.circle,
-                              border: _color == i
-                                  ? Border.all(
-                                      color: context.colors.onSurface,
-                                      width: 2,
-                                    )
-                                  : null,
+                              border: Border.all(
+                                color: _color == i
+                                    ? context.colors.onSurface
+                                    : context.colors.outlineVariant,
+                                width: _color == i ? 2 : 1,
+                              ),
                             ),
                             child: _color == i
-                                ? const Icon(
+                                ? Icon(
                                     Icons.check_rounded,
                                     size: 16,
-                                    color: Colors.white,
+                                    color: context.colors.onSurface,
                                   )
                                 : null,
                           ),
