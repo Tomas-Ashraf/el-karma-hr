@@ -234,6 +234,15 @@
     "notes.summary_title": "Totals",
     "notes.total_bonuses": "Total bonuses",
     "notes.total_deductions": "Total deductions",
-    "notes.net": "Net",
-    "notes.by_employee": "By employee"
+    "notes.by_employee": "By employee",
+    "notes.date": "Date",
+    "notes.deleted": "Deleted successfully.",
+    "notes.load_failed": "Couldn't load notes. Please try again.",
+    "notes.save_failed": "Couldn't save. Please try again.",
+    "notes.delete_failed": "Couldn't delete. Please try again.",
+    "notes.delete_adjustment_title": "Delete bonus / deduction",
+    "notes.delete_adjustment_message": "Are you sure you want to delete this {type} ({amount})? This can't be undone.",
+    "notes.select_period": "Select period",
+    "notes.summary_prompt": "Choose a period to see the totals for all employees.",
+    "notes.summary_empty": "No bonuses or deductions in this period"
 }

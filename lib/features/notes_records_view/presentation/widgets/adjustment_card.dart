@@ -17,10 +17,13 @@ class AdjustmentCard extends StatelessWidget {
     super.key,
     required this.item,
     this.showEmployee = false,
+    this.onDelete,
   });
 
   final EmployeeAdjustment item;
   final bool showEmployee;
+
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class AdjustmentCard extends StatelessWidget {
     final color = item.isBonus ? kBonusColor : kDeductionColor;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsetsDirectional.fromSTEB(14, 12, 6, 12),
       decoration: BoxDecoration(
         color: colors.surface,
         borderRadius: BorderRadius.circular(16),
@@ -118,6 +121,17 @@ class AdjustmentCard extends StatelessWidget {
               ),
             ],
           ),
+          if (onDelete != null)
+            IconButton(
+              onPressed: onDelete,
+              tooltip: context.tr('common.delete'),
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(
+                Icons.delete_outline_rounded,
+                size: 22,
+                color: kDeductionColor,
+              ),
+            ),
         ],
       ),
     );
