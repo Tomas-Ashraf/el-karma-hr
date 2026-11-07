@@ -94,4 +94,19 @@ class EmployeeNotesCubit extends Cubit<EmployeeNotesState> {
       return notesErrorKey(e, 'notes.delete_failed');
     }
   }
+
+  Future<String?> updateAdjustment(
+    EmployeeAdjustment item,
+    AdjustmentDraft draft,
+  ) async {
+    try {
+      await _repo.updateAdjustment(item, draft);
+      final filter = state.filter;
+      if (filter != null) await _load(filter);
+      return null;
+    } catch (e) {
+      log('Failed to update adjustment: $e');
+      return notesErrorKey(e, 'notes.save_failed');
+    }
+  }
 }

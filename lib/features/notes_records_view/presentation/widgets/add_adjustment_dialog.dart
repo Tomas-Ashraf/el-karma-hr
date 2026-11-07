@@ -9,41 +9,55 @@ import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-Future<AdjustmentDraft?> showAddAdjustmentDialog(
+Future<AdjustmentDraft?> showAdjustmentDialog(
   BuildContext context, {
   required List<EmployeeModel> employees,
   EmployeeModel? initialEmployee,
+  EmployeeAdjustment? initial,
 }) {
+  assert(initial == null || initialEmployee != null);
   return showDialog<AdjustmentDraft>(
     context: context,
-    builder: (_) => _AddAdjustmentDialog(
+    builder: (_) => _AdjustmentDialog(
       employees: employees,
       initialEmployee: initialEmployee,
+      initial: initial,
     ),
   );
 }
 
-class _AddAdjustmentDialog extends StatefulWidget {
-  const _AddAdjustmentDialog({required this.employees, this.initialEmployee});
+class _AdjustmentDialog extends StatefulWidget {
+  const _AdjustmentDialog({
+    required this.employees,
+    this.initialEmployee,
+    this.initial,
+  });
 
   final List<EmployeeModel> employees;
   final EmployeeModel? initialEmployee;
+  final EmployeeAdjustment? initial;
 
   @override
-  State<_AddAdjustmentDialog> createState() => _AddAdjustmentDialogState();
+  State<_AdjustmentDialog> createState() => _AdjustmentDialogState();
 }
 
-class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
+class _AdjustmentDialogState extends State<_AdjustmentDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _amount = TextEditingController();
-  final _reason = TextEditingController();
-  late String? _employeeId = widget.initialEmployee?.id;
-  late DateTime? _date = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
+
+  bool get _isEdit => widget.initial != null;
+
+  late final _amount = TextEditingController(
+    text: widget.initial == null ? '' : _amountText(widget.initial!.amount),
   );
-  AdjustmentType _type = AdjustmentType.bonus;
+  late final _reason = TextEditingController(text: widget.initial?.reason);
+  late String? _employeeId = widget.initialEmployee?.id;
+  late DateTime? _date = _dayOf(widget.initial?.date ?? DateTime.now());
+  late AdjustmentType _type = widget.initial?.type ?? AdjustmentType.bonus;
+
+  static DateTime _dayOf(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  static String _amountText(double value) =>
+      value % 1 == 0 ? value.toInt().toString() : value.toString();
 
   @override
   void dispose() {
@@ -62,9 +76,12 @@ class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    final employee = widget.employees.firstWhere((e) => e.id == _employeeId);
+
+    final employee = _isEdit
+        ? widget.initialEmployee!
+        : widget.employees.firstWhere((e) => e.id == _employeeId);
     final day = _date!;
-    final now = DateTime.now();
+    final time = widget.initial?.date ?? DateTime.now();
 
     Navigator.of(context).pop((
       employee: employee,
@@ -75,9 +92,9 @@ class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
         day.year,
         day.month,
         day.day,
-        now.hour,
-        now.minute,
-        now.second,
+        time.hour,
+        time.minute,
+        time.second,
       ),
     ));
   }
@@ -88,7 +105,7 @@ class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
       backgroundColor: context.colors.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Text(
-        context.tr('notes.add_adjustment'),
+        context.tr(_isEdit ? 'notes.edit_adjustment' : 'notes.add_adjustment'),
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
       content: SizedBox(
@@ -100,15 +117,21 @@ class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                LabeledDropdown<String>(
-                  label: context.tr('attendance.employee'),
-                  hint: context.tr('add_employee.select'),
-                  initialValue: _employeeId,
-                  items: {for (final e in widget.employees) e.id: e.name},
-                  validator: (v) =>
-                      v == null ? context.tr('common.required') : null,
-                  onChanged: (v) => _employeeId = v,
-                ),
+                if (_isEdit)
+                  _ReadOnlyField(
+                    label: context.tr('attendance.employee'),
+                    value: widget.initialEmployee!.name,
+                  )
+                else
+                  LabeledDropdown<String>(
+                    label: context.tr('attendance.employee'),
+                    hint: context.tr('add_employee.select'),
+                    initialValue: _employeeId,
+                    items: {for (final e in widget.employees) e.id: e.name},
+                    validator: (v) =>
+                        v == null ? context.tr('common.required') : null,
+                    onChanged: (v) => _employeeId = v,
+                  ),
                 const SizedBox(height: 16),
                 Text(context.tr('notes.type'), style: Styles.textStyle13),
                 const SizedBox(height: 6),
@@ -195,7 +218,37 @@ class _AddAdjustmentDialogState extends State<_AddAdjustmentDialog> {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          child: Text(context.tr('add_employee.submit')),
+          child: Text(
+            context.tr(_isEdit ? 'common.save' : 'add_employee.submit'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ReadOnlyField extends StatelessWidget {
+  const _ReadOnlyField({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Styles.textStyle13),
+        const SizedBox(height: 6),
+        InputDecorator(
+          decoration: appInputDecoration(context),
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              color: context.colors.onSurfaceVariant,
+            ),
+          ),
         ),
       ],
     );

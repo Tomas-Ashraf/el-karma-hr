@@ -6,6 +6,7 @@ import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/utils/time_format.dart';
 import 'package:el_karma_ph/features/notes_records_view/manager/cubit/notes_summary_cubit.dart';
 import 'package:el_karma_ph/features/notes_records_view/manager/cubit/notes_summary_state.dart';
+import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/adjustment_card.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/card_decoration.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/employee_row.dart';
@@ -196,6 +197,17 @@ class _Content extends StatelessWidget {
                   name: e.name,
                   bonus: e.bonus,
                   deduction: e.deduction,
+                  onTap: period == null
+                      ? null
+                      : () => GoRouter.of(context).pushNamed(
+                          AppRouter.kNotesEmployeeDetailsView,
+                          extra: NotesEmployeeArgs(
+                            employeeId: e.employeeId,
+                            name: e.name,
+                            from: period.from,
+                            to: period.to,
+                          ),
+                        ),
                 ),
               ),
           ],

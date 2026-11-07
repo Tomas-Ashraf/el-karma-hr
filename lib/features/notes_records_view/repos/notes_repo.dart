@@ -110,6 +110,18 @@ class NotesRepo {
 
   Future<void> deleteAdjustment(EmployeeAdjustment item) =>
       _employeeNotes(item.employeeId).doc(item.id).delete();
+  Future<void> updateAdjustment(
+    EmployeeAdjustment item,
+    AdjustmentDraft draft,
+  ) {
+    return _employeeNotes(item.employeeId).doc(item.id).update({
+      'type': draft.type.name,
+      'amount': draft.amount,
+      'reason': draft.reason,
+      'date': Timestamp.fromDate(draft.date),
+      'updated_at': FieldValue.serverTimestamp(),
+    });
+  }
 
   Future<NotesSummary> getSummary(
     List<EmployeeModel> employees,

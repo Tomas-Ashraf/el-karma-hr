@@ -244,5 +244,9 @@
     "notes.delete_adjustment_message": "Are you sure you want to delete this {type} ({amount})? This can't be undone.",
     "notes.select_period": "Select period",
     "notes.summary_prompt": "Choose a period to see the totals for all employees.",
-    "notes.summary_empty": "No bonuses or deductions in this period"
+    "notes.summary_empty": "No bonuses or deductions in this period",
+    "add_employee.pick_contact": "Pick from contacts",
+    "add_employee.contacts_failed": "Couldn't open contacts.",
+    "notes.edit_adjustment": "تعديل مكافأة / خصم",
+    "notes.updated": "تم التحديث بنجاح."
 }

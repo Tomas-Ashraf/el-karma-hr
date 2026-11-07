@@ -1,6 +1,7 @@
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
+import 'package:el_karma_ph/core/widgets/contact_picker_button.dart';
 import 'package:el_karma_ph/features/add_employee_view/models/add_employee_model.dart';
 import 'package:el_karma_ph/features/add_employee_view/presentation/widgets/form_fields.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +74,8 @@ Future<String?> showEditTextDialog(
   List<TextInputFormatter>? inputFormatters,
   TextCapitalization textCapitalization = TextCapitalization.none,
   String? suffixText,
+  Widget? suffixIcon,
+  bool pickContact = false,
 }) {
   return showDialog<String>(
     context: context,
@@ -84,6 +87,8 @@ Future<String?> showEditTextDialog(
       inputFormatters: inputFormatters,
       textCapitalization: textCapitalization,
       suffixText: suffixText,
+      suffixIcon: suffixIcon,
+      pickContact: pickContact,
     ),
   );
 }
@@ -172,6 +177,8 @@ class _EditTextDialog extends StatefulWidget {
     this.inputFormatters,
     this.textCapitalization = TextCapitalization.none,
     this.suffixText,
+    this.suffixIcon,
+    this.pickContact = false,
   });
 
   final String title;
@@ -181,6 +188,8 @@ class _EditTextDialog extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final TextCapitalization textCapitalization;
   final String? suffixText;
+  final Widget? suffixIcon;
+  final bool pickContact;
 
   @override
   State<_EditTextDialog> createState() => _EditTextDialogState();
@@ -222,6 +231,14 @@ class _EditTextDialogState extends State<_EditTextDialog> {
           decoration: appInputDecoration(
             context,
             suffixText: widget.suffixText,
+            suffixIcon: widget.pickContact && canPickContact
+                ? ContactPickerButton(
+                    onPicked: (number) => _controller.value = TextEditingValue(
+                      text: number,
+                      selection: TextSelection.collapsed(offset: number.length),
+                    ),
+                  )
+                : null,
           ),
         ),
       ),

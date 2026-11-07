@@ -5,6 +5,7 @@ import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/utils/weekdays.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
+import 'package:el_karma_ph/core/widgets/contact_picker_button.dart';
 import 'package:el_karma_ph/features/add_employee_view/manager/cubit/add_employee_cubit.dart';
 import 'package:el_karma_ph/features/add_employee_view/models/add_employee_model.dart';
 import 'package:el_karma_ph/features/add_employee_view/presentation/widgets/form_fields.dart';
@@ -245,6 +246,12 @@ class _AddEmployeeViewBodyState extends State<AddEmployeeViewBody> {
                         LengthLimitingTextInputFormatter(15),
                       ],
                       textInputAction: TextInputAction.next,
+                      suffixIcon: canPickContact
+                          ? ContactPickerButton(
+                              onPicked: (number) =>
+                                  _phoneController.text = number,
+                            )
+                          : null,
                     ),
                     gap,
                     LabeledTextField(

@@ -113,6 +113,20 @@ class EmployeeTotals {
   final double deduction;
 }
 
+class NotesEmployeeArgs {
+  const NotesEmployeeArgs({
+    required this.employeeId,
+    required this.name,
+    required this.from,
+    required this.to,
+  });
+
+  final String employeeId;
+  final String name;
+  final DateTime from;
+  final DateTime to;
+}
+
 class NotesSummary {
   const NotesSummary(this.employees);
 

@@ -8,12 +8,11 @@ import 'package:el_karma_ph/features/employee_details_view/manager/cubit/employe
 import 'package:el_karma_ph/features/employee_details_view/presentation/widgets/details_info_card_widget.dart';
 import 'package:el_karma_ph/features/employee_details_view/presentation/widgets/edit_dialogs_widget.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EmployeeDetailsViewBody extends StatelessWidget {
+class EmployeeDetailsViewBody extends StatefulWidget {
   const EmployeeDetailsViewBody({super.key});
 
   static final _phoneFormatters = <TextInputFormatter>[
@@ -28,6 +27,12 @@ class EmployeeDetailsViewBody extends StatelessWidget {
     LengthLimitingTextInputFormatter(9),
   ];
 
+  @override
+  State<EmployeeDetailsViewBody> createState() =>
+      _EmployeeDetailsViewBodyState();
+}
+
+class _EmployeeDetailsViewBodyState extends State<EmployeeDetailsViewBody> {
   Map<String, String> _userTypes(BuildContext c) => {
     'admin': c.tr('add_employee.type_admin'),
     'operator': c.tr('add_employee.type_operator'),
@@ -87,6 +92,8 @@ class EmployeeDetailsViewBody extends StatelessWidget {
     TextCapitalization capitalization = TextCapitalization.none,
     String? suffixText,
     Object Function(String)? parse,
+    Widget? suffixIcon,
+    bool pickContact = false,
   }) async {
     final cubit = context.read<EmployeeDetailsCubit>();
     final result = await showEditTextDialog(
@@ -98,6 +105,8 @@ class EmployeeDetailsViewBody extends StatelessWidget {
       inputFormatters: formatters,
       textCapitalization: capitalization,
       suffixText: suffixText,
+      suffixIcon: suffixIcon,
+      pickContact: pickContact,
     );
     if (result == null || result == initial) return;
     cubit.update({key: parse == null ? result : parse(result)});
@@ -278,6 +287,7 @@ class EmployeeDetailsViewBody extends StatelessWidget {
                         DetailsInfoCard(
                           label: context.tr('add_employee.phone'),
                           value: e.phoneNumber,
+
                           onEdit: () => _editText(
                             context,
                             label: context.tr('add_employee.phone'),
@@ -285,9 +295,12 @@ class EmployeeDetailsViewBody extends StatelessWidget {
                             initial: e.phoneNumber,
                             validator: (v) => _validatePhone(context, v),
                             keyboardType: TextInputType.phone,
-                            formatters: _phoneFormatters,
+                            formatters:
+                                EmployeeDetailsViewBody._phoneFormatters,
+                            pickContact: true,
                           ),
                         ),
+
                         DetailsInfoCard(
                           label: context.tr('add_employee.salary'),
                           value: '$salaryText $egp',
@@ -300,7 +313,8 @@ class EmployeeDetailsViewBody extends StatelessWidget {
                             keyboardType: const TextInputType.numberWithOptions(
                               decimal: true,
                             ),
-                            formatters: _salaryFormatters,
+                            formatters:
+                                EmployeeDetailsViewBody._salaryFormatters,
                             suffixText: egp,
                             parse: (v) => double.parse(v),
                           ),
@@ -350,7 +364,8 @@ class EmployeeDetailsViewBody extends StatelessWidget {
                             initial: '${e.deviceId}',
                             validator: (v) => _validateDeviceId(context, v),
                             keyboardType: TextInputType.number,
-                            formatters: _deviceFormatters,
+                            formatters:
+                                EmployeeDetailsViewBody._deviceFormatters,
                             parse: (v) => int.parse(v),
                           ),
                         ),
