@@ -62,6 +62,9 @@
     "drawer.attendance_records": "سجلات الحضور",
     "drawer.notes_records": "سجلات الملاحظات",
     "drawer.count_salary": "حساب المرتبات",
+    "drawer.Orders_recording": "تسجيل الطلبات",
+    "drawer.current_orders": "الطلبات الحالية",
+    "drawer.finished_orders": "الطلبات المنتهية",
     "drawer.record_events": "تسجيل الأحداث",
     "drawer.settings": "الإعدادات",
     "drawer.logout": "تسجيل الخروج",
@@ -244,5 +247,9 @@
     "notes.delete_adjustment_message": "هل أنت متأكد من حذف {type} ({amount})؟ لا يمكن التراجع عن هذا الإجراء.",
     "notes.select_period": "اختر الفترة",
     "notes.summary_prompt": "اختر فترة لعرض إجمالي المكافآت والخصومات لكل الموظفين.",
-    "notes.summary_empty": "لا توجد مكافآت أو خصومات في هذه الفترة"
+    "notes.summary_empty": "لا توجد مكافآت أو خصومات في هذه الفترة",
+    "add_employee.pick_contact": "اختيار من جهات الاتصال",
+    "add_employee.contacts_failed": "تعذّر فتح جهات الاتصال.",
+    "notes.edit_adjustment": "Edit Bonus / Deduction",
+    "notes.updated": "Updated successfully."
 }

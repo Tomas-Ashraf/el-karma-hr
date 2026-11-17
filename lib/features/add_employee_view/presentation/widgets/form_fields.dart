@@ -49,6 +49,7 @@ class LabeledTextField extends StatelessWidget {
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
     this.suffixText,
+    this.suffixIcon,
     this.onFieldSubmitted,
   });
 
@@ -61,6 +62,7 @@ class LabeledTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final String? suffixText;
   final ValueChanged<String>? onFieldSubmitted;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +79,11 @@ class LabeledTextField extends StatelessWidget {
           textInputAction: textInputAction,
           textCapitalization: textCapitalization,
           onFieldSubmitted: onFieldSubmitted,
-          decoration: appInputDecoration(context, suffixText: suffixText),
+          decoration: appInputDecoration(
+            context,
+            suffixText: suffixText,
+            suffixIcon: suffixIcon,
+          ),
         ),
       ],
     );

@@ -10,6 +10,7 @@ import 'package:el_karma_ph/features/notes_records_view/manager/cubit/employee_n
 import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/add_adjustment_dialog.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/adjustment_card.dart';
+import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/adjustments_totals_row.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/notes_filter_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,11 +70,11 @@ class _EmployeeNotesView extends StatelessWidget {
     final state = cubit.state;
     if (state.employees.isEmpty) return;
 
-    final draft = await showAddAdjustmentDialog(
+    final draft = await showAdjustmentDialog(
       context,
-      employees: state.employees,
-      initialEmployee: state.filter?.employee,
+      employees: [...state.employees],
     );
+
     if (draft == null) return;
 
     final error = await cubit.addAdjustment(draft);
@@ -103,6 +104,25 @@ class _EmployeeNotesView extends StatelessWidget {
     final error = await cubit.deleteAdjustment(item);
     if (!context.mounted) return;
     _snack(messenger, context.tr(error ?? 'notes.deleted'), error == null);
+  }
+
+  Future<void> _openEdit(BuildContext context, EmployeeAdjustment item) async {
+    final cubit = context.read<EmployeeNotesCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final employee = cubit.state.filter?.employee;
+    if (employee == null) return;
+
+    final draft = await showAdjustmentDialog(
+      context,
+      employees: cubit.state.employees,
+      initialEmployee: employee,
+      initial: item,
+    );
+    if (draft == null) return;
+
+    final error = await cubit.updateAdjustment(item, draft);
+    if (!context.mounted) return;
+    _snack(messenger, context.tr(error ?? 'notes.updated'), error == null);
   }
 
   @override
@@ -142,6 +162,7 @@ class _EmployeeNotesView extends StatelessWidget {
                     Expanded(
                       child: _Content(
                         state: state,
+                        onEdit: (item) => _openEdit(context, item),
                         onDelete: (item) => _delete(context, item),
                       ),
                     ),
@@ -177,10 +198,15 @@ class _EmployeeNotesView extends StatelessWidget {
 }
 
 class _Content extends StatelessWidget {
-  const _Content({required this.state, required this.onDelete});
+  const _Content({
+    required this.state,
+    required this.onDelete,
+    required this.onEdit,
+  });
 
   final EmployeeNotesState state;
   final void Function(EmployeeAdjustment item) onDelete;
+  final void Function(EmployeeAdjustment item) onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -239,7 +265,7 @@ class _Content extends StatelessWidget {
         }
         return Column(
           children: [
-            _TotalsRow(items: state.items),
+            AdjustmentTotalsRow(items: state.items),
             const SizedBox(height: 12),
             Expanded(
               child: ListView.separated(
@@ -248,6 +274,7 @@ class _Content extends StatelessWidget {
                 separatorBuilder: (_, _) => const SizedBox(height: 12),
                 itemBuilder: (_, i) => AdjustmentCard(
                   item: state.items[i],
+                  onTap: () => onEdit(state.items[i]),
                   onDelete: () => onDelete(state.items[i]),
                 ),
               ),
@@ -298,55 +325,6 @@ class _FilterButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _TotalsRow extends StatelessWidget {
-  const _TotalsRow({required this.items});
-
-  final List<EmployeeAdjustment> items;
-
-  @override
-  Widget build(BuildContext context) {
-    final bonus = items
-        .where((e) => e.isBonus)
-        .fold(0.0, (s, e) => s + e.amount);
-    final ded = items
-        .where((e) => !e.isBonus)
-        .fold(0.0, (s, e) => s + e.amount);
-
-    Widget chip(String label, double value, Color color) => Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: color.withAlpha(31),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: TextStyle(fontSize: 12, color: color)),
-            const SizedBox(height: 2),
-            Text(
-              formatAmount(context, value),
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    return Row(
-      children: [
-        chip(context.tr('notes.bonus'), bonus, kBonusColor),
-        const SizedBox(width: 10),
-        chip(context.tr('notes.deduction'), ded, kDeductionColor),
-      ],
     );
   }
 }

@@ -33,7 +33,7 @@ class EmployeeDetailsView extends StatelessWidget {
             },
           ),
         ),
-        body: const EmployeeDetailsViewBody(),
+        body: EmployeeDetailsViewBody(),
       ),
     );
   }

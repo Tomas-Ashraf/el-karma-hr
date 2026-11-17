@@ -17,13 +17,19 @@ class AdjustmentCard extends StatelessWidget {
     super.key,
     required this.item,
     this.showEmployee = false,
+    this.onTap,
     this.onDelete,
+    this.reasonLines = 2,
   });
 
   final EmployeeAdjustment item;
   final bool showEmployee;
 
+  final VoidCallback? onTap;
+
   final VoidCallback? onDelete;
+
+  final int reasonLines;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +38,6 @@ class AdjustmentCard extends StatelessWidget {
     final color = item.isBonus ? kBonusColor : kDeductionColor;
 
     return Container(
-      padding: const EdgeInsetsDirectional.fromSTEB(14, 12, 6, 12),
       decoration: BoxDecoration(
         color: colors.surface,
         borderRadius: BorderRadius.circular(16),
@@ -47,92 +52,108 @@ class AdjustmentCard extends StatelessWidget {
                 ),
               ],
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: color.withAlpha(31),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              item.isBonus
-                  ? Icons.arrow_upward_rounded
-                  : Icons.arrow_downward_rounded,
-              color: color,
-              size: 22,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(14, 12, 6, 12),
+            child: Row(
               children: [
-                if (showEmployee)
-                  Text(
-                    item.employeeName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(31),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    item.isBonus
+                        ? Icons.arrow_upward_rounded
+                        : Icons.arrow_downward_rounded,
+                    color: color,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (showEmployee)
+                        Text(
+                          item.employeeName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      Text(
+                        item.reason,
+                        maxLines: reasonLines,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: showEmployee ? 12 : 14,
+                          fontWeight: showEmployee
+                              ? FontWeight.w400
+                              : FontWeight.w600,
+                          color: showEmployee ? colors.onSurfaceVariant : null,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        formatMediumDate(context, item.date),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${item.isBonus ? '+' : '-'}'
+                      '${formatAmount(context, item.amount)}',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                      ),
                     ),
-                  ),
-                Text(
-                  item.reason,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: showEmployee ? 12 : 14,
-                    fontWeight: showEmployee
-                        ? FontWeight.w400
-                        : FontWeight.w600,
-                    color: showEmployee ? colors.onSurfaceVariant : null,
-                  ),
+                    const SizedBox(height: 2),
+                    Text(
+                      context.tr(
+                        item.isBonus ? 'notes.bonus' : 'notes.deduction',
+                      ),
+                      style: TextStyle(fontSize: 11, color: color),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  formatMediumDate(context, item.date),
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: colors.onSurfaceVariant,
-                  ),
-                ),
+                if (onDelete != null)
+                  IconButton(
+                    onPressed: onDelete,
+                    tooltip: context.tr('common.delete'),
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                      size: 22,
+                      color: kDeductionColor,
+                    ),
+                  )
+                else
+                  const SizedBox(width: 8),
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${item.isBonus ? '+' : '-'}${formatAmount(context, item.amount)}',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                context.tr(item.isBonus ? 'notes.bonus' : 'notes.deduction'),
-                style: TextStyle(fontSize: 11, color: color),
-              ),
-            ],
-          ),
-          if (onDelete != null)
-            IconButton(
-              onPressed: onDelete,
-              tooltip: context.tr('common.delete'),
-              visualDensity: VisualDensity.compact,
-              icon: const Icon(
-                Icons.delete_outline_rounded,
-                size: 22,
-                color: kDeductionColor,
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }
