@@ -49,6 +49,22 @@ class _AppDrawerState extends State<AppDrawer> {
             GoRouter.of(context).pushNamed(AppRouter.kNotesRecordsView),
       ),
       DrawerEntry(
+        icon: Icons.shopping_cart_outlined,
+        label: context.tr('drawer.Orders_recording'),
+        onTap: () {},
+      ),
+      DrawerEntry(
+        icon: Icons.motorcycle_rounded,
+        label: context.tr('drawer.current_orders'),
+        onTap: () {},
+      ),
+
+      DrawerEntry(
+        icon: Icons.task_alt_outlined,
+        label: context.tr('drawer.finished_orders'),
+        onTap: () {},
+      ),
+      DrawerEntry(
         icon: Icons.payments_outlined,
         label: context.tr('drawer.count_salary'),
         onTap: () {},
@@ -79,32 +95,34 @@ class _AppDrawerState extends State<AppDrawer> {
         return Drawer(
           backgroundColor: context.colors.surface,
           child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user?.name ?? '',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user?.name ?? '',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(user?.job ?? '', style: Styles.textStyle14),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(user?.job ?? '', style: Styles.textStyle14),
+                      ],
+                    ),
                   ),
-                ),
-                Divider(height: 1, color: context.colors.outlineVariant),
-                const SizedBox(height: 8),
-                for (final entry in entries) DrawerTile(entry: entry),
-              ],
+                  Divider(height: 1, color: context.colors.outlineVariant),
+                  const SizedBox(height: 8),
+                  for (final entry in entries) DrawerTile(entry: entry),
+                ],
+              ),
             ),
           ),
         );
