@@ -250,6 +250,20 @@
     "notes.summary_empty": "لا توجد مكافآت أو خصومات في هذه الفترة",
     "add_employee.pick_contact": "اختيار من جهات الاتصال",
     "add_employee.contacts_failed": "تعذّر فتح جهات الاتصال.",
-    "notes.edit_adjustment": "Edit Bonus / Deduction",
-    "notes.updated": "Updated successfully."
+    "notes.edit_adjustment": "تعديل مكافأة / خصم",
+    "notes.updated": "تم التحديث بنجاح.",
+    "orders.title": "تسجيل الطلبات",
+    "orders.delivery_man": "مندوب التوصيل",
+    "orders.customer_or_invoice": "اسم العميل أو رقم الفاتورة",
+    "orders.customer_or_invoice_hint": "أدخل اسم العميل أو رقم الفاتورة.",
+    "orders.amount": "المبلغ المطلوب تسليمه",
+    "orders.amount_hint": "المبلغ الذي يجب على المندوب تسليمه للحسابات.",
+    "orders.submit": "إضافة الطلب",
+    "orders.added": "تمت إضافة الطلب بنجاح.",
+    "orders.count": "عدد الطلبات: {count}",
+    "orders.empty": "لا توجد طلبات حالية",
+    "orders.status_pending": "قيد التنفيذ",
+    "orders.status_success": "ناجح",
+    "orders.status_failed": "فاشل",
+    "orders.status_updated": "تم تحديث حالة الطلب."
 }

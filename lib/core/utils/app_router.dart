@@ -2,6 +2,7 @@
 
 import 'package:el_karma_ph/features/add_employee_view/presentation/view/add_employee_view.dart';
 import 'package:el_karma_ph/features/attendance_view.dart/presentation/view/attendance_view.dart';
+import 'package:el_karma_ph/features/current_orders_view/presentation/view/current_orders_view.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/view/dashboard_view.dart';
 import 'package:el_karma_ph/features/employee_details_view/presentation/view/employee_details_view.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
@@ -12,6 +13,7 @@ import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart
 import 'package:el_karma_ph/features/notes_records_view/presentation/view/notes_employee_details_view.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/view/notes_records_view.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/view/notes_summary_view.dart';
+import 'package:el_karma_ph/features/orders_recording_view/presentation/view/orders_recording_view.dart';
 import 'package:el_karma_ph/features/record_details_view/presentation/view/record_details_view.dart';
 import 'package:el_karma_ph/features/records_view/models/record_preview_models.dart';
 import 'package:el_karma_ph/features/records_view/presentation/view/records_view.dart';
@@ -37,6 +39,8 @@ abstract class AppRouter {
   static const kNotesRecordsView = '/notesRecordsView';
   static const kNotesSummaryView = '/notesSummaryView';
   static const kNotesEmployeeDetailsView = '/notesEmployeeDetailsView';
+  static const kOrdersRecordingView = '/ordersRecordingView';
+  static const kCurrentOrdersView = '/currentOrdersView';
 
   static final router = GoRouter(
     routes: <RouteBase>[
@@ -125,6 +129,18 @@ abstract class AppRouter {
             state.extra is NotesEmployeeArgs ? null : kNotesSummaryView,
         builder: (context, state) =>
             NotesEmployeeDetailsView(args: state.extra as NotesEmployeeArgs),
+      ),
+
+      GoRoute(
+        path: kOrdersRecordingView,
+        name: kOrdersRecordingView,
+        builder: (context, state) => const OrdersRecordingView(),
+      ),
+
+      GoRoute(
+        path: kCurrentOrdersView,
+        name: kCurrentOrdersView,
+        builder: (context, state) => const CurrentOrdersView(),
       ),
     ],
   );

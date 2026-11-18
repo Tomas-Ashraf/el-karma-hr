@@ -51,12 +51,16 @@ class _AppDrawerState extends State<AppDrawer> {
       DrawerEntry(
         icon: Icons.shopping_cart_outlined,
         label: context.tr('drawer.Orders_recording'),
-        onTap: () {},
+        onTap: () {
+          GoRouter.of(context).pushNamed(AppRouter.kOrdersRecordingView);
+        },
       ),
       DrawerEntry(
         icon: Icons.motorcycle_rounded,
         label: context.tr('drawer.current_orders'),
-        onTap: () {},
+        onTap: () {
+          GoRouter.of(context).pushNamed(AppRouter.kCurrentOrdersView);
+        },
       ),
 
       DrawerEntry(

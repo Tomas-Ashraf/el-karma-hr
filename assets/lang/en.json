@@ -250,6 +250,20 @@
     "notes.summary_empty": "No bonuses or deductions in this period",
     "add_employee.pick_contact": "Pick from contacts",
     "add_employee.contacts_failed": "Couldn't open contacts.",
-    "notes.edit_adjustment": "تعديل مكافأة / خصم",
-    "notes.updated": "تم التحديث بنجاح."
+    "notes.edit_adjustment": "Edit Bonus / Deduction",
+    "notes.updated": "Updated successfully.",
+    "orders.title": "Orders Recording",
+    "orders.delivery_man": "Delivery man",
+    "orders.customer_or_invoice": "Customer name or invoice number",
+    "orders.customer_or_invoice_hint": "Enter either the customer name or the invoice number.",
+    "orders.amount": "Amount to hand over",
+    "orders.amount_hint": "The amount the delivery man must hand over to accounting.",
+    "orders.submit": "Add Order",
+    "orders.added": "Order added successfully.",
+    "orders.count": "Number of Orders: {count}",
+    "orders.empty": "No current orders",
+    "orders.status_pending": "Pending",
+    "orders.status_success": "Success",
+    "orders.status_failed": "Failed",
+    "orders.status_updated": "Order status updated."
 }
