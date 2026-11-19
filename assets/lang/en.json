@@ -269,5 +269,18 @@
     "orders.no_delivery_men": "No delivery men found",
     "orders.no_delivery_men_hint": "Add an employee whose job is \"Delivery\" first.",
     "orders.load_failed": "Couldn't load delivery men. Please try again.",
-    "orders.add_failed": "Couldn't add the order. Please try again."
+    "orders.add_failed": "Couldn't add the order. Please try again.",
+    "common.yes": "Yes",
+    "common.no": "No",
+    "orders.load_orders_failed": "Couldn't load orders. Please try again.",
+    "orders.returned_amount_title": "Returned amount",
+    "orders.returned_amount_hint": "Enter the amount the delivery man handed over.",
+    "orders.amount_mismatch_title": "Different amount",
+    "orders.amount_mismatch_message": "The amount you entered ({entered}) is different from the expected amount ({expected}). Do you want to continue?",
+    "orders.failure_title": "Failure reason",
+    "orders.failure_hint": "Why did the order fail? (optional)",
+    "orders.done": "Done",
+    "orders.completed": "Order moved to finished orders.",
+    "orders.complete_failed": "Couldn't update the order. Please try again.",
+    "orders.already_processed": "This order was already processed."
 }
