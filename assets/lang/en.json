@@ -265,5 +265,9 @@
     "orders.status_pending": "Pending",
     "orders.status_success": "Success",
     "orders.status_failed": "Failed",
-    "orders.status_updated": "Order status updated."
+    "orders.status_updated": "Order status updated.",
+    "orders.no_delivery_men": "No delivery men found",
+    "orders.no_delivery_men_hint": "Add an employee whose job is \"Delivery\" first.",
+    "orders.load_failed": "Couldn't load delivery men. Please try again.",
+    "orders.add_failed": "Couldn't add the order. Please try again."
 }

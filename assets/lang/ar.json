@@ -265,5 +265,9 @@
     "orders.status_pending": "قيد التنفيذ",
     "orders.status_success": "ناجح",
     "orders.status_failed": "فاشل",
-    "orders.status_updated": "تم تحديث حالة الطلب."
+    "orders.status_updated": "تم تحديث حالة الطلب.",
+    "orders.no_delivery_men": "لا يوجد مناديب توصيل",
+    "orders.no_delivery_men_hint": "أضف أولًا موظفًا وظيفته \"Delivery\".",
+    "orders.load_failed": "تعذّر تحميل المناديب. حاول مرة أخرى.",
+    "orders.add_failed": "تعذّر إضافة الأوردر. حاول مرة أخرى."
 }
