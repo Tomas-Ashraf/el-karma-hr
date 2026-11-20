@@ -54,6 +54,7 @@ class CurrentOrdersCubit extends Cubit<CurrentOrdersState> {
     double? returnedAmount,
     String? failureReason,
   }) async {
+    _setProcessing(order.id, true);
     try {
       await _repo.finishOrder(
         order,
@@ -74,7 +75,16 @@ class CurrentOrdersCubit extends Cubit<CurrentOrdersState> {
     } catch (e) {
       log('Unexpected error finishing order: $e');
       return 'orders.complete_failed';
+    } finally {
+      _setProcessing(order.id, false);
     }
+  }
+
+  void _setProcessing(String id, bool busy) {
+    if (isClosed) return;
+    final ids = {...state.processingIds};
+    busy ? ids.add(id) : ids.remove(id);
+    emit(state.copyWith(processingIds: ids));
   }
 
   void _remove(OrderItem order) {

@@ -282,5 +282,9 @@
     "orders.done": "تم",
     "orders.completed": "تم نقل الطلب إلى الطلبات المنتهية.",
     "orders.complete_failed": "تعذّر تحديث الطلب. حاول مرة أخرى.",
-    "orders.already_processed": "تمت معالجة هذا الطلب بالفعل."
+    "orders.already_processed": "تمت معالجة هذا الطلب بالفعل.",
+    "job.doctor": "دكتور",
+    "job.assistant": "مساعد",
+    "job.cashier": "كاشير",
+    "job.delivery": "دليفري"
 }

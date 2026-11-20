@@ -44,16 +44,18 @@ class CurrentOrdersRepo {
       final data = snap.data();
       if (data == null) throw const OrderAlreadyProcessedException();
 
+      final expected = (data['amount'] as num?)?.toDouble() ?? order.amount;
+      final reason = (failureReason ?? '').trim();
+
       tx.set(finishedRef, {
         ...data,
         'status': success ? kOrderStatusSuccess : kOrderStatusFailed,
-        if (success) ...{
+        if (success && returnedAmount != null) ...{
           'returned_amount': returnedAmount,
-          'amount_matched':
-              returnedAmount != null &&
-              (returnedAmount - order.amount).abs() < 0.005,
-        } else
-          'failure_reason': (failureReason ?? '').trim(),
+          'amount_difference': returnedAmount - expected,
+          'amount_matched': (returnedAmount - expected).abs() < 0.005,
+        },
+        if (!success) 'failure_reason': reason.isEmpty ? null : reason,
         'finished_at': FieldValue.serverTimestamp(),
         'finished_by': _auth.currentUser?.uid,
         'finished_by_name': (cashier == null || cashier.isEmpty)

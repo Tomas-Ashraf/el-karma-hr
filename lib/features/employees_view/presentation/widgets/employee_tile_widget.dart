@@ -1,6 +1,7 @@
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
+import 'package:el_karma_ph/core/utils/employee_jobs.dart';
 import 'package:el_karma_ph/core/widgets/soft_button.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,7 @@ class EmployeeTileWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        employee.job,
+                        jobLabel(context, employee.job),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(

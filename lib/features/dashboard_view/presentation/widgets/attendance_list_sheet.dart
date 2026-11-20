@@ -1,5 +1,6 @@
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
+import 'package:el_karma_ph/core/utils/employee_jobs.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/utils/time_format.dart';
 import 'package:el_karma_ph/features/dashboard_view/models/dashboard_models.dart';
@@ -140,7 +141,7 @@ class _EntryRow extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                entry.employee.job,
+                jobLabel(context, entry.employee.job),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 12, color: colors.onSurfaceVariant),

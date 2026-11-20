@@ -3,6 +3,7 @@
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
+import 'package:el_karma_ph/core/utils/employee_jobs.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
 import 'package:el_karma_ph/features/employees_view/manager/cubit/employees_cubit.dart';
@@ -40,7 +41,7 @@ class _EmployeesListBodyState extends State<EmployeesListBody> {
         .where(
           (e) =>
               e.name.toLowerCase().contains(query) ||
-              e.job.toLowerCase().contains(query),
+              jobLabel(context, e.job).toLowerCase().contains(query),
         )
         .toList();
   }

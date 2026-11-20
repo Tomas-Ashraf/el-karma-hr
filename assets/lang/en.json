@@ -282,5 +282,9 @@
     "orders.done": "Done",
     "orders.completed": "Order moved to finished orders.",
     "orders.complete_failed": "Couldn't update the order. Please try again.",
-    "orders.already_processed": "This order was already processed."
+    "orders.already_processed": "This order was already processed.",
+    "job.doctor": "Doctor",
+    "job.assistant": "Assistant",
+    "job.cashier": "Cashier",
+    "job.delivery": "Delivery"
 }
