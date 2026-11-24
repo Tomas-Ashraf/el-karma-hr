@@ -71,7 +71,7 @@ class _AppDrawerState extends State<AppDrawer> {
       DrawerEntry(
         icon: Icons.payments_outlined,
         label: context.tr('drawer.count_salary'),
-        onTap: () {},
+        onTap: () => GoRouter.of(context).pushNamed(AppRouter.kCountSalaryView),
       ),
       DrawerEntry(
         icon: Icons.settings_outlined,

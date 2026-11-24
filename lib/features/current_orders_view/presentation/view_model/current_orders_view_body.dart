@@ -1,7 +1,7 @@
-import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/current_orders_view/models/fake_orders.dart';
+import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/empty_state.dart';
 import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/order_card.dart';
 import 'package:flutter/material.dart';
 
@@ -50,7 +50,7 @@ class _CurrentOrdersViewBodyState extends State<CurrentOrdersViewBody> {
               vertical: screenSize.height * 0.02,
             ),
             child: _orders.isEmpty
-                ? const _EmptyState()
+                ? const EmptyState()
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -84,36 +84,6 @@ class _CurrentOrdersViewBodyState extends State<CurrentOrdersViewBody> {
                   ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              color: kPrimaryBlue.withAlpha(31),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.motorcycle_rounded,
-              size: 34,
-              color: kPrimaryBlue,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(context.tr('orders.empty'), style: Styles.textStyle14),
-        ],
       ),
     );
   }
