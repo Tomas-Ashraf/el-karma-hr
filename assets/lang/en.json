@@ -282,5 +282,14 @@
     "orders.done": "Done",
     "orders.completed": "Order moved to finished orders.",
     "orders.complete_failed": "Couldn't update the order. Please try again.",
-    "orders.already_processed": "This order was already processed."
+    "orders.already_processed": "This order was already processed.",
+    "salary.title": "Count Salary",
+    "salary.select_employee": "Select employee",
+    "salary.prompt": "Choose an employee to view their salary records.",
+    "salary.base_salary": "Base salary",
+    "salary.records_count": "Records: {n}",
+    "salary.net_salary": "Net salary",
+    "salary.attended_chip": "Attended: {n}",
+    "salary.bonus_chip": "Bonus: {amount}",
+    "salary.deduction_chip": "Deduction: {amount}"
 }

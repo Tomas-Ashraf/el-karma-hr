@@ -1,8 +1,6 @@
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
-import 'package:el_karma_ph/features/current_orders_view/manager/cubit/current_orders_cubit.dart';
-import 'package:el_karma_ph/features/current_orders_view/manager/cubit/current_orders_state.dart';
-import 'package:el_karma_ph/features/current_orders_view/models/order_item.dart';
+import 'package:el_karma_ph/features/current_orders_view/models/fake_orders.dart';
 import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/empty_state.dart';
 import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/order_card.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/adjustment_card.dart'
@@ -202,29 +200,15 @@ class CurrentOrdersViewBody extends StatelessWidget {
               horizontal: screenSize.width * 0.05,
               vertical: screenSize.height * 0.02,
             ),
-            child: BlocBuilder<CurrentOrdersCubit, CurrentOrdersState>(
-              builder: (context, state) {
-                if (state.status == CurrentOrdersStatus.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state.status == CurrentOrdersStatus.failure) {
-                  return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          context.tr(
-                            state.message ?? 'orders.load_orders_failed',
-                          ),
-                          style: Styles.textStyle14,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        TextButton(
-                          onPressed: () =>
-                              context.read<CurrentOrdersCubit>().load(),
-                          child: Text(context.tr('common.retry')),
+            child: _orders.isEmpty
+                ? const EmptyState()
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.tr(
+                          'orders.count',
+                          args: {'count': '${_orders.length}'},
                         ),
                       ],
                     ),
@@ -265,11 +249,8 @@ class CurrentOrdersViewBody extends StatelessWidget {
                           },
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
+                    ],
+                  ),
           ),
         ),
       ),
