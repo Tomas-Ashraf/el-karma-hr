@@ -2,23 +2,26 @@ import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/features/add_employee_view/presentation/widgets/form_fields.dart';
-import 'package:el_karma_ph/features/count_salary_view/models/salary_dummy_data.dart';
+import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:flutter/material.dart';
 
-Future<SalaryEmployee?> showSalaryEmployeeDialog(
+Future<EmployeeModel?> showSalaryEmployeeDialog(
   BuildContext context, {
-  SalaryEmployee? initial,
+  required List<EmployeeModel> employees,
+  EmployeeModel? initial,
 }) {
-  return showDialog<SalaryEmployee>(
+  return showDialog<EmployeeModel>(
     context: context,
-    builder: (_) => _SalaryEmployeeDialog(initial: initial),
+    builder: (_) =>
+        _SalaryEmployeeDialog(employees: employees, initial: initial),
   );
 }
 
 class _SalaryEmployeeDialog extends StatefulWidget {
-  const _SalaryEmployeeDialog({this.initial});
+  const _SalaryEmployeeDialog({required this.employees, this.initial});
 
-  final SalaryEmployee? initial;
+  final List<EmployeeModel> employees;
+  final EmployeeModel? initial;
 
   @override
   State<_SalaryEmployeeDialog> createState() => _SalaryEmployeeDialogState();
@@ -30,8 +33,8 @@ class _SalaryEmployeeDialogState extends State<_SalaryEmployeeDialog> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    final employee = kDummyEmployees.firstWhere((e) => e.id == _employeeId);
-    Navigator.of(context).pop(employee);
+    Navigator.of(context)
+        .pop(widget.employees.firstWhere((e) => e.id == _employeeId));
   }
 
   @override
@@ -52,7 +55,7 @@ class _SalaryEmployeeDialogState extends State<_SalaryEmployeeDialog> {
               label: context.tr('attendance.employee'),
               hint: context.tr('add_employee.select'),
               initialValue: _employeeId,
-              items: {for (final e in kDummyEmployees) e.id: e.name},
+              items: {for (final e in widget.employees) e.id: e.name},
               validator: (v) =>
                   v == null ? context.tr('common.required') : null,
               onChanged: (v) => _employeeId = v,

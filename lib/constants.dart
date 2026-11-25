@@ -22,6 +22,8 @@ const kDeliveryJob = 'delivery';
 const kFinishedOrdersCollection = 'finished_orders';
 const kOrderStatusSuccess = 'success';
 const kOrderStatusFailed = 'failed';
+const kDeliveryFeePerOrder = 4.0;
+const kSalaryMonthDays = 30;
 
 const kNoteColorsLight = [
   Color(0xFFFFFFFF),
