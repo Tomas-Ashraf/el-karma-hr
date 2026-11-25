@@ -4,6 +4,7 @@ import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/time_format.dart';
 import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart';
 import 'package:flutter/material.dart';
+export 'package:el_karma_ph/core/utils/money_format.dart' show formatAmount;
 
 String formatAmount(BuildContext context, double value) {
   final text = value % 1 == 0

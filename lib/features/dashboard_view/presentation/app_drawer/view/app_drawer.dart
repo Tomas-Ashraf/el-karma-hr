@@ -1,6 +1,7 @@
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
+import 'package:el_karma_ph/core/utils/employee_jobs.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/dashboard_view/manager/cubit/dashboard_cubit.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/app_drawer/models/drawer_entry_model.dart';
@@ -66,7 +67,8 @@ class _AppDrawerState extends State<AppDrawer> {
       DrawerEntry(
         icon: Icons.task_alt_outlined,
         label: context.tr('drawer.finished_orders'),
-        onTap: () {},
+        onTap: () =>
+            GoRouter.of(context).pushNamed(AppRouter.kFinishedOrdersView),
       ),
       DrawerEntry(
         icon: Icons.payments_outlined,
@@ -118,7 +120,10 @@ class _AppDrawerState extends State<AppDrawer> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(user?.job ?? '', style: Styles.textStyle14),
+                        Text(
+                          jobLabel(context, user?.job ?? ''),
+                          style: Styles.textStyle14,
+                        ),
                       ],
                     ),
                   ),

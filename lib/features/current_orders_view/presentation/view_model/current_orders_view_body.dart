@@ -1,10 +1,10 @@
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
+import 'package:el_karma_ph/core/utils/money_format.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/current_orders_view/models/fake_orders.dart';
 import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/empty_state.dart';
 import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/order_card.dart';
-import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/adjustment_card.dart'
-    show formatAmount;
+import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/order_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,127 +24,8 @@ class CurrentOrdersViewBody extends StatelessWidget {
 
   bool _same(double a, double b) => (a - b).abs() < 0.005;
 
-  Future<bool?> showAmountMismatchDialog(
-    BuildContext context, {
-    required String entered,
-    required String expected,
-  }) {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.tr('orders.returned_amount')),
-        content: Text('$entered\n$expected'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.tr('common.cancel')),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.tr('common.confirm')),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<String?> showFailureReasonDialog(BuildContext context) async {
-    final controller = TextEditingController();
-
-    final result = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(dialogContext.tr('orders.failure_reason')),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          keyboardType: TextInputType.multiline,
-          maxLines: 3,
-          decoration: InputDecoration(
-            labelText: dialogContext.tr('orders.failure_reason'),
-          ),
-          onSubmitted: (_) {
-            final reason = controller.text.trim();
-            if (reason.isNotEmpty) {
-              Navigator.of(dialogContext).pop(reason);
-            }
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(dialogContext.tr('common.cancel')),
-          ),
-          FilledButton(
-            onPressed: () {
-              final reason = controller.text.trim();
-              if (reason.isNotEmpty) {
-                Navigator.of(dialogContext).pop(reason);
-              }
-            },
-            child: Text(dialogContext.tr('common.confirm')),
-          ),
-        ],
-      ),
-    );
-
-    controller.dispose();
-    return result;
-  }
-
-  Future<double?> showReturnedAmountDialog(
-    BuildContext context, {
-    String? initialAmount,
-  }) async {
-    final controller = TextEditingController(text: initialAmount ?? '');
-    String? error;
-
-    final result = await showDialog<double>(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(context.tr('orders.returned_amount')),
-          content: TextField(
-            controller: controller,
-            autofocus: true,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              errorText: error,
-              labelText: context.tr('orders.returned_amount'),
-            ),
-            onSubmitted: (_) {
-              final amount = double.tryParse(controller.text.trim());
-              if (amount == null || amount < 0) {
-                setState(() => error = context.tr('common.invalid_amount'));
-              } else {
-                Navigator.of(context).pop(amount);
-              }
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(context.tr('common.cancel')),
-            ),
-            FilledButton(
-              onPressed: () {
-                final amount = double.tryParse(controller.text.trim());
-                if (amount == null || amount < 0) {
-                  setState(() => error = context.tr('common.invalid_amount'));
-                } else {
-                  Navigator.of(context).pop(amount);
-                }
-              },
-              child: Text(context.tr('common.confirm')),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    controller.dispose();
-    return result;
-  }
+  String _amountText(double value) =>
+      value % 1 == 0 ? '${value.toInt()}' : '$value';
 
   Future<void> _onSuccess(BuildContext context, OrderItem order) async {
     final cubit = context.read<CurrentOrdersCubit>();
@@ -152,7 +33,7 @@ class CurrentOrdersViewBody extends StatelessWidget {
     String? initial;
 
     while (true) {
-      final value = await showReturnedAmountDialog(context, initialAmount: initial);
+      final value = await showReturnedAmountDialog(context, initial: initial);
       if (value == null || !context.mounted) return;
 
       if (!_same(value, order.amount)) {
@@ -163,7 +44,7 @@ class CurrentOrdersViewBody extends StatelessWidget {
         );
         if (!context.mounted) return;
         if (proceed != true) {
-          initial = value % 1 == 0 ? '${value.toInt()}' : '$value';
+          initial = _amountText(value);
           continue;
         }
       }
@@ -243,6 +124,7 @@ class CurrentOrdersViewBody extends StatelessWidget {
                             final order = state.orders[index];
                             return OrderCard(
                               order: order,
+                              busy: state.processingIds.contains(order.id),
                               onSuccess: () => _onSuccess(context, order),
                               onFailed: () => _onFailed(context, order),
                             );

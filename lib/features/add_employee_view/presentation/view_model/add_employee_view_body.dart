@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:el_karma_ph/core/utils/employee_jobs.dart';
 
 class AddEmployeeViewBody extends StatefulWidget {
   const AddEmployeeViewBody({super.key});
@@ -30,7 +31,6 @@ class _AddEmployeeViewBodyState extends State<AddEmployeeViewBody> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _jobController = TextEditingController();
   final _phoneController = TextEditingController();
   final _salaryController = TextEditingController();
   final _deviceIdController = TextEditingController();
@@ -40,12 +40,12 @@ class _AddEmployeeViewBodyState extends State<AddEmployeeViewBody> {
   String _status = 'active';
   final List<ShiftEntry> _shifts = [ShiftEntry()];
   String? _dayOff;
+  String? _job;
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
-    _jobController.dispose();
     _phoneController.dispose();
     _salaryController.dispose();
     _deviceIdController.dispose();
@@ -143,7 +143,7 @@ class _AddEmployeeViewBodyState extends State<AddEmployeeViewBody> {
       NewEmployee(
         name: _nameController.text,
         email: _emailController.text,
-        job: _jobController.text,
+        job: _job!,
         userType: _userType!,
         phoneNumber: _phoneController.text,
         salary: double.parse(_salaryController.text.trim()),
@@ -215,12 +215,13 @@ class _AddEmployeeViewBodyState extends State<AddEmployeeViewBody> {
                       textInputAction: TextInputAction.next,
                     ),
                     gap,
-                    LabeledTextField(
+                    LabeledDropdown<String>(
                       label: context.tr('add_employee.job'),
-                      controller: _jobController,
-                      validator: _required,
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.next,
+                      hint: context.tr('add_employee.select'),
+                      initialValue: _job,
+                      items: jobOptions(context),
+                      validator: _requiredSelection,
+                      onChanged: (value) => _job = value,
                     ),
                     gap,
                     LabeledDropdown<String>(

@@ -11,6 +11,7 @@ import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:el_karma_ph/core/utils/employee_jobs.dart';
 
 class EmployeeDetailsViewBody extends StatefulWidget {
   const EmployeeDetailsViewBody({super.key});
@@ -263,14 +264,13 @@ class _EmployeeDetailsViewBodyState extends State<EmployeeDetailsViewBody> {
                         ),
                         DetailsInfoCard(
                           label: context.tr('add_employee.job'),
-                          value: e.job,
-                          onEdit: () => _editText(
+                          value: jobLabel(context, e.job),
+                          onEdit: () => _editDropdown(
                             context,
                             label: context.tr('add_employee.job'),
                             key: 'job',
-                            initial: e.job,
-                            validator: (v) => _required(context, v),
-                            capitalization: TextCapitalization.words,
+                            items: jobOptions(context),
+                            current: normalizeJob(e.job) ?? '',
                           ),
                         ),
                         DetailsInfoCard(
@@ -448,7 +448,7 @@ class _Header extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 2),
-        Text(employee.job, style: Styles.textStyle14),
+        Text(jobLabel(context, employee.job), style: Styles.textStyle14),
       ],
     );
   }

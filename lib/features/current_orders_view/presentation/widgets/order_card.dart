@@ -1,6 +1,7 @@
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
+import 'package:el_karma_ph/core/utils/money_format.dart';
 import 'package:el_karma_ph/core/utils/time_format.dart';
 import 'package:el_karma_ph/features/current_orders_view/models/order_item.dart';
 import 'package:flutter/material.dart';
@@ -11,18 +12,14 @@ class OrderCard extends StatelessWidget {
     required this.order,
     required this.onSuccess,
     required this.onFailed,
+    this.busy = false,
   });
 
   final OrderItem order;
   final VoidCallback onSuccess;
   final VoidCallback onFailed;
 
-  String _amountText(BuildContext context) {
-    final value = order.amount % 1 == 0
-        ? order.amount.toInt().toString()
-        : order.amount.toStringAsFixed(2);
-    return '$value ${context.tr('common.egp')}';
-  }
+  final bool busy;
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +131,7 @@ class OrderCard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  _amountText(context),
+                  formatAmount(context, order.amount),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -154,7 +151,7 @@ class OrderCard extends StatelessWidget {
                   icon: Icons.check_circle_outline_rounded,
                   color: kBonusColor,
                   selected: order.status == OrderStatus.success,
-                  onTap: onSuccess,
+                  onTap: busy ? null : onSuccess,
                 ),
               ),
               const SizedBox(width: 10),
@@ -164,7 +161,7 @@ class OrderCard extends StatelessWidget {
                   icon: Icons.cancel_outlined,
                   color: kDeductionColor,
                   selected: order.status == OrderStatus.failed,
-                  onTap: onFailed,
+                  onTap: busy ? null : onFailed,
                 ),
               ),
             ],
@@ -219,7 +216,8 @@ class _StatusButton extends StatelessWidget {
   final IconData icon;
   final Color color;
   final bool selected;
-  final VoidCallback onTap;
+
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

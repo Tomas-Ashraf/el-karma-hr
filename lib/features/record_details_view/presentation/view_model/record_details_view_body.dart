@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
+import 'package:el_karma_ph/core/utils/employee_jobs.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/utils/whatsapp_sender.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
@@ -59,7 +60,7 @@ class RecordDetailsViewBody extends StatelessWidget {
           mediumDate: ml.formatMediumDate,
         ),
         record: record,
-        job: employee?.job ?? '',
+        job: jobLabelOf(l10n, employee?.job ?? ''),
       );
       navigator.pop();
       if (!context.mounted) return;
