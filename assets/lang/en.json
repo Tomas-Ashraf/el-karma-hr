@@ -286,5 +286,13 @@
     "job.doctor": "Doctor",
     "job.assistant": "Assistant",
     "job.cashier": "Cashier",
-    "job.delivery": "Delivery"
+    "job.delivery": "Delivery",
+    "orders.load_finished_failed": "Couldn't load finished orders. Please try again.",
+    "orders.finished_empty": "No finished orders",
+    "orders.filter_all": "All",
+    "orders.expected_amount": "Expected amount",
+    "orders.amount_not_matched": "Amount didn't match",
+    "orders.created_at": "Added",
+    "orders.finished_at": "Finished",
+    "orders.finished_prompt": "Choose a period to view the finished orders."
 }

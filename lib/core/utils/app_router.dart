@@ -22,6 +22,7 @@ import 'package:el_karma_ph/features/reset_pass_view/presentation/view/reset_pas
 import 'package:el_karma_ph/features/settings_view/presentation/view/settings_view.dart';
 import 'package:el_karma_ph/features/splash_view/presentation/views/splash_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:el_karma_ph/features/finished_orders_view/presentation/view/finished_orders_view.dart';
 
 abstract class AppRouter {
   static const kDashboardView = '/dashboardView';
@@ -41,6 +42,7 @@ abstract class AppRouter {
   static const kNotesEmployeeDetailsView = '/notesEmployeeDetailsView';
   static const kOrdersRecordingView = '/ordersRecordingView';
   static const kCurrentOrdersView = '/currentOrdersView';
+  static const kFinishedOrdersView = '/finishedOrdersView';
 
   static final router = GoRouter(
     routes: <RouteBase>[
@@ -141,6 +143,11 @@ abstract class AppRouter {
         path: kCurrentOrdersView,
         name: kCurrentOrdersView,
         builder: (context, state) => const CurrentOrdersView(),
+      ),
+      GoRoute(
+        path: kFinishedOrdersView,
+        name: kFinishedOrdersView,
+        builder: (context, state) => const FinishedOrdersView(),
       ),
     ],
   );

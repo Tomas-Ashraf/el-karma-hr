@@ -67,7 +67,8 @@ class _AppDrawerState extends State<AppDrawer> {
       DrawerEntry(
         icon: Icons.task_alt_outlined,
         label: context.tr('drawer.finished_orders'),
-        onTap: () {},
+        onTap: () =>
+            GoRouter.of(context).pushNamed(AppRouter.kFinishedOrdersView),
       ),
       DrawerEntry(
         icon: Icons.payments_outlined,

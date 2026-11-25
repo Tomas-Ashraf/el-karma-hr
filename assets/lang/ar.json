@@ -286,5 +286,13 @@
     "job.doctor": "دكتور",
     "job.assistant": "مساعد",
     "job.cashier": "كاشير",
-    "job.delivery": "دليفري"
+    "job.delivery": "دليفري",
+    "orders.load_finished_failed": "تعذّر تحميل الطلبات المنتهية. حاول مرة أخرى.",
+    "orders.finished_empty": "لا توجد طلبات منتهية",
+    "orders.filter_all": "الكل",
+    "orders.expected_amount": "المبلغ المتوقع",
+    "orders.amount_not_matched": "المبلغ غير مطابق",
+    "orders.created_at": "وقت الإضافة",
+    "orders.finished_at": "وقت الإنهاء",
+    "orders.finished_prompt": "اختر فترة لعرض الطلبات المنتهية."
 }
