@@ -16,6 +16,12 @@ const warning = Color(0xFFF59E0B);
 const kNotesCollection = 'notes';
 const kNotesPersonalDoc = 'personal';
 const kNotesEmployeesDoc = 'employees';
+const kCurrentOrdersCollection = 'current_orders';
+const kOrderStatusPending = 'pending';
+const kDeliveryJob = 'delivery';
+const kFinishedOrdersCollection = 'finished_orders';
+const kOrderStatusSuccess = 'success';
+const kOrderStatusFailed = 'failed';
 
 const kNoteColorsLight = [
   Color(0xFFFFFFFF),

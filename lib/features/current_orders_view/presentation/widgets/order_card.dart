@@ -2,7 +2,7 @@ import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/time_format.dart';
-import 'package:el_karma_ph/features/current_orders_view/models/fake_orders.dart';
+import 'package:el_karma_ph/features/current_orders_view/models/order_item.dart';
 import 'package:flutter/material.dart';
 
 class OrderCard extends StatelessWidget {

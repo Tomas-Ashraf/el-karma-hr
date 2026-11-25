@@ -4,7 +4,7 @@ import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class EmptyState extends StatelessWidget {
-  const EmptyState();
+  const EmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {
