@@ -2,6 +2,7 @@
 
 import 'package:el_karma_ph/features/add_employee_view/presentation/view/add_employee_view.dart';
 import 'package:el_karma_ph/features/attendance_view.dart/presentation/view/attendance_view.dart';
+import 'package:el_karma_ph/features/count_salary_view/presentation/view/count_salary_view.dart';
 import 'package:el_karma_ph/features/current_orders_view/presentation/view/current_orders_view.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/view/dashboard_view.dart';
 import 'package:el_karma_ph/features/employee_details_view/presentation/view/employee_details_view.dart';
