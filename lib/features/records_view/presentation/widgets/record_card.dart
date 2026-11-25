@@ -11,12 +11,12 @@ class RecordCard extends StatelessWidget {
     super.key,
     required this.record,
     required this.onTap,
-    required this.onDelete,
+    this.onDelete,
   });
 
   final RecordPreview record;
   final VoidCallback onTap;
-  final VoidCallback onDelete;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -80,17 +80,19 @@ class RecordCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 4),
-                IconButton(
-                  onPressed: onDelete,
-                  tooltip: context.tr('common.delete'),
-                  visualDensity: VisualDensity.compact,
-                  icon: const Icon(
-                    Icons.delete_outline_rounded,
-                    size: 22,
-                    color: Color(0xFFEF4444),
+                if (onDelete != null) ...[
+                  const SizedBox(width: 4),
+                  IconButton(
+                    onPressed: onDelete,
+                    tooltip: context.tr('common.delete'),
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                      size: 22,
+                      color: Color(0xFFEF4444),
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

@@ -1,7 +1,8 @@
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/money_format.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
-import 'package:el_karma_ph/features/current_orders_view/models/fake_orders.dart';
+import 'package:el_karma_ph/features/current_orders_view/manager/cubit/current_orders_cubit.dart';
+import 'package:el_karma_ph/features/current_orders_view/models/order_item.dart';
 import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/empty_state.dart';
 import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/order_card.dart';
 import 'package:el_karma_ph/features/current_orders_view/presentation/widgets/order_dialogs.dart';
@@ -81,21 +82,8 @@ class CurrentOrdersViewBody extends StatelessWidget {
               horizontal: screenSize.width * 0.05,
               vertical: screenSize.height * 0.02,
             ),
-            child: _orders.isEmpty
-                ? const EmptyState()
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.tr(
-                          'orders.count',
-                          args: {'count': '${_orders.length}'},
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
+            child: BlocBuilder<CurrentOrdersCubit, dynamic>(
+              builder: (context, state) {
                 if (state.orders.isEmpty) return const EmptyState();
 
                 return Column(
@@ -131,8 +119,11 @@ class CurrentOrdersViewBody extends StatelessWidget {
                           },
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

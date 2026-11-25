@@ -10,6 +10,7 @@ class FinishedOrder {
     required this.isSuccess,
     required this.createdAt,
     required this.finishedAt,
+    this.deliveryManId = '',
     this.returnedAmount,
     this.amountMatched,
     this.failureReason = '',
@@ -27,6 +28,7 @@ class FinishedOrder {
   final bool? amountMatched;
   final String failureReason;
   final String? finishedByName;
+  final String deliveryManId;
 
   factory FinishedOrder.fromDocument(String id, Map<String, dynamic> data) {
     DateTime? date(dynamic v) => v is Timestamp ? v.toDate() : null;
@@ -43,6 +45,7 @@ class FinishedOrder {
       amountMatched: data['amount_matched'] as bool?,
       failureReason: (data['failure_reason'] as String?) ?? '',
       finishedByName: data['finished_by_name'] as String?,
+      deliveryManId: (data['delivery_man_id'] as String?) ?? '',
     );
   }
 }

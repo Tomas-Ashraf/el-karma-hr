@@ -18,6 +18,7 @@ class RecordPreview {
     required this.from,
     required this.to,
     required this.entries,
+    this.deductionPerMinute,
   });
 
   final String id;
@@ -26,6 +27,7 @@ class RecordPreview {
   final DateTime from;
   final DateTime to;
   final List<AttendanceEntry> entries;
+  final double? deductionPerMinute;
 
   int get daysCount => entries.length;
 
@@ -70,7 +72,10 @@ class RecordPreview {
     final multiShift = raw.any(
       (m) => ((m['shift_number'] as num?)?.toInt() ?? 1) > 1,
     );
-
+    final settings = data['settings'];
+    final perMinute = settings is Map
+        ? (settings['deduction_per_minute'] as num?)?.toDouble()
+        : null;
     return RecordPreview(
       id: id,
       employeeId: employeeId,
@@ -78,6 +83,7 @@ class RecordPreview {
       from: _date(data['from']),
       to: _date(data['to']),
       entries: [for (final m in raw) _entry(employee, m, multiShift)],
+      deductionPerMinute: perMinute,
     );
   }
 

@@ -13,6 +13,7 @@ Future<void> showExportPdfDialog(
   required VoidCallback onPreview,
   required VoidCallback onWhatsApp,
   required VoidCallback onShare,
+  String? subtitle,
 }) {
   return showDialog<void>(
     context: context,
@@ -20,6 +21,7 @@ Future<void> showExportPdfDialog(
       onPreview: onPreview,
       onWhatsApp: onWhatsApp,
       onShare: onShare,
+      subtitle: subtitle,
     ),
   );
 }
@@ -29,11 +31,13 @@ class _ExportPdfDialog extends StatelessWidget {
     required this.onPreview,
     required this.onWhatsApp,
     required this.onShare,
+    this.subtitle,
   });
 
   final VoidCallback onPreview;
   final VoidCallback onWhatsApp;
   final VoidCallback onShare;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +75,10 @@ class _ExportPdfDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(context.tr('export.subtitle'), style: Styles.textStyle14),
+              Text(
+                subtitle ?? context.tr('export.subtitle'),
+                style: Styles.textStyle14,
+              ),
               const SizedBox(height: 16),
               _ActionButton(
                 icon: Icons.visibility_outlined,
