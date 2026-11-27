@@ -1,3 +1,4 @@
+import 'package:el_karma_ph/features/count_salary_view/models/salary_sheet.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:el_karma_ph/features/records_view/models/record_preview_models.dart';
 
@@ -16,7 +17,9 @@ class CountSalaryState {
     this.selected,
     this.records = const [],
     this.isCalculating = false,
+
     this.message,
+    this.statuses = const {},
   });
 
   final CountSalaryStatus status;
@@ -24,10 +27,9 @@ class CountSalaryState {
   final EmployeeModel? selected;
   final List<RecordPreview> records;
 
-  /// بيحسب المرتب دلوقتي (الكروت مبتتضغطش).
   final bool isCalculating;
   final String? message;
-
+  final Map<String, SalaryStatus> statuses;
   CountSalaryState copyWith({
     CountSalaryStatus? status,
     List<EmployeeModel>? employees,
@@ -35,6 +37,7 @@ class CountSalaryState {
     List<RecordPreview>? records,
     bool? isCalculating,
     String? message,
+    Map<String, SalaryStatus>? statuses,
   }) {
     return CountSalaryState(
       status: status ?? this.status,
@@ -43,6 +46,7 @@ class CountSalaryState {
       records: records ?? this.records,
       isCalculating: isCalculating ?? this.isCalculating,
       message: message,
+      statuses: statuses ?? this.statuses,
     );
   }
 }
