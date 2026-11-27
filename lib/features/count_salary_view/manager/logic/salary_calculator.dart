@@ -17,27 +17,8 @@ class SalaryCalculator {
     required double deductionPerMinute,
   }) {
     final isDelivery = normalizeJob(employee.job) == kDeliveryJob;
-    final dailyRate = employee.salary / kSalaryMonthDays;
     final sortedAdjustments = [...adjustments]
       ..sort((a, b) => a.date.compareTo(b.date));
-    if (isDelivery) {
-      return SalarySheet(
-        employee: employee,
-        record: record,
-        isDelivery: true,
-        dailyRate: dailyRate,
-        attendedDays: 0,
-        absentDays: 0,
-        offDays: 0,
-        earnedSalary: employee.salary,
-        lateMinutes: 0,
-        deductionPerMinute: deductionPerMinute,
-        lateDeduction: 0,
-        deliveryOrders: deliveryOrdersCount,
-        deliveryFees: roundMoney(deliveryOrdersCount * kDeliveryFeePerOrder),
-        adjustments: sortedAdjustments,
-      );
-    }
 
     final days = countDays(employee, record);
     final lateMinutes = record.lateMinutesTotal;
@@ -45,17 +26,16 @@ class SalaryCalculator {
     return SalarySheet(
       employee: employee,
       record: record,
-      isDelivery: false,
-      dailyRate: dailyRate,
+      isDelivery: isDelivery,
+      baseSalary: employee.salary,
       attendedDays: days.attended,
       absentDays: days.absent,
       offDays: days.off,
-      earnedSalary: roundMoney((days.attended + days.off) * dailyRate),
       lateMinutes: lateMinutes,
       deductionPerMinute: deductionPerMinute,
       lateDeduction: roundMoney(lateMinutes * deductionPerMinute),
-      deliveryOrders: 0,
-      deliveryFees: 0,
+      // الأوردرات بتتحسب للدليفري بس
+      deliveryOrders: isDelivery ? deliveryOrdersCount : 0,
       adjustments: sortedAdjustments,
     );
   }

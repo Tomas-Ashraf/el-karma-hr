@@ -1,3 +1,4 @@
+import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart';
 import 'package:el_karma_ph/features/records_view/models/record_preview_models.dart';
@@ -14,54 +15,89 @@ class SalarySheet {
     required this.employee,
     required this.record,
     required this.isDelivery,
-    required this.dailyRate,
+    required this.baseSalary,
     required this.attendedDays,
     required this.absentDays,
     required this.offDays,
-    required this.earnedSalary,
     required this.lateMinutes,
     required this.deductionPerMinute,
     required this.lateDeduction,
     required this.deliveryOrders,
-    required this.deliveryFees,
     required this.adjustments,
+    this.bonusOverride,
+    this.deductionOverride,
   });
 
   final EmployeeModel employee;
   final RecordPreview record;
   final bool isDelivery;
 
-  final double dailyRate;
+  /// المرتب الأساسي (قابل للتعديل من الشيت).
+  final double baseSalary;
 
   final double attendedDays;
   final double absentDays;
-
   final int offDays;
-
-  final double earnedSalary;
 
   final int lateMinutes;
   final double deductionPerMinute;
   final double lateDeduction;
 
   final int deliveryOrders;
-  final double deliveryFees;
-
   final List<EmployeeAdjustment> adjustments;
 
-  double get baseSalary => employee.salary;
+  /// قيم المكافآت/الخصومات لو اتعدلت يدويًا (بدل مجموع الملاحظات).
+  final double? bonusOverride;
+  final double? deductionOverride;
 
-  double get paidDays => attendedDays + offDays;
+  double get dailyRate => baseSalary / kSalaryMonthDays;
 
-  double get totalBonus => roundMoney(
-    adjustments.where((a) => a.isBonus).fold(0.0, (s, a) => s + a.amount),
-  );
+  double get absenceDeduction => roundMoney(absentDays * dailyRate);
 
-  double get totalDeduction => roundMoney(
-    adjustments.where((a) => !a.isBonus).fold(0.0, (s, a) => s + a.amount),
-  );
+  /// المرتب بعد خصم الغياب.
+  double get earnedSalary => roundMoney(baseSalary - absenceDeduction);
+
+  double get deliveryFees => roundMoney(deliveryOrders * kDeliveryFeePerOrder);
+
+  double get totalBonus =>
+      bonusOverride ??
+      roundMoney(
+        adjustments.where((a) => a.isBonus).fold(0.0, (s, a) => s + a.amount),
+      );
+
+  double get totalDeduction =>
+      deductionOverride ??
+      roundMoney(
+        adjustments.where((a) => !a.isBonus).fold(0.0, (s, a) => s + a.amount),
+      );
 
   double get net => roundMoney(
     earnedSalary + deliveryFees + totalBonus - lateDeduction - totalDeduction,
   );
+
+  SalarySheet copyWith({
+    double? baseSalary,
+    double? absentDays,
+    double? lateDeduction,
+    int? deliveryOrders,
+    double? bonusOverride,
+    double? deductionOverride,
+  }) {
+    return SalarySheet(
+      employee: employee,
+      record: record,
+      isDelivery: isDelivery,
+      baseSalary: baseSalary ?? this.baseSalary,
+      attendedDays: attendedDays,
+      absentDays: absentDays ?? this.absentDays,
+      offDays: offDays,
+      lateMinutes: lateMinutes,
+      deductionPerMinute: deductionPerMinute,
+      lateDeduction: lateDeduction ?? this.lateDeduction,
+      deliveryOrders: deliveryOrders ?? this.deliveryOrders,
+      adjustments: adjustments,
+      bonusOverride: bonusOverride ?? this.bonusOverride,
+      deductionOverride: deductionOverride ?? this.deductionOverride,
+    );
+  }
 }

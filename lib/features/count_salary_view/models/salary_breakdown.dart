@@ -6,112 +6,130 @@ import 'package:el_karma_ph/features/count_salary_view/models/salary_sheet.dart'
 
 enum SalaryRowTone { base, add, subtract }
 
+/// القيمة اللي الصف ده بيمثلها (بتتعدل لما صاحب الصيدلية يدوس Edit).
+enum SalaryField {
+  baseSalary,
+  absentDays,
+  lateDeduction,
+  deliveryOrders,
+  bonus,
+  deduction,
+}
+
 class SalaryBreakdownRow {
   const SalaryBreakdownRow({
+    required this.field,
     required this.title,
     required this.amount,
     required this.tone,
     this.detail,
   });
 
+  final SalaryField field;
   final String title;
   final String? detail;
   final double amount;
   final SalaryRowTone tone;
 }
 
+/// [includeEmpty] = true بيعرض كل الصفوف حتى لو قيمتها صفر (للشاشة، علشان
+/// أي قيمة تتعدل). الـ PDF بيسيبها false فمبيعرضش الصفوف الفاضية.
 List<SalaryBreakdownRow> buildBreakdown(
   AppLocalizations l10n,
-  SalarySheet sheet,
-) {
+  SalarySheet sheet, {
+  bool includeEmpty = false,
+}) {
   final rows = <SalaryBreakdownRow>[];
 
-  if (sheet.isDelivery) {
-    rows.add(
-      SalaryBreakdownRow(
-        title: l10n.translate('salary.base_salary'),
-        amount: sheet.baseSalary,
-        tone: SalaryRowTone.base,
-      ),
-    );
-    if (sheet.deliveryOrders > 0) {
-      rows.add(
-        SalaryBreakdownRow(
-          title: l10n.translate('salary.line_delivery'),
-          detail: l10n.translate(
-            'salary.line_delivery_detail',
-            args: {
-              'count': '${sheet.deliveryOrders}',
-              'fee': formatAmountOf(l10n, kDeliveryFeePerOrder),
-            },
-          ),
-          amount: sheet.deliveryFees,
-          tone: SalaryRowTone.add,
-        ),
-      );
-    }
-  } else {
-    final parts = [
-      l10n.translate(
+  void add(SalaryBreakdownRow row, {bool always = false}) {
+    if (always || includeEmpty || row.amount > 0) rows.add(row);
+  }
+
+  add(
+    SalaryBreakdownRow(
+      field: SalaryField.baseSalary,
+      title: l10n.translate('salary.base_salary'),
+      detail:
+          '${l10n.translate('salary.daily_rate')}: '
+          '${formatAmountOf(l10n, sheet.dailyRate)}',
+      amount: sheet.baseSalary,
+      tone: SalaryRowTone.base,
+    ),
+    always: true,
+  );
+
+  add(
+    SalaryBreakdownRow(
+      field: SalaryField.absentDays,
+      title: l10n.translate('salary.line_absence'),
+      detail: l10n.translate(
         'salary.earned_detail',
         args: {
-          'days': formatDays(sheet.paidDays),
+          'days': formatDays(sheet.absentDays),
           'rate': formatAmountOf(l10n, sheet.dailyRate),
         },
       ),
-      if (sheet.offDays > 0)
-        l10n.translate(
-          'salary.days_split',
+      amount: sheet.absenceDeduction,
+      tone: SalaryRowTone.subtract,
+    ),
+  );
+
+  final lateMatchesMinutes =
+      sheet.lateDeduction ==
+      roundMoney(sheet.lateMinutes * sheet.deductionPerMinute);
+  add(
+    SalaryBreakdownRow(
+      field: SalaryField.lateDeduction,
+      title: l10n.translate('salary.line_late'),
+      // لو القيمة اتعدلت يدويًا مبنعرضش التفصيل عشان ميبقاش مضلل
+      detail: lateMatchesMinutes && sheet.lateMinutes > 0
+          ? l10n.translate(
+              'salary.line_late_detail',
+              args: {
+                'time': formatMinutes(l10n, sheet.lateMinutes),
+                'rate': formatAmountOf(l10n, sheet.deductionPerMinute),
+              },
+            )
+          : null,
+      amount: sheet.lateDeduction,
+      tone: SalaryRowTone.subtract,
+    ),
+  );
+
+  if (sheet.isDelivery) {
+    add(
+      SalaryBreakdownRow(
+        field: SalaryField.deliveryOrders,
+        title: l10n.translate('salary.line_delivery'),
+        detail: l10n.translate(
+          'salary.line_delivery_detail',
           args: {
-            'attended': formatDays(sheet.attendedDays),
-            'off': '${sheet.offDays}',
+            'count': '${sheet.deliveryOrders}',
+            'fee': formatAmountOf(l10n, kDeliveryFeePerOrder),
           },
         ),
-    ];
-    rows.add(
-      SalaryBreakdownRow(
-        title: l10n.translate('salary.earned_salary'),
-        detail: parts.join('\n'),
-        amount: sheet.earnedSalary,
-        tone: SalaryRowTone.base,
-      ),
-    );
-    if (sheet.lateDeduction > 0) {
-      rows.add(
-        SalaryBreakdownRow(
-          title: l10n.translate('salary.line_late'),
-          detail: l10n.translate(
-            'salary.line_late_detail',
-            args: {
-              'time': formatMinutes(l10n, sheet.lateMinutes),
-              'rate': formatAmountOf(l10n, sheet.deductionPerMinute),
-            },
-          ),
-          amount: sheet.lateDeduction,
-          tone: SalaryRowTone.subtract,
-        ),
-      );
-    }
-  }
-
-  if (sheet.totalBonus > 0) {
-    rows.add(
-      SalaryBreakdownRow(
-        title: l10n.translate('notes.total_bonuses'),
-        amount: sheet.totalBonus,
+        amount: sheet.deliveryFees,
         tone: SalaryRowTone.add,
       ),
     );
   }
-  if (sheet.totalDeduction > 0) {
-    rows.add(
-      SalaryBreakdownRow(
-        title: l10n.translate('notes.total_deductions'),
-        amount: sheet.totalDeduction,
-        tone: SalaryRowTone.subtract,
-      ),
-    );
-  }
+
+  add(
+    SalaryBreakdownRow(
+      field: SalaryField.bonus,
+      title: l10n.translate('notes.total_bonuses'),
+      amount: sheet.totalBonus,
+      tone: SalaryRowTone.add,
+    ),
+  );
+  add(
+    SalaryBreakdownRow(
+      field: SalaryField.deduction,
+      title: l10n.translate('notes.total_deductions'),
+      amount: sheet.totalDeduction,
+      tone: SalaryRowTone.subtract,
+    ),
+  );
   return rows;
 }
 
