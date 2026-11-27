@@ -350,4 +350,22 @@
     "exceptions.deleted": "تم حذف الاستثناء.",
     "exceptions.delete_title": "حذف الاستثناء",
     "exceptions.delete_message": "هل أنت متأكد من حذف هذا الاستثناء؟ لا يمكن التراجع عن هذا الإجراء."
+    "salary.history": "السجل السابق",
+    "salary.history_empty": "لا توجد شيتات محفوظة بعد",
+    "salary.history_load_failed": "تعذّر تحميل السجل. حاول مرة أخرى.",
+    "salary.payment_title": "بيانات الدفع",
+    "salary.mobile": "رقم الموظف",
+    "salary.copy": "نسخ",
+    "salary.copied": "تم النسخ",
+    "salary.cash_hint": "الموظف يستلم المرتب كاش 💵",
+    "salary.mark_paid": "تم الدفع",
+    "salary.paid_done": "تم دفع المرتب",
+    "salary.paid_confirm_title": "تأكيد الدفع",
+    "salary.paid_confirm_message": "هل حوّلت {amount} إلى {name} فعلًا؟ لن يمكن تعديل الشيت بعد التأكيد.",
+    "salary.paid_success": "تم تسجيل الدفع.",
+    "salary.save_failed": "تعذّر حفظ شيت المرتب. حاول مرة أخرى.",
+    "salary.status_pending": "لم يُحسب",
+    "salary.status_calculated": "تم الحساب - لم يُدفع",
+    "salary.status_paid": "تم الدفع",
+    "salary.paid_at": "تاريخ الدفع"
 }

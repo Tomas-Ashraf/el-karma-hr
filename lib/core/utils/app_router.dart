@@ -24,6 +24,7 @@ import 'package:el_karma_ph/features/records_view/models/record_preview_models.d
 import 'package:el_karma_ph/features/records_view/presentation/view/records_view.dart';
 import 'package:el_karma_ph/features/reset_email_sent_view/presentation/view/reset_email_sent_view.dart';
 import 'package:el_karma_ph/features/reset_pass_view/presentation/view/reset_pass_view.dart';
+import 'package:el_karma_ph/features/salary_history_view/presentation/view/salary_history_view.dart';
 import 'package:el_karma_ph/features/settings_view/presentation/view/settings_view.dart';
 import 'package:el_karma_ph/features/splash_view/presentation/views/splash_view.dart';
 import 'package:go_router/go_router.dart';
@@ -50,6 +51,8 @@ abstract class AppRouter {
   static const kCountSalaryView = '/countSalaryView';
   static const kSalarySheetView = '/salarySheetView';
   static const kAttendanceExceptionView = '/attendanceExceptionView';
+  static const kSalaryHistoryView = '/salaryHistoryView';
+
   static final router = GoRouter(
     routes: <RouteBase>[
       GoRoute(path: '/', builder: (context, state) => const SplashView()),
@@ -173,6 +176,13 @@ abstract class AppRouter {
         path: kAttendanceExceptionView,
         name: kAttendanceExceptionView,
         builder: (context, state) => const AttendanceExceptionView(),
+      GoRoute(
+        path: kSalaryHistoryView,
+        name: kSalaryHistoryView,
+        redirect: (context, state) =>
+            state.extra is EmployeeModel ? null : kCountSalaryView,
+        builder: (context, state) =>
+            SalaryHistoryView(employee: state.extra as EmployeeModel),
       ),
     ],
   );

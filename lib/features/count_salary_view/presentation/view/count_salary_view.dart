@@ -1,6 +1,8 @@
+import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_router.dart';
 import 'package:el_karma_ph/features/count_salary_view/manager/cubit/count_salary_cubit.dart';
+import 'package:el_karma_ph/features/count_salary_view/manager/cubit/count_salary_state.dart';
 import 'package:el_karma_ph/features/count_salary_view/presentation/view_model/count_salary_view_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +31,22 @@ class CountSalaryView extends StatelessWidget {
                   : router.go(AppRouter.kDashboardView);
             },
           ),
+          actions: [
+            BlocBuilder<CountSalaryCubit, CountSalaryState>(
+              buildWhen: (p, c) => p.selected?.id != c.selected?.id,
+              builder: (context, state) {
+                final employee = state.selected;
+                if (employee == null) return const SizedBox.shrink();
+                return IconButton(
+                  tooltip: context.tr('salary.history'),
+                  icon: const Icon(Icons.history_rounded, color: kPrimaryBlue),
+                  onPressed: () => GoRouter.of(context)
+                      .pushNamed(AppRouter.kSalaryHistoryView, extra: employee),
+                );
+              },
+            ),
+            const SizedBox(width: 4),
+          ],
         ),
         body: const CountSalaryViewBody(),
       ),

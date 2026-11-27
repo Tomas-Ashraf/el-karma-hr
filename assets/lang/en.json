@@ -351,3 +351,22 @@
     "exceptions.delete_title": "Delete exception",
     "exceptions.delete_message": "Are you sure you want to delete this exception? This can't be undone."
     }
+    "salary.history": "History",
+    "salary.history_empty": "No saved salary sheets yet",
+    "salary.history_load_failed": "Couldn't load the history. Please try again.",
+    "salary.payment_title": "Payment details",
+    "salary.mobile": "Employee mobile number",
+    "salary.copy": "Copy",
+    "salary.copied": "Copied",
+    "salary.cash_hint": "The employee receives the salary in cash 💵",
+    "salary.mark_paid": "Mark as paid",
+    "salary.paid_done": "Salary paid",
+    "salary.paid_confirm_title": "Confirm payment",
+    "salary.paid_confirm_message": "Did you actually transfer {amount} to {name}? The sheet can't be edited after confirming.",
+    "salary.paid_success": "Marked as paid.",
+    "salary.save_failed": "Couldn't save the salary sheet. Please try again.",
+    "salary.status_pending": "Not calculated",
+    "salary.status_calculated": "Calculated - not paid",
+    "salary.status_paid": "Paid",
+    "salary.paid_at": "Paid on"
+}
