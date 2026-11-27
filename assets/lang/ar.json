@@ -59,6 +59,7 @@
     "time.pm": "م",
     "drawer.employees": "الموظفين",
     "drawer.attendance": "الحضور والانصراف",
+    "drawer.attendance_exception": "استثناءات الحضور",
     "drawer.attendance_records": "سجلات الحضور",
     "drawer.notes_records": "سجلات الملاحظات",
     "drawer.count_salary": "حساب المرتبات",

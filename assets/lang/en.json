@@ -59,6 +59,7 @@
     "time.pm": "pm",
     "drawer.employees": "Employees",
     "drawer.attendance": "Attendance",
+    "drawer.attendance_exception": "Attendance Exceptions",
     "drawer.attendance_records": "Attendance Records",
     "drawer.notes_records": "Notes Records",
     "drawer.Orders_recording": "Orders Recording",
