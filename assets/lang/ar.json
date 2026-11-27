@@ -324,5 +324,6 @@
     "salary.earned_salary": "مرتب أيام العمل",
     "salary.earned_detail": "{days} يوم × {rate}",
     "salary.days_split": "{attended} حضور + {off} إجازة مدفوعة",
-    "salary.paid_off_days": "+ {off} إجازة مدفوعة"
+    "salary.paid_off_days": "+ {off} إجازة مدفوعة",
+    "salary.line_absence": "خصم الغياب"
 }

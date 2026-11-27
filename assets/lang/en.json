@@ -324,5 +324,6 @@
     "salary.earned_salary": "Salary for worked days",
     "salary.earned_detail": "{days} days × {rate}",
     "salary.days_split": "{attended} attended + {off} paid days off",
-    "salary.paid_off_days": "+ {off} paid days off"
+    "salary.paid_off_days": "+ {off} paid days off",
+    "salary.line_absence": "Absence deduction"
 }

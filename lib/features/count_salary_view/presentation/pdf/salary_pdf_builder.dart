@@ -219,55 +219,63 @@ class _Report {
   }
 
   pw.Widget _stats() {
-    final cards = <pw.Widget>[
+    final primary = <pw.Widget>[
       _statCard(
         _t('salary.base_salary'),
         formatAmountOf(l10n, sheet.baseSalary),
         _darkBlue,
         _netBg,
       ),
-      if (sheet.isDelivery) ...[
-        _statCard(
-          _t('salary.orders_count'),
-          '${sheet.deliveryOrders}',
-          _darkBlue,
-          _netBg,
-        ),
-        _statCard(
-          _t('salary.line_delivery'),
-          formatAmountOf(l10n, sheet.deliveryFees),
-          _good,
-          _goodBg,
-        ),
-      ] else ...[
-        _statCard(
-          _t('salary.days_attended'),
-          formatDays(sheet.attendedDays),
-          _good,
-          _goodBg,
-        ),
-        _statCard(
-          _t('salary.days_absent'),
-          formatDays(sheet.absentDays),
-          _bad,
-          _badBg,
-        ),
-        _statCard(
-          _t('salary.late_total'),
-          formatAmountOf(l10n, sheet.lateDeduction),
-          _late,
-          _lateBg,
-        ),
-      ],
+      _statCard(
+        _t('salary.days_attended'),
+        formatDays(sheet.attendedDays),
+        _good,
+        _goodBg,
+      ),
+      _statCard(
+        _t('salary.days_absent'),
+        formatDays(sheet.absentDays),
+        _bad,
+        _badBg,
+      ),
+      _statCard(
+        _t('salary.late_total'),
+        formatAmountOf(l10n, sheet.lateDeduction),
+        _late,
+        _lateBg,
+      ),
     ];
 
-    return pw.Row(
+    final delivery = <pw.Widget>[
+      _statCard(
+        _t('salary.orders_count'),
+        '${sheet.deliveryOrders}',
+        _darkBlue,
+        _netBg,
+      ),
+      _statCard(
+        _t('salary.line_delivery'),
+        formatAmountOf(l10n, sheet.deliveryFees),
+        _good,
+        _goodBg,
+      ),
+    ];
+
+    pw.Widget cardsRow(List<pw.Widget> cards) => pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         for (final (i, card) in cards.indexed) ...[
           if (i > 0) pw.SizedBox(width: 8),
           card,
         ],
+      ],
+    );
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+      children: [
+        cardsRow(primary),
+        if (sheet.isDelivery) ...[pw.SizedBox(height: 8), cardsRow(delivery)],
       ],
     );
   }

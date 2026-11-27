@@ -1,0 +1,233 @@
+# Summary
+
+Date : 2026-11-26 22:49:49
+
+Directory e:\\Self Study\\Mobile Application Course\\Projects\\el_karma_ph
+
+Total : 231 files,  18756 codes, 345 comments, 2066 blanks, all 21167 lines
+
+Summary / [Details](details.md) / [Diff Summary](diff.md) / [Diff Details](diff-details.md)
+
+## Languages
+| language | files | code | comment | blank | total |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Dart | 183 | 16,367 | 77 | 1,689 | 18,133 |
+| JSON | 7 | 757 | 0 | 2 | 759 |
+| HTML | 2 | 563 | 25 | 119 | 707 |
+| C++ | 11 | 448 | 99 | 144 | 691 |
+| CMake | 4 | 244 | 0 | 45 | 289 |
+| XML | 10 | 142 | 53 | 10 | 205 |
+| Kotlin | 4 | 134 | 14 | 21 | 169 |
+| YAML | 3 | 50 | 73 | 16 | 139 |
+| Swift | 3 | 25 | 2 | 10 | 37 |
+| Markdown | 2 | 17 | 0 | 8 | 25 |
+| Properties | 2 | 9 | 2 | 2 | 13 |
+
+## Directories
+| path | files | code | comment | blank | total |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| . | 231 | 18,756 | 345 | 2,066 | 21,167 |
+| . (Files) | 6 | 130 | 83 | 29 | 242 |
+| android | 16 | 807 | 69 | 145 | 1,021 |
+| android (Files) | 3 | 48 | 4 | 10 | 62 |
+| android\\app | 11 | 210 | 63 | 20 | 293 |
+| android\\app (Files) | 2 | 76 | 12 | 6 | 94 |
+| android\\app\\src | 9 | 134 | 51 | 14 | 199 |
+| android\\app\\src\\debug | 1 | 3 | 4 | 1 | 8 |
+| android\\app\\src\\main | 7 | 128 | 43 | 12 | 183 |
+| android\\app\\src\\main (Files) | 1 | 45 | 11 | 0 | 56 |
+| android\\app\\src\\main\\kotlin | 1 | 53 | 0 | 6 | 59 |
+| android\\app\\src\\main\\kotlin\\com | 1 | 53 | 0 | 6 | 59 |
+| android\\app\\src\\main\\kotlin\\com\\example | 1 | 53 | 0 | 6 | 59 |
+| android\\app\\src\\main\\kotlin\\com\\example\\el_karma_ph | 1 | 53 | 0 | 6 | 59 |
+| android\\app\\src\\main\\res | 5 | 30 | 32 | 6 | 68 |
+| android\\app\\src\\main\\res\\drawable | 1 | 4 | 7 | 2 | 13 |
+| android\\app\\src\\main\\res\\drawable-v21 | 1 | 4 | 7 | 2 | 13 |
+| android\\app\\src\\main\\res\\values | 1 | 9 | 9 | 1 | 19 |
+| android\\app\\src\\main\\res\\values-night | 1 | 9 | 9 | 1 | 19 |
+| android\\app\\src\\main\\res\\xml | 1 | 4 | 0 | 0 | 4 |
+| android\\app\\src\\profile | 1 | 3 | 4 | 1 | 8 |
+| android\\build | 1 | 544 | 2 | 114 | 660 |
+| android\\build\\reports | 1 | 544 | 2 | 114 | 660 |
+| android\\build\\reports\\problems | 1 | 544 | 2 | 114 | 660 |
+| android\\gradle | 1 | 5 | 0 | 1 | 6 |
+| android\\gradle\\wrapper | 1 | 5 | 0 | 1 | 6 |
+| assets | 2 | 658 | 0 | 0 | 658 |
+| assets\\lang | 2 | 658 | 0 | 0 | 658 |
+| ios | 9 | 114 | 4 | 16 | 134 |
+| ios\\Runner | 8 | 107 | 2 | 12 | 121 |
+| ios\\Runner (Files) | 3 | 19 | 0 | 7 | 26 |
+| ios\\RunnerTests | 1 | 7 | 2 | 4 | 13 |
+| ios\\Runner\\Assets.xcassets | 3 | 27 | 0 | 3 | 30 |
+| ios\\Runner\\Assets.xcassets\\AppIcon.appiconset | 1 | 1 | 0 | 0 | 1 |
+| ios\\Runner\\Assets.xcassets\\LaunchImage.imageset | 2 | 26 | 0 | 3 | 29 |
+| ios\\Runner\\Base.lproj | 2 | 61 | 2 | 2 | 65 |
+| lib | 181 | 16,290 | 56 | 1,676 | 18,022 |
+| lib (Files) | 3 | 130 | 1 | 16 | 147 |
+| lib\\core | 13 | 550 | 17 | 79 | 646 |
+| lib\\core\\utils | 10 | 427 | 12 | 61 | 500 |
+| lib\\core\\utils (Files) | 8 | 315 | 2 | 36 | 353 |
+| lib\\core\\utils\\app_localization | 1 | 55 | 0 | 16 | 71 |
+| lib\\core\\utils\\app_theme | 1 | 57 | 10 | 9 | 76 |
+| lib\\core\\widgets | 3 | 123 | 5 | 18 | 146 |
+| lib\\features | 165 | 15,610 | 38 | 1,581 | 17,229 |
+| lib\\features\\add_employee_view | 7 | 796 | 1 | 70 | 867 |
+| lib\\features\\add_employee_view\\manager | 2 | 44 | 1 | 15 | 60 |
+| lib\\features\\add_employee_view\\manager\\cubit | 2 | 44 | 1 | 15 | 60 |
+| lib\\features\\add_employee_view\\models | 1 | 54 | 0 | 8 | 62 |
+| lib\\features\\add_employee_view\\presentation | 4 | 698 | 0 | 47 | 745 |
+| lib\\features\\add_employee_view\\presentation\\view | 1 | 35 | 0 | 3 | 38 |
+| lib\\features\\add_employee_view\\presentation\\view_model | 1 | 402 | 0 | 25 | 427 |
+| lib\\features\\add_employee_view\\presentation\\widgets | 2 | 261 | 0 | 19 | 280 |
+| lib\\features\\attendance_view.dart | 9 | 1,078 | 0 | 104 | 1,182 |
+| lib\\features\\attendance_view.dart\\manager | 2 | 214 | 0 | 19 | 233 |
+| lib\\features\\attendance_view.dart\\manager\\cubit | 2 | 214 | 0 | 19 | 233 |
+| lib\\features\\attendance_view.dart\\models | 2 | 117 | 0 | 19 | 136 |
+| lib\\features\\attendance_view.dart\\presentation | 4 | 727 | 0 | 61 | 788 |
+| lib\\features\\attendance_view.dart\\presentation\\view | 1 | 41 | 0 | 4 | 45 |
+| lib\\features\\attendance_view.dart\\presentation\\view_model | 1 | 248 | 0 | 20 | 268 |
+| lib\\features\\attendance_view.dart\\presentation\\widgets | 2 | 438 | 0 | 37 | 475 |
+| lib\\features\\attendance_view.dart\\repos | 1 | 20 | 0 | 5 | 25 |
+| lib\\features\\count_salary_view | 13 | 1,971 | 11 | 175 | 2,157 |
+| lib\\features\\count_salary_view\\manager | 3 | 183 | 2 | 22 | 207 |
+| lib\\features\\count_salary_view\\manager\\cubit | 2 | 121 | 1 | 15 | 137 |
+| lib\\features\\count_salary_view\\manager\\logic | 1 | 62 | 1 | 7 | 70 |
+| lib\\features\\count_salary_view\\models | 2 | 211 | 9 | 31 | 251 |
+| lib\\features\\count_salary_view\\presentation | 7 | 1,509 | 0 | 112 | 1,621 |
+| lib\\features\\count_salary_view\\presentation\\pdf | 1 | 437 | 0 | 35 | 472 |
+| lib\\features\\count_salary_view\\presentation\\view | 2 | 67 | 0 | 7 | 74 |
+| lib\\features\\count_salary_view\\presentation\\view_model | 2 | 860 | 0 | 57 | 917 |
+| lib\\features\\count_salary_view\\presentation\\widgets | 2 | 145 | 0 | 13 | 158 |
+| lib\\features\\count_salary_view\\repos | 1 | 68 | 0 | 10 | 78 |
+| lib\\features\\current_orders_view | 9 | 837 | 3 | 85 | 925 |
+| lib\\features\\current_orders_view\\manager | 2 | 114 | 0 | 16 | 130 |
+| lib\\features\\current_orders_view\\manager\\cubit | 2 | 114 | 0 | 16 | 130 |
+| lib\\features\\current_orders_view\\models | 1 | 28 | 0 | 5 | 33 |
+| lib\\features\\current_orders_view\\presentation | 5 | 636 | 3 | 54 | 693 |
+| lib\\features\\current_orders_view\\presentation\\view | 1 | 35 | 0 | 3 | 38 |
+| lib\\features\\current_orders_view\\presentation\\view_model | 1 | 118 | 0 | 15 | 133 |
+| lib\\features\\current_orders_view\\presentation\\widgets | 3 | 483 | 3 | 36 | 522 |
+| lib\\features\\current_orders_view\\repos | 1 | 59 | 0 | 10 | 69 |
+| lib\\features\\dashboard_view | 20 | 1,280 | 3 | 160 | 1,443 |
+| lib\\features\\dashboard_view\\manager | 5 | 306 | 0 | 52 | 358 |
+| lib\\features\\dashboard_view\\manager\\cubit | 4 | 93 | 0 | 25 | 118 |
+| lib\\features\\dashboard_view\\manager\\logic | 1 | 213 | 0 | 27 | 240 |
+| lib\\features\\dashboard_view\\models | 1 | 96 | 1 | 28 | 125 |
+| lib\\features\\dashboard_view\\presentation | 13 | 831 | 2 | 73 | 906 |
+| lib\\features\\dashboard_view\\presentation\\app_drawer | 3 | 177 | 0 | 16 | 193 |
+| lib\\features\\dashboard_view\\presentation\\app_drawer\\models | 1 | 11 | 0 | 3 | 14 |
+| lib\\features\\dashboard_view\\presentation\\app_drawer\\view | 1 | 133 | 0 | 9 | 142 |
+| lib\\features\\dashboard_view\\presentation\\app_drawer\\widgets | 1 | 33 | 0 | 4 | 37 |
+| lib\\features\\dashboard_view\\presentation\\view | 1 | 20 | 0 | 3 | 23 |
+| lib\\features\\dashboard_view\\presentation\\view_model | 1 | 105 | 2 | 8 | 115 |
+| lib\\features\\dashboard_view\\presentation\\widgets | 8 | 529 | 0 | 46 | 575 |
+| lib\\features\\dashboard_view\\repos | 1 | 47 | 0 | 7 | 54 |
+| lib\\features\\employee_details_view | 6 | 1,011 | 0 | 77 | 1,088 |
+| lib\\features\\employee_details_view\\manager | 2 | 93 | 0 | 13 | 106 |
+| lib\\features\\employee_details_view\\manager\\cubit | 2 | 93 | 0 | 13 | 106 |
+| lib\\features\\employee_details_view\\presentation | 4 | 918 | 0 | 64 | 982 |
+| lib\\features\\employee_details_view\\presentation\\view | 1 | 37 | 0 | 4 | 41 |
+| lib\\features\\employee_details_view\\presentation\\view_model | 1 | 430 | 0 | 26 | 456 |
+| lib\\features\\employee_details_view\\presentation\\widgets | 2 | 451 | 0 | 34 | 485 |
+| lib\\features\\employees_view | 9 | 710 | 1 | 84 | 795 |
+| lib\\features\\employees_view\\manager | 2 | 58 | 0 | 16 | 74 |
+| lib\\features\\employees_view\\manager\\cubit | 2 | 58 | 0 | 16 | 74 |
+| lib\\features\\employees_view\\models | 1 | 113 | 0 | 12 | 125 |
+| lib\\features\\employees_view\\presentation | 5 | 479 | 1 | 42 | 522 |
+| lib\\features\\employees_view\\presentation\\view | 1 | 35 | 0 | 3 | 38 |
+| lib\\features\\employees_view\\presentation\\view_model | 1 | 247 | 1 | 21 | 269 |
+| lib\\features\\employees_view\\presentation\\widgets | 3 | 197 | 0 | 18 | 215 |
+| lib\\features\\employees_view\\repos | 1 | 60 | 0 | 14 | 74 |
+| lib\\features\\finished_orders_view | 7 | 710 | 1 | 70 | 781 |
+| lib\\features\\finished_orders_view\\manager | 2 | 100 | 1 | 15 | 116 |
+| lib\\features\\finished_orders_view\\manager\\cubit | 2 | 100 | 1 | 15 | 116 |
+| lib\\features\\finished_orders_view\\models | 1 | 47 | 0 | 5 | 52 |
+| lib\\features\\finished_orders_view\\presentation | 3 | 541 | 0 | 44 | 585 |
+| lib\\features\\finished_orders_view\\presentation\\view | 1 | 35 | 0 | 3 | 38 |
+| lib\\features\\finished_orders_view\\presentation\\view_model | 1 | 274 | 0 | 27 | 301 |
+| lib\\features\\finished_orders_view\\presentation\\widgets | 1 | 232 | 0 | 14 | 246 |
+| lib\\features\\finished_orders_view\\repos | 1 | 22 | 0 | 6 | 28 |
+| lib\\features\\inactive_account_view | 3 | 147 | 0 | 11 | 158 |
+| lib\\features\\inactive_account_view\\presentation | 3 | 147 | 0 | 11 | 158 |
+| lib\\features\\inactive_account_view\\presentation\\view | 1 | 12 | 0 | 3 | 15 |
+| lib\\features\\inactive_account_view\\presentation\\view_model | 1 | 81 | 0 | 4 | 85 |
+| lib\\features\\inactive_account_view\\presentation\\widgets | 1 | 54 | 0 | 4 | 58 |
+| lib\\features\\login_view | 9 | 466 | 2 | 56 | 524 |
+| lib\\features\\login_view\\manager | 2 | 121 | 1 | 25 | 147 |
+| lib\\features\\login_view\\manager\\login_cubit | 2 | 121 | 1 | 25 | 147 |
+| lib\\features\\login_view\\manager\\login_cubit\\cubit | 2 | 121 | 1 | 25 | 147 |
+| lib\\features\\login_view\\models | 1 | 23 | 0 | 2 | 25 |
+| lib\\features\\login_view\\presentation | 6 | 322 | 1 | 29 | 352 |
+| lib\\features\\login_view\\presentation\\view | 1 | 9 | 0 | 3 | 12 |
+| lib\\features\\login_view\\presentation\\view_model | 1 | 134 | 1 | 8 | 143 |
+| lib\\features\\login_view\\presentation\\widgets | 4 | 179 | 0 | 18 | 197 |
+| lib\\features\\no_internet_view | 5 | 229 | 2 | 29 | 260 |
+| lib\\features\\no_internet_view\\manager | 2 | 35 | 0 | 10 | 45 |
+| lib\\features\\no_internet_view\\manager\\cubit | 2 | 35 | 0 | 10 | 45 |
+| lib\\features\\no_internet_view\\presentation | 3 | 194 | 2 | 19 | 215 |
+| lib\\features\\no_internet_view\\presentation\\view | 1 | 9 | 0 | 3 | 12 |
+| lib\\features\\no_internet_view\\presentation\\view_model | 2 | 185 | 2 | 16 | 203 |
+| lib\\features\\notes_records_view | 23 | 2,749 | 2 | 271 | 3,022 |
+| lib\\features\\notes_records_view\\manager | 8 | 374 | 0 | 47 | 421 |
+| lib\\features\\notes_records_view\\manager\\cubit | 8 | 374 | 0 | 47 | 421 |
+| lib\\features\\notes_records_view\\models | 1 | 116 | 0 | 22 | 138 |
+| lib\\features\\notes_records_view\\presentation | 13 | 2,125 | 2 | 181 | 2,308 |
+| lib\\features\\notes_records_view\\presentation\\view | 3 | 558 | 2 | 45 | 605 |
+| lib\\features\\notes_records_view\\presentation\\widgets | 10 | 1,567 | 0 | 136 | 1,703 |
+| lib\\features\\notes_records_view\\repos | 1 | 134 | 0 | 21 | 155 |
+| lib\\features\\orders_recording_view | 7 | 468 | 2 | 51 | 521 |
+| lib\\features\\orders_recording_view\\manager | 2 | 102 | 0 | 13 | 115 |
+| lib\\features\\orders_recording_view\\manager\\cubit | 2 | 102 | 0 | 13 | 115 |
+| lib\\features\\orders_recording_view\\models | 2 | 28 | 0 | 8 | 36 |
+| lib\\features\\orders_recording_view\\presentation | 2 | 297 | 2 | 24 | 323 |
+| lib\\features\\orders_recording_view\\presentation\\view | 1 | 35 | 0 | 3 | 38 |
+| lib\\features\\orders_recording_view\\presentation\\view_model | 1 | 262 | 2 | 21 | 285 |
+| lib\\features\\orders_recording_view\\repos | 1 | 41 | 0 | 6 | 47 |
+| lib\\features\\record_details_view | 7 | 1,193 | 0 | 101 | 1,294 |
+| lib\\features\\record_details_view\\presentation | 7 | 1,193 | 0 | 101 | 1,294 |
+| lib\\features\\record_details_view\\presentation\\pdf | 2 | 501 | 0 | 47 | 548 |
+| lib\\features\\record_details_view\\presentation\\view | 2 | 68 | 0 | 9 | 77 |
+| lib\\features\\record_details_view\\presentation\\view_model | 1 | 198 | 0 | 17 | 215 |
+| lib\\features\\record_details_view\\presentation\\widgets | 2 | 426 | 0 | 28 | 454 |
+| lib\\features\\records_view | 9 | 734 | 2 | 84 | 820 |
+| lib\\features\\records_view\\manager | 2 | 135 | 0 | 14 | 149 |
+| lib\\features\\records_view\\manager\\cubit | 2 | 135 | 0 | 14 | 149 |
+| lib\\features\\records_view\\models | 1 | 114 | 0 | 18 | 132 |
+| lib\\features\\records_view\\presentation | 5 | 455 | 2 | 44 | 501 |
+| lib\\features\\records_view\\presentation\\view | 1 | 35 | 0 | 3 | 38 |
+| lib\\features\\records_view\\presentation\\view_model | 1 | 198 | 0 | 22 | 220 |
+| lib\\features\\records_view\\presentation\\widgets | 3 | 222 | 2 | 19 | 243 |
+| lib\\features\\records_view\\repos | 1 | 30 | 0 | 8 | 38 |
+| lib\\features\\reset_email_sent_view | 3 | 175 | 1 | 14 | 190 |
+| lib\\features\\reset_email_sent_view\\presentation | 3 | 175 | 1 | 14 | 190 |
+| lib\\features\\reset_email_sent_view\\presentation\\view | 1 | 13 | 0 | 4 | 17 |
+| lib\\features\\reset_email_sent_view\\presentation\\view_model | 1 | 108 | 1 | 6 | 115 |
+| lib\\features\\reset_email_sent_view\\presentation\\widgets | 1 | 54 | 0 | 4 | 58 |
+| lib\\features\\reset_pass_view | 6 | 273 | 0 | 29 | 302 |
+| lib\\features\\reset_pass_view\\manager | 2 | 46 | 0 | 12 | 58 |
+| lib\\features\\reset_pass_view\\manager\\cubit | 2 | 46 | 0 | 12 | 58 |
+| lib\\features\\reset_pass_view\\presentation | 4 | 227 | 0 | 17 | 244 |
+| lib\\features\\reset_pass_view\\presentation\\view | 1 | 26 | 0 | 3 | 29 |
+| lib\\features\\reset_pass_view\\presentation\\view_model | 1 | 108 | 0 | 7 | 115 |
+| lib\\features\\reset_pass_view\\presentation\\widgets | 2 | 93 | 0 | 7 | 100 |
+| lib\\features\\settings_view | 11 | 676 | 6 | 87 | 769 |
+| lib\\features\\settings_view\\manager | 5 | 142 | 1 | 33 | 176 |
+| lib\\features\\settings_view\\manager\\cubit | 4 | 121 | 0 | 27 | 148 |
+| lib\\features\\settings_view\\manager\\repo | 1 | 21 | 1 | 6 | 28 |
+| lib\\features\\settings_view\\models | 1 | 35 | 4 | 7 | 46 |
+| lib\\features\\settings_view\\presentation | 5 | 499 | 1 | 47 | 547 |
+| lib\\features\\settings_view\\presentation\\view | 1 | 38 | 0 | 4 | 42 |
+| lib\\features\\settings_view\\presentation\\view_model | 1 | 33 | 0 | 4 | 37 |
+| lib\\features\\settings_view\\presentation\\widgets | 3 | 428 | 1 | 39 | 468 |
+| lib\\features\\splash_view | 2 | 107 | 1 | 23 | 131 |
+| lib\\features\\splash_view\\presentation | 2 | 107 | 1 | 23 | 131 |
+| lib\\features\\splash_view\\presentation\\view_models | 1 | 95 | 1 | 19 | 115 |
+| lib\\features\\splash_view\\presentation\\views | 1 | 12 | 0 | 4 | 16 |
+| test | 1 | 12 | 11 | 6 | 29 |
+| web | 2 | 54 | 23 | 6 | 83 |
+| windows | 14 | 691 | 99 | 188 | 978 |
+| windows (Files) | 1 | 89 | 0 | 20 | 109 |
+| windows\\flutter | 4 | 141 | 9 | 29 | 179 |
+| windows\\runner | 9 | 461 | 90 | 139 | 690 |
+
+Summary / [Details](details.md) / [Diff Summary](diff.md) / [Diff Details](diff-details.md)

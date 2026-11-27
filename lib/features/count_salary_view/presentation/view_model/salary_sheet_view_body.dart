@@ -10,20 +10,115 @@ import 'package:el_karma_ph/features/count_salary_view/models/salary_breakdown.d
 import 'package:el_karma_ph/features/count_salary_view/models/salary_sheet.dart';
 import 'package:el_karma_ph/features/count_salary_view/presentation/pdf/salary_pdf_builder.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/widgets/section_tile_widget.dart';
+import 'package:el_karma_ph/features/employee_details_view/presentation/widgets/edit_dialogs_widget.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/adjustment_card.dart'
     hide formatAmount;
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/card_decoration.dart';
 import 'package:el_karma_ph/features/record_details_view/presentation/pdf/pdf_export_flow.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class SalarySheetViewBody extends StatelessWidget {
+class SalarySheetViewBody extends StatefulWidget {
   const SalarySheetViewBody({super.key, required this.sheet});
 
   final SalarySheet sheet;
 
   @override
+  State<SalarySheetViewBody> createState() => _SalarySheetViewBodyState();
+}
+
+class _SalarySheetViewBodyState extends State<SalarySheetViewBody> {
+  late SalarySheet _sheet = widget.sheet;
+
+  static String _plain(double v) => v % 1 == 0 ? '${v.toInt()}' : '$v';
+
+  String? _validate(String? v) {
+    final n = double.tryParse((v ?? '').trim());
+    if (n == null || n < 0) return context.tr('settings.invalid_amount');
+    return null;
+  }
+
+  Future<void> _edit(SalaryField field) async {
+    final egp = context.tr('common.egp');
+    final (
+      String label,
+      double current,
+      String? suffix,
+      bool integer,
+    ) = switch (field) {
+      SalaryField.baseSalary => (
+        context.tr('salary.base_salary'),
+        _sheet.baseSalary,
+        egp,
+        false,
+      ),
+      SalaryField.absentDays => (
+        context.tr('salary.days_absent'),
+        _sheet.absentDays,
+        null,
+        false,
+      ),
+      SalaryField.lateDeduction => (
+        context.tr('salary.line_late'),
+        _sheet.lateDeduction,
+        egp,
+        false,
+      ),
+      SalaryField.deliveryOrders => (
+        context.tr('salary.orders_count'),
+        _sheet.deliveryOrders.toDouble(),
+        null,
+        true,
+      ),
+      SalaryField.bonus => (
+        context.tr('notes.total_bonuses'),
+        _sheet.totalBonus,
+        egp,
+        false,
+      ),
+      SalaryField.deduction => (
+        context.tr('notes.total_deductions'),
+        _sheet.totalDeduction,
+        egp,
+        false,
+      ),
+    };
+
+    final result = await showEditTextDialog(
+      context,
+      title: context.tr('employee_details.edit_title', args: {'field': label}),
+      initialValue: _plain(current),
+      validator: _validate,
+      keyboardType: TextInputType.numberWithOptions(decimal: !integer),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(
+          RegExp(integer ? r'^\d*' : r'^\d*\.?\d{0,2}'),
+        ),
+      ],
+      suffixText: suffix,
+    );
+    if (result == null || !mounted) return;
+    final value = double.tryParse(result);
+    if (value == null) return;
+
+    setState(() {
+      _sheet = switch (field) {
+        SalaryField.baseSalary => _sheet.copyWith(baseSalary: value),
+        SalaryField.absentDays => _sheet.copyWith(absentDays: value),
+        SalaryField.lateDeduction => _sheet.copyWith(lateDeduction: value),
+        SalaryField.deliveryOrders => _sheet.copyWith(
+          deliveryOrders: value.round(),
+        ),
+        SalaryField.bonus => _sheet.copyWith(bonusOverride: value),
+        SalaryField.deduction => _sheet.copyWith(deductionOverride: value),
+      };
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    final sheet = _sheet;
 
     return SafeArea(
       child: Center(
@@ -48,7 +143,7 @@ class SalarySheetViewBody extends StatelessWidget {
                       const SizedBox(height: 20),
                       SectionTitleWidget(context.tr('salary.breakdown')),
                       const SizedBox(height: 12),
-                      _BreakdownCard(sheet: sheet),
+                      _BreakdownCard(sheet: sheet, onEdit: _edit),
                       const SizedBox(height: 20),
                       SectionTitleWidget(
                         context.tr('salary.adjustments_title'),
@@ -85,7 +180,7 @@ class SalarySheetViewBody extends StatelessWidget {
                     subtitle: context.tr('export.salary_subtitle'),
                     build: (l10n, ml) => SalaryPdfBuilder.build(
                       l10n: l10n,
-                      sheet: sheet,
+                      sheet: _sheet,
                       mediumDate: ml.formatMediumDate,
                       shortDate: ml.formatShortMonthDay,
                     ),
@@ -114,7 +209,6 @@ class SalarySheetViewBody extends StatelessWidget {
   }
 }
 
-/// الكارت العلوي: الموظف والفترة والمرتب الصافي.
 class _HeroCard extends StatelessWidget {
   const _HeroCard({required this.sheet});
 
@@ -247,51 +341,22 @@ class _HeroCard extends StatelessWidget {
   }
 }
 
-/// كروت الملخص: الأساسي والحضور والغياب والتأخير (أو الأوردرات للدليفري).
 class _SummaryGrid extends StatelessWidget {
   const _SummaryGrid({required this.sheet});
 
   final SalarySheet sheet;
 
   List<Widget> _tiles(BuildContext context) {
-    final base = _StatTile(
-      icon: Icons.payments_outlined,
-      label: context.tr('salary.base_salary'),
-      value: formatAmount(context, sheet.baseSalary),
-      color: kPrimaryBlue,
-      subtitle: sheet.isDelivery
-          ? null
-          : '${context.tr('salary.daily_rate')}: '
-                '${formatAmount(context, sheet.dailyRate)}',
-    );
-
-    if (sheet.isDelivery) {
-      return [
-        base,
-        _StatTile(
-          icon: Icons.motorcycle_rounded,
-          label: context.tr('salary.orders_count'),
-          value: '${sheet.deliveryOrders}',
-          color: kPrimaryBlue,
-        ),
-        _StatTile(
-          icon: Icons.local_shipping_outlined,
-          label: context.tr('salary.line_delivery'),
-          value: formatAmount(context, sheet.deliveryFees),
-          color: kBonusColor,
-          subtitle: context.tr(
-            'salary.line_delivery_detail',
-            args: {
-              'count': '${sheet.deliveryOrders}',
-              'fee': formatAmount(context, kDeliveryFeePerOrder),
-            },
-          ),
-        ),
-      ];
-    }
-
     return [
-      base,
+      _StatTile(
+        icon: Icons.payments_outlined,
+        label: context.tr('salary.base_salary'),
+        value: formatAmount(context, sheet.baseSalary),
+        color: kPrimaryBlue,
+        subtitle:
+            '${context.tr('salary.daily_rate')}: '
+            '${formatAmount(context, sheet.dailyRate)}',
+      ),
       _StatTile(
         icon: Icons.event_available_rounded,
         label: context.tr('salary.days_attended'),
@@ -319,6 +384,27 @@ class _SummaryGrid extends StatelessWidget {
             ? formatDuration(context, sheet.lateMinutes)
             : null,
       ),
+      if (sheet.isDelivery) ...[
+        _StatTile(
+          icon: Icons.motorcycle_rounded,
+          label: context.tr('salary.orders_count'),
+          value: '${sheet.deliveryOrders}',
+          color: kPrimaryBlue,
+        ),
+        _StatTile(
+          icon: Icons.local_shipping_outlined,
+          label: context.tr('salary.line_delivery'),
+          value: formatAmount(context, sheet.deliveryFees),
+          color: kBonusColor,
+          subtitle: context.tr(
+            'salary.line_delivery_detail',
+            args: {
+              'count': '${sheet.deliveryOrders}',
+              'fee': formatAmount(context, kDeliveryFeePerOrder),
+            },
+          ),
+        ),
+      ],
     ];
   }
 
@@ -415,11 +501,11 @@ class _StatTile extends StatelessWidget {
   }
 }
 
-/// تفاصيل الحساب خطوة بخطوة وفي الآخر المرتب الصافي.
 class _BreakdownCard extends StatelessWidget {
-  const _BreakdownCard({required this.sheet});
+  const _BreakdownCard({required this.sheet, required this.onEdit});
 
   final SalarySheet sheet;
+  final void Function(SalaryField field) onEdit;
 
   Color _toneColor(BuildContext context, SalaryRowTone tone) => switch (tone) {
     SalaryRowTone.base => context.colors.onSurface,
@@ -431,7 +517,7 @@ class _BreakdownCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = context.colors;
-    final rows = buildBreakdown(l10n, sheet);
+    final rows = buildBreakdown(l10n, sheet, includeEmpty: true);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -444,6 +530,7 @@ class _BreakdownCard extends StatelessWidget {
               detail: row.detail,
               amount: signedAmount(l10n, row),
               color: _toneColor(context, row.tone),
+              onEdit: () => onEdit(row.field),
             ),
             Divider(height: 1, color: colors.outlineVariant),
           ],
@@ -483,12 +570,14 @@ class _BreakdownRowTile extends StatelessWidget {
     required this.detail,
     required this.amount,
     required this.color,
+    required this.onEdit,
   });
 
   final String title;
   final String? detail;
   final String amount;
   final Color color;
+  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -496,9 +585,9 @@ class _BreakdownRowTile extends StatelessWidget {
     final d = detail;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsetsDirectional.only(top: 6, bottom: 6),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Column(
@@ -525,6 +614,16 @@ class _BreakdownRowTile extends StatelessWidget {
               fontSize: 15,
               fontWeight: FontWeight.bold,
               color: color,
+            ),
+          ),
+          IconButton(
+            onPressed: onEdit,
+            tooltip: context.tr('employee_details.edit'),
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(
+              Icons.edit_outlined,
+              size: 18,
+              color: kPrimaryBlue,
             ),
           ),
         ],
