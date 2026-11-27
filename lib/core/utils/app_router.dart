@@ -48,7 +48,7 @@ abstract class AppRouter {
   static const kFinishedOrdersView = '/finishedOrdersView';
   static const kCountSalaryView = '/countSalaryView';
   static const kSalarySheetView = '/salarySheetView';
-
+  static const kAttendanceExceptionView = '/attendanceExceptionView';
   static final router = GoRouter(
     routes: <RouteBase>[
       GoRoute(path: '/', builder: (context, state) => const SplashView()),
@@ -166,6 +166,13 @@ abstract class AppRouter {
             state.extra is SalarySheet ? null : kCountSalaryView,
         builder: (context, state) =>
             SalarySheetView(sheet: state.extra as SalarySheet),
+      ),
+
+      GoRoute(
+        path: kAttendanceExceptionView,
+        name: kAttendanceExceptionView,
+        builder: (context, state) => const AttendanceExceptionView(),
+      ),
       ),
     ],
   );
