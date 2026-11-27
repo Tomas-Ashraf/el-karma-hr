@@ -39,6 +39,12 @@ class _AppDrawerState extends State<AppDrawer> {
         onTap: () => GoRouter.of(context).pushNamed(AppRouter.kAttendanceView),
       ),
       DrawerEntry(
+        icon: Icons.calendar_today_outlined,
+        label: context.tr('drawer.attendance_exception'),
+        onTap: () =>
+            GoRouter.of(context).pushNamed(AppRouter.kAttendanceExceptionView),
+      ),
+      DrawerEntry(
         icon: Icons.edit_calendar_outlined,
         label: context.tr('drawer.attendance_records'),
         onTap: () => GoRouter.of(context).pushNamed(AppRouter.kRecordsView),

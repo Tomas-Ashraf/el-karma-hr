@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field
 
 import 'package:el_karma_ph/features/add_employee_view/presentation/view/add_employee_view.dart';
+import 'package:el_karma_ph/features/attendance_exception_view/presentation/view/attendance_exception_view.dart';
 import 'package:el_karma_ph/features/attendance_view.dart/presentation/view/attendance_view.dart';
 import 'package:el_karma_ph/features/count_salary_view/models/salary_sheet.dart';
 import 'package:el_karma_ph/features/count_salary_view/presentation/view/count_salary_view.dart';
@@ -10,6 +11,7 @@ import 'package:el_karma_ph/features/dashboard_view/presentation/view/dashboard_
 import 'package:el_karma_ph/features/employee_details_view/presentation/view/employee_details_view.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:el_karma_ph/features/employees_view/presentation/view/employees_list_view.dart';
+import 'package:el_karma_ph/features/finished_orders_view/presentation/view/finished_orders_view.dart';
 import 'package:el_karma_ph/features/inactive_account_view/presentation/view/inactive_account_view.dart';
 import 'package:el_karma_ph/features/login_view/presentation/view/login_view.dart';
 import 'package:el_karma_ph/features/notes_records_view/models/notes_models.dart';
@@ -25,7 +27,6 @@ import 'package:el_karma_ph/features/reset_pass_view/presentation/view/reset_pas
 import 'package:el_karma_ph/features/settings_view/presentation/view/settings_view.dart';
 import 'package:el_karma_ph/features/splash_view/presentation/views/splash_view.dart';
 import 'package:go_router/go_router.dart';
-import 'package:el_karma_ph/features/finished_orders_view/presentation/view/finished_orders_view.dart';
 
 abstract class AppRouter {
   static const kDashboardView = '/dashboardView';
@@ -172,7 +173,6 @@ abstract class AppRouter {
         path: kAttendanceExceptionView,
         name: kAttendanceExceptionView,
         builder: (context, state) => const AttendanceExceptionView(),
-      ),
       ),
     ],
   );
