@@ -5,8 +5,10 @@ import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/features/count_salary_view/manager/cubit/count_salary_cubit.dart';
 import 'package:el_karma_ph/features/count_salary_view/manager/cubit/count_salary_state.dart';
+import 'package:el_karma_ph/features/count_salary_view/models/salary_sheet.dart';
 import 'package:el_karma_ph/features/count_salary_view/presentation/widgets/salary_employee_dialog.dart';
 import 'package:el_karma_ph/features/count_salary_view/presentation/widgets/salary_header_card.dart';
+import 'package:el_karma_ph/features/count_salary_view/presentation/widgets/salary_status_chip.dart';
 import 'package:el_karma_ph/features/records_view/models/record_preview_models.dart';
 import 'package:el_karma_ph/features/records_view/presentation/widgets/record_card.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +40,8 @@ class CountSalaryViewBody extends StatelessWidget {
 
     final sheet = result.sheet;
     if (sheet != null) {
-      router.pushNamed(AppRouter.kSalarySheetView, extra: sheet);
+      await router.pushNamed(AppRouter.kSalarySheetView, extra: sheet);
+      cubit.refreshStatuses();
       return;
     }
     final error = result.error;
@@ -198,6 +201,11 @@ class _Content extends StatelessWidget {
                   child: RecordCard(
                     record: record,
                     onTap: () => onOpen(record),
+                    badge: SalaryStatusChip(
+                      status:
+                          state.statuses[record.id] ??
+                          SalaryStatus.notCalculated,
+                    ),
                   ),
                 ),
             ],

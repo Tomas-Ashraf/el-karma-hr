@@ -2,44 +2,35 @@ import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/employee_jobs.dart';
-import 'package:el_karma_ph/core/utils/money_format.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
 import 'package:el_karma_ph/core/utils/time_format.dart';
 import 'package:el_karma_ph/core/widgets/button_widget.dart';
+import 'package:el_karma_ph/features/count_salary_view/manager/cubit/salary_sheet_cubit.dart';
 import 'package:el_karma_ph/features/count_salary_view/models/salary_breakdown.dart';
 import 'package:el_karma_ph/features/count_salary_view/models/salary_sheet.dart';
 import 'package:el_karma_ph/features/count_salary_view/presentation/pdf/salary_pdf_builder.dart';
+import 'package:el_karma_ph/features/count_salary_view/presentation/widgets/payment_section.dart';
 import 'package:el_karma_ph/features/dashboard_view/presentation/widgets/section_tile_widget.dart';
 import 'package:el_karma_ph/features/employee_details_view/presentation/widgets/edit_dialogs_widget.dart';
-import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/adjustment_card.dart'
-    hide formatAmount;
+import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/adjustment_card.dart';
 import 'package:el_karma_ph/features/notes_records_view/presentation/widgets/card_decoration.dart';
 import 'package:el_karma_ph/features/record_details_view/presentation/pdf/pdf_export_flow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SalarySheetViewBody extends StatefulWidget {
-  const SalarySheetViewBody({super.key, required this.sheet});
-
-  final SalarySheet sheet;
-
-  @override
-  State<SalarySheetViewBody> createState() => _SalarySheetViewBodyState();
-}
-
-class _SalarySheetViewBodyState extends State<SalarySheetViewBody> {
-  late SalarySheet _sheet = widget.sheet;
+class SalarySheetViewBody extends StatelessWidget {
+  const SalarySheetViewBody({super.key});
 
   static String _plain(double v) => v % 1 == 0 ? '${v.toInt()}' : '$v';
 
-  String? _validate(String? v) {
-    final n = double.tryParse((v ?? '').trim());
-    if (n == null || n < 0) return context.tr('settings.invalid_amount');
-    return null;
-  }
-
-  Future<void> _edit(SalaryField field) async {
+  Future<void> _edit(BuildContext context, SalaryField field) async {
+    final cubit = context.read<SalarySheetCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final sheet = cubit.state.sheet;
     final egp = context.tr('common.egp');
+    final invalid = context.tr('settings.invalid_amount');
+
     final (
       String label,
       double current,
@@ -48,37 +39,37 @@ class _SalarySheetViewBodyState extends State<SalarySheetViewBody> {
     ) = switch (field) {
       SalaryField.baseSalary => (
         context.tr('salary.base_salary'),
-        _sheet.baseSalary,
+        sheet.baseSalary,
         egp,
         false,
       ),
       SalaryField.absentDays => (
         context.tr('salary.days_absent'),
-        _sheet.absentDays,
+        sheet.absentDays,
         null,
         false,
       ),
       SalaryField.lateDeduction => (
         context.tr('salary.line_late'),
-        _sheet.lateDeduction,
+        sheet.lateDeduction,
         egp,
         false,
       ),
       SalaryField.deliveryOrders => (
         context.tr('salary.orders_count'),
-        _sheet.deliveryOrders.toDouble(),
+        sheet.deliveryOrders.toDouble(),
         null,
         true,
       ),
       SalaryField.bonus => (
         context.tr('notes.total_bonuses'),
-        _sheet.totalBonus,
+        sheet.totalBonus,
         egp,
         false,
       ),
       SalaryField.deduction => (
         context.tr('notes.total_deductions'),
-        _sheet.totalDeduction,
+        sheet.totalDeduction,
         egp,
         false,
       ),
@@ -88,7 +79,10 @@ class _SalarySheetViewBodyState extends State<SalarySheetViewBody> {
       context,
       title: context.tr('employee_details.edit_title', args: {'field': label}),
       initialValue: _plain(current),
-      validator: _validate,
+      validator: (v) {
+        final n = double.tryParse((v ?? '').trim());
+        return n == null || n < 0 ? invalid : null;
+      },
       keyboardType: TextInputType.numberWithOptions(decimal: !integer),
       inputFormatters: [
         FilteringTextInputFormatter.allow(
@@ -97,28 +91,26 @@ class _SalarySheetViewBodyState extends State<SalarySheetViewBody> {
       ],
       suffixText: suffix,
     );
-    if (result == null || !mounted) return;
+    if (result == null) return;
     final value = double.tryParse(result);
     if (value == null) return;
 
-    setState(() {
-      _sheet = switch (field) {
-        SalaryField.baseSalary => _sheet.copyWith(baseSalary: value),
-        SalaryField.absentDays => _sheet.copyWith(absentDays: value),
-        SalaryField.lateDeduction => _sheet.copyWith(lateDeduction: value),
-        SalaryField.deliveryOrders => _sheet.copyWith(
-          deliveryOrders: value.round(),
-        ),
-        SalaryField.bonus => _sheet.copyWith(bonusOverride: value),
-        SalaryField.deduction => _sheet.copyWith(deductionOverride: value),
-      };
-    });
+    final error = await cubit.edit(field, value);
+    if (error != null && context.mounted) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(context.tr(error)),
+            backgroundColor: Colors.red,
+          ),
+        );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final sheet = _sheet;
 
     return SafeArea(
       child: Center(
@@ -129,78 +121,97 @@ class _SalarySheetViewBodyState extends State<SalarySheetViewBody> {
               horizontal: screenSize.width * 0.05,
               vertical: screenSize.height * 0.015,
             ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    children: [
-                      _HeroCard(sheet: sheet),
-                      const SizedBox(height: 20),
-                      SectionTitleWidget(context.tr('salary.summary')),
-                      const SizedBox(height: 12),
-                      _SummaryGrid(sheet: sheet),
-                      const SizedBox(height: 20),
-                      SectionTitleWidget(context.tr('salary.breakdown')),
-                      const SizedBox(height: 12),
-                      _BreakdownCard(sheet: sheet, onEdit: _edit),
-                      const SizedBox(height: 20),
-                      SectionTitleWidget(
-                        context.tr('salary.adjustments_title'),
+            child: BlocBuilder<SalarySheetCubit, SalarySheetState>(
+              builder: (context, state) {
+                final sheet = state.sheet;
+
+                return Column(
+                  children: [
+                    if (state.saving)
+                      const LinearProgressIndicator(minHeight: 2),
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        children: [
+                          _HeroCard(sheet: sheet),
+                          const SizedBox(height: 20),
+                          SectionTitleWidget(context.tr('salary.summary')),
+                          const SizedBox(height: 12),
+                          _SummaryGrid(sheet: sheet),
+                          const SizedBox(height: 20),
+                          SectionTitleWidget(context.tr('salary.breakdown')),
+                          const SizedBox(height: 12),
+                          _BreakdownCard(
+                            sheet: sheet,
+                            onEdit: sheet.isPaid
+                                ? null
+                                : (field) => _edit(context, field),
+                          ),
+                          const SizedBox(height: 20),
+                          SectionTitleWidget(
+                            context.tr('salary.adjustments_title'),
+                          ),
+                          const SizedBox(height: 12),
+                          if (sheet.adjustments.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Center(
+                                child: Text(
+                                  context.tr('notes.no_adjustments'),
+                                  style: Styles.textStyle14,
+                                ),
+                              ),
+                            )
+                          else
+                            for (final item in sheet.adjustments)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: AdjustmentCard(
+                                  item: item,
+                                  reasonLines: 6,
+                                ),
+                              ),
+                          const SizedBox(height: 8),
+                          PaymentSection(sheet: sheet),
+                          const SizedBox(height: 12),
+                        ],
                       ),
-                      const SizedBox(height: 12),
-                      if (sheet.adjustments.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Center(
-                            child: Text(
-                              context.tr('notes.no_adjustments'),
-                              style: Styles.textStyle14,
-                            ),
-                          ),
-                        )
-                      else
-                        for (final item in sheet.adjustments)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: AdjustmentCard(item: item, reasonLines: 6),
-                          ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ButtonWidget(
-                  width: double.infinity,
-                  height: 52,
-                  onPressed: () => exportPdfFlow(
-                    context,
-                    fileName:
-                        'salary_${sheet.employee.id}_${sheet.record.id}.pdf',
-                    employeePhone: sheet.employee.phoneNumber,
-                    subtitle: context.tr('export.salary_subtitle'),
-                    build: (l10n, ml) => SalaryPdfBuilder.build(
-                      l10n: l10n,
-                      sheet: _sheet,
-                      mediumDate: ml.formatMediumDate,
-                      shortDate: ml.formatShortMonthDay,
                     ),
-                  ),
-                  backgroundColor: kPrimaryBlue,
-                  foregroundColor: Colors.white,
-                  text: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.picture_as_pdf_rounded, size: 22),
-                      const SizedBox(width: 8),
-                      Text(
-                        context.tr('records.export_pdf'),
-                        style: Styles.textStyle16,
+                    const SizedBox(height: 12),
+                    ButtonWidget(
+                      width: double.infinity,
+                      height: 52,
+                      onPressed: () => exportPdfFlow(
+                        context,
+                        fileName:
+                            'salary_${sheet.employee.id}_${sheet.record.id}.pdf',
+                        employeePhone: sheet.employee.phoneNumber,
+                        subtitle: context.tr('export.salary_subtitle'),
+                        build: (l10n, ml) => SalaryPdfBuilder.build(
+                          l10n: l10n,
+                          sheet: sheet,
+                          mediumDate: ml.formatMediumDate,
+                          shortDate: ml.formatShortMonthDay,
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 8),
-              ],
+                      backgroundColor: kPrimaryBlue,
+                      foregroundColor: Colors.white,
+                      text: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.picture_as_pdf_rounded, size: 22),
+                          const SizedBox(width: 8),
+                          Text(
+                            context.tr('records.export_pdf'),
+                            style: Styles.textStyle16,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -505,7 +516,7 @@ class _BreakdownCard extends StatelessWidget {
   const _BreakdownCard({required this.sheet, required this.onEdit});
 
   final SalarySheet sheet;
-  final void Function(SalaryField field) onEdit;
+  final void Function(SalaryField field)? onEdit;
 
   Color _toneColor(BuildContext context, SalaryRowTone tone) => switch (tone) {
     SalaryRowTone.base => context.colors.onSurface,
@@ -530,7 +541,7 @@ class _BreakdownCard extends StatelessWidget {
               detail: row.detail,
               amount: signedAmount(l10n, row),
               color: _toneColor(context, row.tone),
-              onEdit: () => onEdit(row.field),
+              onEdit: onEdit == null ? null : () => onEdit!(row.field),
             ),
             Divider(height: 1, color: colors.outlineVariant),
           ],
@@ -577,7 +588,7 @@ class _BreakdownRowTile extends StatelessWidget {
   final String? detail;
   final String amount;
   final Color color;
-  final VoidCallback onEdit;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -616,16 +627,19 @@ class _BreakdownRowTile extends StatelessWidget {
               color: color,
             ),
           ),
-          IconButton(
-            onPressed: onEdit,
-            tooltip: context.tr('employee_details.edit'),
-            visualDensity: VisualDensity.compact,
-            icon: const Icon(
-              Icons.edit_outlined,
-              size: 18,
-              color: kPrimaryBlue,
-            ),
-          ),
+          if (onEdit != null)
+            IconButton(
+              onPressed: onEdit,
+              tooltip: context.tr('employee_details.edit'),
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(
+                Icons.edit_outlined,
+                size: 18,
+                color: kPrimaryBlue,
+              ),
+            )
+          else
+            const SizedBox(width: 12),
         ],
       ),
     );

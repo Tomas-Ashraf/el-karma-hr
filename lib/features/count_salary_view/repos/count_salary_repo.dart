@@ -2,6 +2,7 @@ import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/employee_jobs.dart';
 import 'package:el_karma_ph/features/count_salary_view/manager/logic/salary_calculator.dart';
 import 'package:el_karma_ph/features/count_salary_view/models/salary_sheet.dart';
+import 'package:el_karma_ph/features/count_salary_view/repos/salary_sheets_repo.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:el_karma_ph/features/employees_view/repos/employees_repo.dart';
 import 'package:el_karma_ph/features/finished_orders_view/models/finished_order.dart';
@@ -19,17 +20,20 @@ class CountSalaryRepo {
     NotesRepo? notesRepo,
     FinishedOrdersRepo? ordersRepo,
     AttendanceSettingsRepo? settingsRepo,
+    SalarySheetsRepo? sheetsRepo,
   }) : _employeesRepo = employeesRepo ?? EmployeesRepo(),
        _recordsRepo = recordsRepo ?? SavedRecordsRepo(),
        _notesRepo = notesRepo ?? NotesRepo(),
        _ordersRepo = ordersRepo ?? FinishedOrdersRepo(),
-       _settingsRepo = settingsRepo ?? AttendanceSettingsRepo();
+       _settingsRepo = settingsRepo ?? AttendanceSettingsRepo(),
+       _sheetsRepo = sheetsRepo ?? SalarySheetsRepo();
 
   final EmployeesRepo _employeesRepo;
   final SavedRecordsRepo _recordsRepo;
   final NotesRepo _notesRepo;
   final FinishedOrdersRepo _ordersRepo;
   final AttendanceSettingsRepo _settingsRepo;
+  final SalarySheetsRepo _sheetsRepo;
 
   Future<List<EmployeeModel>> getEmployees() => _employeesRepo.getEmployees();
 
@@ -64,7 +68,7 @@ class CountSalaryRepo {
     final orders = results[1] as List<FinishedOrder>;
     final perMinute = results[2] as double;
 
-    return SalaryCalculator.calculate(
+    final calculated = SalaryCalculator.calculate(
       employee: employee,
       record: record,
       adjustments: adjustments,
@@ -73,5 +77,10 @@ class CountSalaryRepo {
           .length,
       deductionPerMinute: perMinute,
     );
+    final saved = await _sheetsRepo.getSaved(employee.id, record.id);
+    return applySaved(calculated, saved);
   }
+
+  Future<Map<String, SalaryStatus>> getStatuses(EmployeeModel employee) =>
+      _sheetsRepo.getStatuses(employee.id);
 }

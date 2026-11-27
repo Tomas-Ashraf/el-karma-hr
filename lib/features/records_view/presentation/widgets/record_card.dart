@@ -12,11 +12,13 @@ class RecordCard extends StatelessWidget {
     required this.record,
     required this.onTap,
     this.onDelete,
+    this.badge,
   });
 
   final RecordPreview record;
   final VoidCallback onTap;
   final VoidCallback? onDelete;
+  final Widget? badge;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +79,7 @@ class RecordCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       RecordSummaryChips(record: record),
+                      if (badge != null) ...[const SizedBox(height: 8), badge!],
                     ],
                   ),
                 ),
@@ -102,7 +105,6 @@ class RecordCard extends StatelessWidget {
   }
 }
 
-/// "١ أكتوبر 2026  -  ٧ أكتوبر 2026" بنفس تنسيق شاشة الحضور.
 String recordPeriodLabel(BuildContext context, RecordPreview record) =>
     '${formatMediumDate(context, record.from)}  -  '
     '${formatMediumDate(context, record.to)}';

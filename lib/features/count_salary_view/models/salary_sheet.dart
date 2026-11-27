@@ -5,11 +5,17 @@ import 'package:el_karma_ph/features/records_view/models/record_preview_models.d
 
 double roundMoney(double value) => (value * 100).roundToDouble() / 100;
 
-/// 26 -> "26"، و 25.5 -> "25.5".
 String formatDays(double value) =>
     value % 1 == 0 ? '${value.toInt()}' : value.toStringAsFixed(1);
 
-/// شيت مرتب موظف لفترة record.
+enum SalaryStatus { notCalculated, calculated, paid }
+
+SalaryStatus salaryStatusFromKey(String? key) => switch (key) {
+  'paid' => SalaryStatus.paid,
+  'calculated' => SalaryStatus.calculated,
+  _ => SalaryStatus.notCalculated,
+};
+
 class SalarySheet {
   const SalarySheet({
     required this.employee,
@@ -26,13 +32,14 @@ class SalarySheet {
     required this.adjustments,
     this.bonusOverride,
     this.deductionOverride,
+    this.status = SalaryStatus.notCalculated,
+    this.editedFields = const {},
   });
 
   final EmployeeModel employee;
   final RecordPreview record;
   final bool isDelivery;
 
-  /// المرتب الأساسي (قابل للتعديل من الشيت).
   final double baseSalary;
 
   final double attendedDays;
@@ -46,15 +53,14 @@ class SalarySheet {
   final int deliveryOrders;
   final List<EmployeeAdjustment> adjustments;
 
-  /// قيم المكافآت/الخصومات لو اتعدلت يدويًا (بدل مجموع الملاحظات).
   final double? bonusOverride;
   final double? deductionOverride;
+  final SalaryStatus status;
 
   double get dailyRate => baseSalary / kSalaryMonthDays;
 
   double get absenceDeduction => roundMoney(absentDays * dailyRate);
 
-  /// المرتب بعد خصم الغياب.
   double get earnedSalary => roundMoney(baseSalary - absenceDeduction);
 
   double get deliveryFees => roundMoney(deliveryOrders * kDeliveryFeePerOrder);
@@ -74,6 +80,9 @@ class SalarySheet {
   double get net => roundMoney(
     earnedSalary + deliveryFees + totalBonus - lateDeduction - totalDeduction,
   );
+  final Set<String> editedFields;
+
+  bool get isPaid => status == SalaryStatus.paid;
 
   SalarySheet copyWith({
     double? baseSalary,
@@ -82,6 +91,8 @@ class SalarySheet {
     int? deliveryOrders,
     double? bonusOverride,
     double? deductionOverride,
+    SalaryStatus? status,
+    Set<String>? editedFields,
   }) {
     return SalarySheet(
       employee: employee,
@@ -98,6 +109,8 @@ class SalarySheet {
       adjustments: adjustments,
       bonusOverride: bonusOverride ?? this.bonusOverride,
       deductionOverride: deductionOverride ?? this.deductionOverride,
+      status: status ?? this.status,
+      editedFields: editedFields ?? this.editedFields,
     );
   }
 }

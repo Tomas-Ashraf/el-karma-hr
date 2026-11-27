@@ -47,12 +47,22 @@ class CountSalaryCubit extends Cubit<CountSalaryState> {
         status: CountSalaryStatus.loadingRecords,
         selected: employee,
         records: const [],
+        statuses: const {},
       ),
     );
     try {
-      final records = await _repo.getRecords(employee);
+      final results = await Future.wait<Object>([
+        _repo.getRecords(employee),
+        _repo.getStatuses(employee),
+      ]);
       if (isClosed || state.selected?.id != employee.id) return;
-      emit(state.copyWith(status: CountSalaryStatus.success, records: records));
+      emit(
+        state.copyWith(
+          status: CountSalaryStatus.success,
+          records: results[0] as List<RecordPreview>,
+          statuses: results[1] as Map<String, SalaryStatus>,
+        ),
+      );
     } catch (e) {
       log('Failed to load records: $e');
       if (isClosed || state.selected?.id != employee.id) return;
@@ -82,6 +92,18 @@ class CountSalaryCubit extends Cubit<CountSalaryState> {
       return (sheet: null, error: _errorKey(e, 'salary.calc_failed'));
     } finally {
       if (!isClosed) emit(state.copyWith(isCalculating: false));
+    }
+  }
+
+  Future<void> refreshStatuses() async {
+    final employee = state.selected;
+    if (employee == null) return;
+    try {
+      final statuses = await _repo.getStatuses(employee);
+      if (isClosed || state.selected?.id != employee.id) return;
+      emit(state.copyWith(statuses: statuses));
+    } catch (e) {
+      log('Failed to refresh statuses: $e');
     }
   }
 }
