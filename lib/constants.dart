@@ -25,6 +25,8 @@ const kOrderStatusFailed = 'failed';
 const kDeliveryFeePerOrder = 4.0;
 const kSalaryMonthDays = 30;
 const kSalarySheetsCollection = 'salary_sheets';
+const kExceptionsCollection = 'attendance_exceptions';
+const kExceptionItemsCollection = 'items';
 
 const kNoteColorsLight = [
   Color(0xFFFFFFFF),

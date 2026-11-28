@@ -2,13 +2,12 @@ import 'package:el_karma_ph/constants.dart';
 import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/core/utils/styles.dart';
-import 'package:el_karma_ph/core/utils/time_format.dart';
 import 'package:el_karma_ph/features/add_employee_view/presentation/widgets/form_fields.dart';
 import 'package:el_karma_ph/features/attendance_exception_view/models/attendance_exception_models.dart';
 import 'package:el_karma_ph/features/attendance_exception_view/presentation/widgets/exception_card.dart';
+import 'package:el_karma_ph/features/attendance_exception_view/presentation/widgets/exception_day_field.dart';
 import 'package:flutter/material.dart';
 
-/// بيضيف أو يعدّل إذن/إجازة. بيرجّع الـ exception الجديد أو null.
 Future<AttendanceException?> showExceptionEditorDialog(
   BuildContext context, {
   required String employeeId,
@@ -36,8 +35,13 @@ class _ExceptionEditorDialogState extends State<_ExceptionEditorDialog> {
 
   bool get _isEdit => widget.initial != null;
 
+  static DateTime get _today {
+    final n = DateTime.now();
+    return DateTime(n.year, n.month, n.day);
+  }
+
   late ExceptionType _type = widget.initial?.type ?? ExceptionType.lateArrival;
-  late DateTime? _date = widget.initial?.date;
+  late DateTime? _date = widget.initial?.date ?? _today;
   late TimeOfDay? _time = widget.initial?.time;
   late final _reason = TextEditingController(text: widget.initial?.reason);
 
@@ -52,16 +56,12 @@ class _ExceptionEditorDialogState extends State<_ExceptionEditorDialog> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
     Navigator.of(context).pop(
       AttendanceException(
-        id: widget.initial?.id ?? now.microsecondsSinceEpoch.toString(),
+        id: widget.initial?.id ?? '',
         employeeId: widget.employeeId,
         type: _type,
-        // الإجازة بتختار يومها، والإذن بيتسجل على النهارده (أو يومه القديم)
-        date: _isDayOff ? _date! : (widget.initial?.date ?? today),
+        date: _date!,
         time: _isDayOff ? null : _time,
         reason: _reason.text.trim(),
       ),
@@ -125,16 +125,18 @@ class _ExceptionEditorDialogState extends State<_ExceptionEditorDialog> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                if (_isDayOff)
-                  _DayPickerField(
-                    label: context.tr('exceptions.day'),
-                    placeholder: context.tr('attendance.select_date'),
-                    initialValue: _date,
-                    onChanged: (d) => _date = d,
-                    validator: (d) =>
-                        d == null ? context.tr('common.required') : null,
-                  )
-                else
+                ExceptionDayField(
+                  label: context.tr(
+                    _isDayOff ? 'exceptions.day' : 'notes.date',
+                  ),
+                  placeholder: context.tr('attendance.select_date'),
+                  initialValue: _date,
+                  onChanged: (d) => _date = d,
+                  validator: (d) =>
+                      d == null ? context.tr('common.required') : null,
+                ),
+                if (!_isDayOff) ...[
+                  const SizedBox(height: 16),
                   TimePickerFormField(
                     key: ValueKey(_type),
                     label: context.tr(timeLabelKey),
@@ -144,14 +146,21 @@ class _ExceptionEditorDialogState extends State<_ExceptionEditorDialog> {
                     validator: (t) =>
                         t == null ? context.tr('common.required') : null,
                   ),
+                ],
                 const SizedBox(height: 16),
-                Text(context.tr('exceptions.reason'), style: Styles.textStyle13),
+                Text(
+                  context.tr('exceptions.reason'),
+                  style: Styles.textStyle13,
+                ),
                 const SizedBox(height: 6),
                 TextFormField(
                   controller: _reason,
                   minLines: 2,
                   maxLines: 4,
                   textCapitalization: TextCapitalization.sentences,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? context.tr('common.required')
+                      : null,
                   decoration: appInputDecoration(
                     context,
                     hintText: context.tr('exceptions.reason_hint'),
@@ -184,65 +193,4 @@ class _ExceptionEditorDialogState extends State<_ExceptionEditorDialog> {
       ],
     );
   }
-}
-
-/// زي DatePickerFormField بس بيسمح بأيام جاية (الإجازة ممكن تتحدد مسبقًا).
-class _DayPickerField extends FormField<DateTime> {
-  _DayPickerField({
-    required String label,
-    required String placeholder,
-    required ValueChanged<DateTime> onChanged,
-    super.initialValue,
-    super.validator,
-  }) : super(
-         builder: (state) {
-           final context = state.context;
-           final value = state.value;
-
-           Future<void> pick() async {
-             final now = DateTime.now();
-             final picked = await showDatePicker(
-               context: context,
-               initialDate: value ?? now,
-               firstDate: DateTime(2020),
-               lastDate: DateTime(now.year + 2, 12, 31),
-             );
-             if (picked == null) return;
-             state.didChange(picked);
-             onChanged(picked);
-           }
-
-           return Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: [
-               Text(label, style: Styles.textStyle13),
-               const SizedBox(height: 6),
-               InkWell(
-                 borderRadius: BorderRadius.circular(12),
-                 onTap: pick,
-                 child: InputDecorator(
-                   isEmpty: value == null,
-                   decoration: appInputDecoration(
-                     context,
-                     errorText: state.errorText,
-                     suffixIcon: const Icon(
-                       Icons.calendar_today_outlined,
-                       size: 20,
-                     ),
-                   ),
-                   child: Text(
-                     value == null
-                         ? placeholder
-                         : formatMediumDate(context, value),
-                     style: TextStyle(
-                       fontSize: 16,
-                       color: value == null ? Colors.grey : null,
-                     ),
-                   ),
-                 ),
-               ),
-             ],
-           );
-         },
-       );
 }

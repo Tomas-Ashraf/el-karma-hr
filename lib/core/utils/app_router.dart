@@ -171,18 +171,19 @@ abstract class AppRouter {
         builder: (context, state) =>
             SalarySheetView(sheet: state.extra as SalarySheet),
       ),
+      GoRoute(
+        path: kSalaryHistoryView,
+        name: kSalaryHistoryView,
+        redirect: (context, state) =>
+            state.extra is EmployeeModel ? null : kEmployeeListView,
+        builder: (context, state) =>
+            SalaryHistoryView(employee: state.extra as EmployeeModel),
+      ),
 
       GoRoute(
         path: kAttendanceExceptionView,
         name: kAttendanceExceptionView,
         builder: (context, state) => const AttendanceExceptionView(),
-      GoRoute(
-        path: kSalaryHistoryView,
-        name: kSalaryHistoryView,
-        redirect: (context, state) =>
-            state.extra is EmployeeModel ? null : kCountSalaryView,
-        builder: (context, state) =>
-            SalaryHistoryView(employee: state.extra as EmployeeModel),
       ),
     ],
   );
