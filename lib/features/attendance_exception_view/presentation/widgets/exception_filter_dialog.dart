@@ -3,7 +3,7 @@ import 'package:el_karma_ph/core/utils/app_localization/app_localizations.dart';
 import 'package:el_karma_ph/core/utils/app_theme/app_theme.dart';
 import 'package:el_karma_ph/features/add_employee_view/presentation/widgets/form_fields.dart';
 import 'package:el_karma_ph/features/attendance_exception_view/models/attendance_exception_models.dart';
-import 'package:el_karma_ph/features/attendance_view.dart/presentation/widgets/attendance_filter_dialog.dart';
+import 'package:el_karma_ph/features/attendance_exception_view/presentation/widgets/exception_day_field.dart';
 import 'package:el_karma_ph/features/employees_view/models/employee_model.dart';
 import 'package:flutter/material.dart';
 
@@ -44,9 +44,8 @@ class _ExceptionsFilterDialogState extends State<_ExceptionsFilterDialog> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     final employee = widget.employees.firstWhere((e) => e.id == _employeeId);
-    Navigator.of(
-      context,
-    ).pop(ExceptionsFilter(employee: employee, from: _from!, to: _to!));
+    Navigator.of(context)
+        .pop(ExceptionsFilter(employee: employee, from: _from!, to: _to!));
   }
 
   @override
@@ -67,7 +66,17 @@ class _ExceptionsFilterDialogState extends State<_ExceptionsFilterDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DatePickerFormField(
+                LabeledDropdown<String>(
+                  label: context.tr('attendance.employee'),
+                  hint: context.tr('add_employee.select'),
+                  initialValue: _employeeId,
+                  items: {for (final e in widget.employees) e.id: e.name},
+                  validator: (v) =>
+                      v == null ? context.tr('common.required') : null,
+                  onChanged: (v) => _employeeId = v,
+                ),
+                const SizedBox(height: 16),
+                ExceptionDayField(
                   label: context.tr('attendance.from'),
                   placeholder: context.tr('attendance.select_date'),
                   initialValue: _from,
@@ -76,7 +85,7 @@ class _ExceptionsFilterDialogState extends State<_ExceptionsFilterDialog> {
                       d == null ? context.tr('common.required') : null,
                 ),
                 const SizedBox(height: 16),
-                DatePickerFormField(
+                ExceptionDayField(
                   label: context.tr('attendance.to'),
                   placeholder: context.tr('attendance.select_date'),
                   initialValue: _to,
@@ -88,16 +97,6 @@ class _ExceptionsFilterDialogState extends State<_ExceptionsFilterDialog> {
                     }
                     return null;
                   },
-                ),
-                const SizedBox(height: 16),
-                LabeledDropdown<String>(
-                  label: context.tr('attendance.employee'),
-                  hint: context.tr('add_employee.select'),
-                  initialValue: _employeeId,
-                  items: {for (final e in widget.employees) e.id: e.name},
-                  validator: (v) =>
-                      v == null ? context.tr('common.required') : null,
-                  onChanged: (v) => _employeeId = v,
                 ),
               ],
             ),
